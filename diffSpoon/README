@@ -1,0 +1,11 @@
+DiffSpoon:
+
+**to compile:
+
+mvn install
+
+**Main class
+fr.inria.sacha.spoon.diffSpoon.DiffSpoon
+
+**Test Case 
+fr.inria.sacha.spoon.diffSpoon.DiffSpoonTest
