@@ -1,11 +1,12 @@
-DiffSpoon:
+DiffSpoon: gumtree-spoon-ast-diff
+ 
 
 **to compile:
-
 mvn install
 
 **Main class
-fr.inria.sacha.spoon.diffSpoon.DiffSpoon
+fr.inria.sacha.spoon.diffSpoon.DiffSpoon <file_1> <file_2>
+
 
 **Test Case 
 fr.inria.sacha.spoon.diffSpoon.DiffSpoonTest
