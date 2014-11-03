@@ -36,7 +36,7 @@ import fr.labri.gumtree.matchers.GumTreeMatcher;
 import fr.labri.gumtree.matchers.Matcher;
 
 /**
- * 
+ * Computes the differences between two CtElements.
  * @author Matias Martinez, matias.martinez@inria.fr
  * 
  */
@@ -63,6 +63,7 @@ public class DiffSpoon {
 		factory.getEnvironment().setNoClasspath(noClasspath);
 	}
 
+	@Deprecated
 	public CtDiff analyze(String left, String right) {
 
 		CtClass<?> clazz1 = factory.Code().createCodeSnippetStatement(left)
@@ -71,8 +72,7 @@ public class DiffSpoon {
 		CtClass<?> clazz2 = factory.Code().createCodeSnippetStatement(right)
 				.compile();
 
-	
-		
+			
 		return analyze(clazz1, clazz2);
 	}
 
@@ -130,7 +130,7 @@ public class DiffSpoon {
 
 		GumTreeMatcher.prepare(rootSpoonLeft);
 		GumTreeMatcher.prepare(rootSpoonRight);
-
+		logger.debug("-----Trees:----");
 		logger.debug("left tree:  " + rootSpoonLeft.toTreeString());
 		logger.debug("right tree: " + rootSpoonRight.toTreeString());
 
@@ -145,12 +145,13 @@ public class DiffSpoon {
 
 		GTFacade gtfac = new GTFacade();
 		List<Action> rootActions = gtfac.getRootActions(mappings, actions);
-		logger.debug("Root Actions " + rootActions.size());
+		logger.debug("-----RESULT:----");
+		logger.debug("Root Actions: (" + rootActions.size()+ ")");
 		for (Action action : rootActions) {
 			logger.debug("--> " + action);
 		}
 
-		logger.debug("All actions: " + actions.size());
+		logger.debug("All Actions: (" + actions.size()+ ")");
 		for (Action action : actions) {
 			if (action.getNode().getParent() != null)
 				logger.debug("--> " + action);
@@ -228,7 +229,7 @@ public class DiffSpoon {
 		}
 
 		File f1 = new File(args[0]);
-		File f2 = new File(args[2]);
+		File f2 = new File(args[1]);
 
 	
 

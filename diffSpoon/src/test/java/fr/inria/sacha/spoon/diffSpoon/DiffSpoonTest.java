@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import fr.labri.gumtree.actions.Action;
 /**
- * 
+ * Test Spoon Diff 
  * @author  Matias Martinez, matias.martinez@inria.fr
  *
  */
@@ -30,10 +30,6 @@ public class DiffSpoonTest {
 		assertTrue(editScript.rootActions.size() == 1);
 	}
 
-	//@Test
-	public void testAnalyzeCtElementCtElement() {
-		//fail("Not yet implemented");
-	}
 
 	@Test
 	public void exampleInsertAndUpdate() throws Exception{
@@ -66,9 +62,9 @@ public class DiffSpoonTest {
 	
 		CtDiff result = diff.analyze(fl,fr);
 		List<Action> actions = result.getRootActions();
-
-		assertTrue(containsAction(actions, "UPD", "PAR-CtLiteralImpl"));
 		assertEquals(actions.size(), 1);
+		assertTrue(containsAction(actions, "UPD", "PAR-CtLiteralImpl"));
+	
 	}
 	
 	@Test
@@ -101,13 +97,25 @@ public class DiffSpoonTest {
 		assertEquals(actions.size(), 1);
 		assertTrue(containsAction(actions, "INS", "CtMethodImpl"));
 	}
+	
+	@Test
+	public void testMain() throws Exception{
+		
+		DiffSpoon diff = new DiffSpoon(true);
+		File fl = new File(getClass().
+				getResource("/examples/test4/CommandLine1.java").getFile());
+		File fr = new File(getClass().
+				getResource("/examples/test4/CommandLine2.java").getFile());
+	
+		DiffSpoon.main(new String []{fl.getAbsolutePath(), fr.getAbsolutePath()});
+	}
+	
 	private boolean containsAction(List<Action> actions, String kindAction, String kindNode){
 		//TODO: the kind of the action is not visible, To see in the next version of GumTree
 		for (Action action : actions) {
 			String toSt = action.toString();
 			if(toSt.startsWith(kindAction)){
 				return action.getNode().getTypeLabel().endsWith(kindNode);
-				//return true;
 			}
 		}
 		return false;
