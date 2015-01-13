@@ -123,9 +123,7 @@ public class DiffSpoon {
 	}
 
 	protected CtDiff compare(Tree rootSpoonLeft, Tree rootSpoonRight) {
-		ProduceFileTree gen = null;
-		gen = new ProduceJDTTree();
-
+	
 		List<Action> actions = null;
 
 		GumTreeMatcher.prepare(rootSpoonLeft);
@@ -143,7 +141,7 @@ public class DiffSpoon {
 				matcher.getMappings());
 		actions = gt.getActions();
 
-		GTFacade gtfac = new GTFacade();
+		ActionClassifier gtfac = new ActionClassifier();
 		List<Action> rootActions = gtfac.getRootActions(mappings, actions);
 		logger.debug("-----RESULT:----");
 		logger.debug("Root Actions: (" + rootActions.size()+ ")");
