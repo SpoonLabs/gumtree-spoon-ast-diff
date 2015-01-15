@@ -7,6 +7,7 @@ import fr.labri.gumtree.Tree;
  * @author  Matias Martinez, matias.martinez@inria.fr
  *
  */
+@Deprecated
 public class SpoonTreeNode extends Tree {
 
 	CtElement element = null;

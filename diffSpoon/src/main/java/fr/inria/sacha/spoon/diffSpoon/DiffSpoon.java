@@ -104,7 +104,23 @@ public class DiffSpoon {
 		return clazz1;
 	}
 
+	
+	public Tree getTree(String content){
+		return getTree(getCtClass(content));
+		
+	}
+	
+	public Tree getTree(CtElement left){
+		SpoonGumTreeBuilder scanner = new SpoonGumTreeBuilder();
 
+		scanner.scan(left);
+		Tree rootSpoonLeft = scanner.getRoot();
+
+		scanner.root = null;
+		scanner.nodes.clear();
+		return rootSpoonLeft;
+	}
+	
 	public CtDiff analyze(CtElement left, CtElement right) {
 
 		SpoonGumTreeBuilder scanner = new SpoonGumTreeBuilder();
@@ -114,6 +130,7 @@ public class DiffSpoon {
 
 		scanner.root = null;
 		scanner.nodes.clear();
+		//reinit the scanner.
 		scanner.init();
 
 		scanner.scan(right);
@@ -122,7 +139,7 @@ public class DiffSpoon {
 		return compare(rootSpoonLeft, rootSpoonRight);
 	}
 
-	protected CtDiff compare(Tree rootSpoonLeft, Tree rootSpoonRight) {
+	public CtDiff compare(Tree rootSpoonLeft, Tree rootSpoonRight) {
 	
 		List<Action> actions = null;
 
@@ -190,7 +207,7 @@ public class DiffSpoon {
 		}
 	}
 
-	public CtClass getCtClass(String contents) {
+	public CtSimpleType getCtClass(String contents) {
 		try {
 			this.getCtClass(factory, contents);
 		} catch (Exception e) {
@@ -200,7 +217,7 @@ public class DiffSpoon {
 		CtSimpleType spt = types.get(0);
 		spt.getPackage().getTypes().remove(spt);
 
-		return (CtClass) spt;
+		return spt;
 
 	}
 
@@ -236,7 +253,7 @@ public class DiffSpoon {
 
 	}
 
-	private static String readFile(File f) throws IOException {
+	public static String readFile(File f) throws IOException {
 		FileReader reader = new FileReader(f);
 		char[] chars = new char[(int) f.length()];
 		reader.read(chars);

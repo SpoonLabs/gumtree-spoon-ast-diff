@@ -4,10 +4,13 @@ package fr.inria.sacha.spoon.diffSpoon;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import org.junit.Test;
 
+import spoon.reflect.declaration.CtClass;
+import spoon.reflect.declaration.CtSimpleType;
 import fr.labri.gumtree.actions.Action;
 /**
  * Test Spoon Diff 
@@ -108,6 +111,16 @@ public class DiffSpoonTest {
 				getResource("/examples/test4/CommandLine2.java").getFile());
 	
 		DiffSpoon.main(new String []{fl.getAbsolutePath(), fr.getAbsolutePath()});
+	}
+	//@Test
+	public void testContent() throws IOException{
+		File fl = new File(getClass().
+				getResource("/examples/test4/CommandLine1.java").getFile());
+		File fr = new File(getClass().
+				getResource("/examples/test4/CommandLine2.java").getFile());
+		DiffSpoon diff = new DiffSpoon(true);
+		CtSimpleType ctl = diff.getCtClass(diff.readFile(fl));
+		//System.out.println();
 	}
 	
 	private boolean containsAction(List<Action> actions, String kindAction, String kindNode){
