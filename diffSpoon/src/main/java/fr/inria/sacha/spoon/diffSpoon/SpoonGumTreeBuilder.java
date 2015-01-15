@@ -70,13 +70,13 @@ public class SpoonGumTreeBuilder extends CtScanner {
 	private void createNode(CtElement obj) {
 
 		String label = "";
-		String type = obj.getClass().getSimpleName();
+		String type = getTypeName(obj.getClass().getSimpleName());
 		int id = revolveTypeId(obj);
 
 		if (obj instanceof CtInvocation) {
 			CtInvocation inv = (CtInvocation) obj;
 			if (((CtInvocation) obj).getExecutable() == null) {
-				// System.out.println();
+
 			} else {
 				label = ((CtInvocation) obj).getExecutable().getSimpleName();
 			}
@@ -106,17 +106,32 @@ public class SpoonGumTreeBuilder extends CtScanner {
 			label = "";
 		}
 
-		if (obj.getParent() instanceof CtInvocation) {
-			CtInvocation inv = (CtInvocation) obj.getParent();
-			boolean isInArgs = inv.getArguments().contains(obj);
-			if (isInArgs) {
-				type = PARAMETER + "-" + type;
-				id = resolveTypeId(PARAMETER);
+		if (obj.getParent() instanceof CtInvocation 
+				&& !(obj instanceof CtVariableAccess)) {
+			try {
+				CtInvocation inv = (CtInvocation) obj.getParent();
+				boolean isInArgs = inv.getArguments().contains(obj);
+				if (isInArgs) {
+					type = PARAMETER + "-" + type;
+					id = resolveTypeId(PARAMETER);
+				}
+			} catch (Exception e) {
+				System.err.println("Ex: "+e.getMessage());
+				//e.printStackTrace();
 			}
 		}
 
 		createNode(label, type, id);
 
+	}
+	/**
+	 * Removes the "Ct" at the beginning and the "Impl" at the end
+	 * @param simpleName
+	 * @return
+	 */
+	public String getTypeName(String simpleName) {
+		
+		return simpleName.substring(2, simpleName.length()-4);
 	}
 
 	static String PARAMETER = "PAR";
@@ -135,7 +150,8 @@ public class SpoonGumTreeBuilder extends CtScanner {
 			// System.out.println();
 			// return;
 		}
-		createNode((obj).getSimpleName(), obj.getClass().getSimpleName(), revolveTypeId(obj));
+		createNode((obj).getSimpleName(), obj.getClass().getSimpleName(),
+				revolveTypeId(obj));
 
 	}
 

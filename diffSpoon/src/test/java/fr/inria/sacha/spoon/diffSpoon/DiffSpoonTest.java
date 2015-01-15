@@ -46,11 +46,11 @@ public class DiffSpoonTest {
 		CtDiff result = diff.analyze(fl,fr);
 		List<Action> actions = result.getRootActions();
 		assertEquals(actions.size(), 2);
-		assertTrue(containsAction(actions, "INS", "CtInvocationImpl"));
-		assertFalse(containsAction(actions, "DEL", "CtInvocationImpl"));
-		assertFalse(containsAction(actions, "UPD", "CtInvocationImpl"));
+		assertTrue(containsAction(actions, "INS", "Invocation"));
+		assertFalse(containsAction(actions, "DEL", "Invocation"));
+		assertFalse(containsAction(actions, "UPD", "Invocation"));
 		
-		assertTrue(containsAction(actions, "UPD", "CtFieldAccessImpl"));
+		assertTrue(containsAction(actions, "UPD", "FieldAccess"));
 	}
 	
 	
@@ -66,7 +66,7 @@ public class DiffSpoonTest {
 		CtDiff result = diff.analyze(fl,fr);
 		List<Action> actions = result.getRootActions();
 		assertEquals(actions.size(), 1);
-		assertTrue(containsAction(actions, "UPD", "PAR-CtLiteralImpl"));
+		assertTrue(containsAction(actions, "UPD", "PAR-Literal"));
 	
 	}
 	
@@ -82,7 +82,7 @@ public class DiffSpoonTest {
 		CtDiff result = diff.analyze(fl,fr);
 		List<Action> actions = result.getRootActions();
 		assertEquals(actions.size(), 1);
-		assertTrue(containsAction(actions, "DEL", "CtMethodImpl"));
+		assertTrue(containsAction(actions, "DEL", "Method"));
 	}
 	
 	
@@ -98,7 +98,7 @@ public class DiffSpoonTest {
 		CtDiff result = diff.analyze(fl,fr);
 		List<Action> actions = result.getRootActions();
 		assertEquals(actions.size(), 1);
-		assertTrue(containsAction(actions, "INS", "CtMethodImpl"));
+		assertTrue(containsAction(actions, "INS", "Method"));
 	}
 	
 	@Test
@@ -119,7 +119,7 @@ public class DiffSpoonTest {
 		File fr = new File(getClass().
 				getResource("/examples/test4/CommandLine2.java").getFile());
 		DiffSpoon diff = new DiffSpoon(true);
-		CtSimpleType ctl = diff.getCtClass(diff.readFile(fl));
+		CtSimpleType ctl = diff.getSpoonType(diff.readFile(fl));
 		//System.out.println();
 	}
 	

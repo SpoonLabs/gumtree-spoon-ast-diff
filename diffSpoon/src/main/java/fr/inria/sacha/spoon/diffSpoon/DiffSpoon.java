@@ -106,7 +106,7 @@ public class DiffSpoon {
 
 	
 	public Tree getTree(String content){
-		return getTree(getCtClass(content));
+		return getTree(getSpoonType(content));
 		
 	}
 	
@@ -207,7 +207,7 @@ public class DiffSpoon {
 		}
 	}
 
-	public CtSimpleType getCtClass(String contents) {
+	public CtSimpleType getSpoonType(String contents) {
 		try {
 			this.getCtClass(factory, contents);
 		} catch (Exception e) {
