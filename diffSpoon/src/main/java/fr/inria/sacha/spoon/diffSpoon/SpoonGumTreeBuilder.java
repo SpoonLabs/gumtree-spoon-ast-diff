@@ -112,12 +112,12 @@ public class SpoonGumTreeBuilder extends CtScanner {
 				CtInvocation inv = (CtInvocation) obj.getParent();
 				boolean isInArgs = inv.getArguments().contains(obj);
 				if (isInArgs) {
-					type = PARAMETER + "-" + type;
+					//type = PARAMETER + "-" + type;
 					id = resolveTypeId(PARAMETER);
 				}
 			} catch (Exception e) {
 				System.err.println("Ex: "+e.getMessage());
-				//e.printStackTrace();
+				e.printStackTrace();
 			}
 		}
 

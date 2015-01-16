@@ -94,7 +94,7 @@ public class DiffSpoon {
 		return result;
 	}
 
-	protected CtClass getCtClass(File f) throws Exception{
+	public CtClass getCtClass(File f) throws Exception{
 		SpoonResource sr1 = SpoonResourceHelper .createResource(f) ;
 		SpoonCompiler compiler = new JDTBasedSpoonCompiler(factory);
 		compiler.addInputSource(sr1);
@@ -120,7 +120,7 @@ public class DiffSpoon {
 		scanner.nodes.clear();
 		return rootSpoonLeft;
 	}
-	
+	//refactor
 	public CtDiff analyze(CtElement left, CtElement right) {
 
 		SpoonGumTreeBuilder scanner = new SpoonGumTreeBuilder();
@@ -214,6 +214,10 @@ public class DiffSpoon {
 			// must fails
 		}
 		List<CtSimpleType<?>> types = factory.Type().getAll();
+		if(types.isEmpty())
+		{
+			System.err.println("");
+		}
 		CtSimpleType spt = types.get(0);
 		spt.getPackage().getTypes().remove(spt);
 
