@@ -104,11 +104,7 @@ public class DiffSpoon {
 		return clazz1;
 	}
 
-	
-	public Tree getTree(String content){
-		return getTree(getSpoonType(content));
 		
-	}
 	
 	public Tree getTree(CtElement left){
 		SpoonGumTreeBuilder scanner = new SpoonGumTreeBuilder();
@@ -207,7 +203,7 @@ public class DiffSpoon {
 		}
 	}
 
-	public CtSimpleType getSpoonType(String contents) {
+	public CtSimpleType getSpoonType(String contents) throws Exception {
 		try {
 			this.getCtClass(factory, contents);
 		} catch (Exception e) {
@@ -216,7 +212,8 @@ public class DiffSpoon {
 		List<CtSimpleType<?>> types = factory.Type().getAll();
 		if(types.isEmpty())
 		{
-			System.err.println("");
+			//System.err.println("");
+			throw new Exception("No Type was created by spoon");
 		}
 		CtSimpleType spt = types.get(0);
 		spt.getPackage().getTypes().remove(spt);

@@ -66,7 +66,7 @@ public class DiffSpoonTest {
 		CtDiff result = diff.analyze(fl,fr);
 		List<Action> actions = result.getRootActions();
 		assertEquals(actions.size(), 1);
-		assertTrue(containsAction(actions, "UPD", "PAR-Literal"));
+		assertTrue(containsAction(actions, "UPD", "Literal"/*"PAR-Literal"*/));
 	
 	}
 	
@@ -112,15 +112,15 @@ public class DiffSpoonTest {
 	
 		DiffSpoon.main(new String []{fl.getAbsolutePath(), fr.getAbsolutePath()});
 	}
-	//@Test
-	public void testContent() throws IOException{
+	@Test
+	public void testContent() throws Exception{
 		File fl = new File(getClass().
 				getResource("/examples/test4/CommandLine1.java").getFile());
 		File fr = new File(getClass().
 				getResource("/examples/test4/CommandLine2.java").getFile());
 		DiffSpoon diff = new DiffSpoon(true);
 		CtSimpleType ctl = diff.getSpoonType(diff.readFile(fl));
-		//System.out.println();
+		assertNotNull(ctl);
 	}
 	
 	private boolean containsAction(List<Action> actions, String kindAction, String kindNode){
