@@ -9,9 +9,10 @@ import java.util.List;
 
 import org.junit.Test;
 
+import fr.labri.gumtree.actions.model.Action;
 import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtSimpleType;
-import fr.labri.gumtree.actions.Action;
+
 /**
  * Test Spoon Diff 
  * @author  Matias Martinez, matias.martinez@inria.fr
@@ -29,7 +30,7 @@ public class DiffSpoonTest {
 		
 		
 		DiffSpoon diff = new DiffSpoon(true);
-		CtDiff editScript = diff.analyze(c1, c2);
+		CtDiff editScript = diff.compare(c1, c2);
 		assertTrue(editScript.rootActions.size() == 1);
 	}
 
@@ -43,7 +44,7 @@ public class DiffSpoonTest {
 		File fr = new File(getClass().
 				getResource("/examples/test1/TypeHandler2.java").getFile());
 	
-		CtDiff result = diff.analyze(fl,fr);
+		CtDiff result = diff.compare(fl,fr);
 		List<Action> actions = result.getRootActions();
 		assertEquals(actions.size(), 2);
 		assertTrue(containsAction(actions, "INS", "Invocation"));
@@ -63,7 +64,7 @@ public class DiffSpoonTest {
 		File fr = new File(getClass().
 				getResource("/examples/test2/CommandLine2.java").getFile());
 	
-		CtDiff result = diff.analyze(fl,fr);
+		CtDiff result = diff.compare(fl,fr);
 		List<Action> actions = result.getRootActions();
 		assertEquals(actions.size(), 1);
 		assertTrue(containsAction(actions, "UPD", "Literal"/*"PAR-Literal"*/));
@@ -79,7 +80,7 @@ public class DiffSpoonTest {
 		File fr = new File(getClass().
 				getResource("/examples/test3/CommandLine2.java").getFile());
 	
-		CtDiff result = diff.analyze(fl,fr);
+		CtDiff result = diff.compare(fl,fr);
 		List<Action> actions = result.getRootActions();
 		assertEquals(actions.size(), 1);
 		assertTrue(containsAction(actions, "DEL", "Method"));
@@ -95,7 +96,7 @@ public class DiffSpoonTest {
 		File fr = new File(getClass().
 				getResource("/examples/test4/CommandLine2.java").getFile());
 	
-		CtDiff result = diff.analyze(fl,fr);
+		CtDiff result = diff.compare(fl,fr);
 		List<Action> actions = result.getRootActions();
 		assertEquals(actions.size(), 1);
 		assertTrue(containsAction(actions, "INS", "Method"));

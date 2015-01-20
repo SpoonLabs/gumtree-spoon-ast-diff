@@ -2,7 +2,8 @@ package fr.inria.sacha.spoon.diffSpoon;
 
 import java.util.List;
 
-import fr.labri.gumtree.actions.Action;
+import fr.labri.gumtree.actions.model.Action;
+
 
 /**
  * 

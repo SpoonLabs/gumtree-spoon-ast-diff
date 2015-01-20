@@ -8,16 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import fr.labri.gumtree.Mapping;
-import fr.labri.gumtree.Mappings;
-import fr.labri.gumtree.Tree;
-import fr.labri.gumtree.actions.Action;
-import fr.labri.gumtree.actions.Delete;
-import fr.labri.gumtree.actions.Insert;
-import fr.labri.gumtree.actions.Move;
-import fr.labri.gumtree.actions.Permute;
-import fr.labri.gumtree.actions.Update;
-
+import fr.labri.gumtree.actions.model.*;
+import fr.labri.gumtree.matchers.Mapping;
+import fr.labri.gumtree.matchers.MappingStore;
+import fr.labri.gumtree.tree.Tree;
 /**
  * Action Classifier
  * 
@@ -57,7 +51,7 @@ public class ActionClassifier {
 	 */
 	public List<Action> getRootActions(Set<Mapping> rawMappings, List<Action> actions) {
 		clean();
-		Mappings mappings = new Mappings(rawMappings);
+		MappingStore mappings = new MappingStore(rawMappings);
 
 		for (Action a : actions) {
 

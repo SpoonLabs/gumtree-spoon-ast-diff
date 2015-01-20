@@ -4,7 +4,7 @@
 
 	<groupId>fr.inria.sacha.spoon</groupId>
 	<artifactId>diffSpoon</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>diffSpoon</name>
@@ -51,7 +51,7 @@
 		</dependency>
 
 
-		<dependency>
+		<!-- <dependency>
 			<groupId>fr.labri.gumtree</groupId>
 			<artifactId>core</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
@@ -66,7 +66,20 @@
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/genjdt.jar</systemPath>
 		</dependency>
+ -->
+ 	<dependency>
+			<groupId>fr.labri.gumtree</groupId>
+			<artifactId>core</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
 
+		<dependency>
+			<groupId>fr.labri.gumtree</groupId>
+			<artifactId>gen.jdt</artifactId>
+			<version>1.0-SNAPSHOT</version> 
+			<scope>compile</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>eclipse</groupId>

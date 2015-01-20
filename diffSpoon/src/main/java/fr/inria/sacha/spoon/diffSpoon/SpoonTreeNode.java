@@ -1,14 +1,14 @@
 package fr.inria.sacha.spoon.diffSpoon;
 
 import spoon.reflect.declaration.CtElement;
-import fr.labri.gumtree.Tree;
+
 /**
  * 
  * @author  Matias Martinez, matias.martinez@inria.fr
  *
  */
 @Deprecated
-public class SpoonTreeNode extends Tree {
+public class SpoonTreeNode extends fr.labri.gumtree.tree.Tree {
 
 	CtElement element = null;
 	

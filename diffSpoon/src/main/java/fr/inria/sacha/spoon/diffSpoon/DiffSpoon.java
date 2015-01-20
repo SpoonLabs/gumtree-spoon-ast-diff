@@ -25,15 +25,15 @@ import spoon.support.DefaultCoreFactory;
 import spoon.support.StandardEnvironment;
 import spoon.support.compiler.jdt.JDTBasedSpoonCompiler;
 import spoon.support.compiler.jdt.JDTSnippetCompiler;
-import fr.labri.gumtree.Mapping;
-import fr.labri.gumtree.Mappings;
-import fr.labri.gumtree.ProduceFileTree;
-import fr.labri.gumtree.Tree;
-import fr.labri.gumtree.actions.Action;
-import fr.labri.gumtree.actions.GenerateActions;
-import fr.labri.gumtree.gen.jdt.ProduceJDTTree;
-import fr.labri.gumtree.matchers.GumTreeMatcher;
+import fr.labri.gumtree.actions.ActionGenerator;
+import fr.labri.gumtree.actions.model.Action;
+import fr.labri.gumtree.matchers.CompositeMatchers;
+import fr.labri.gumtree.matchers.Mapping;
+import fr.labri.gumtree.matchers.MappingStore;
 import fr.labri.gumtree.matchers.Matcher;
+import fr.labri.gumtree.matchers.MatcherFactory;
+import fr.labri.gumtree.tree.Tree;
+import fr.labri.gumtree.tree.TreeUtils;
 
 /**
  * Computes the differences between two CtElements.
@@ -46,7 +46,7 @@ public class DiffSpoon {
 	protected Factory factory = null;
 
 	protected Set<Mapping> mappings = null;
-	protected Mappings mappingsComp = null;
+	protected MappingStore mappingsComp = null;
 	
 	public DiffSpoon(Factory factory) {
 		this.factory = factory;
@@ -64,7 +64,7 @@ public class DiffSpoon {
 	}
 
 	@Deprecated
-	public CtDiff analyze(String left, String right) {
+	public CtDiff compare(String left, String right) {
 
 		CtClass<?> clazz1 = factory.Code().createCodeSnippetStatement(left)
 				.compile();
@@ -76,11 +76,11 @@ public class DiffSpoon {
 		return analyze(clazz1, clazz2);
 	}
 
-	public CtDiff analyze(URL f1, URL f2) throws Exception {
-		return this.analyze(new File(f1.getFile()), new File(f1.getFile()));
+	public CtDiff compare(URL f1, URL f2) throws Exception {
+		return this.compare(new File(f1.getFile()), new File(f1.getFile()));
 	}
 	
-	public CtDiff analyze(File f1, File f2) throws Exception {
+	public CtDiff compare(File f1, File f2) throws Exception {
 	//String content1 = readFile(f1);
 	//	String content2 = readFile(f2);
 	//	CtDiff result = this.analyze(content1, content2);
@@ -106,31 +106,24 @@ public class DiffSpoon {
 
 		
 	
-	public Tree getTree(CtElement left){
+	public Tree getTree(CtElement element){
 		SpoonGumTreeBuilder scanner = new SpoonGumTreeBuilder();
 
-		scanner.scan(left);
-		Tree rootSpoonLeft = scanner.getRoot();
-
+		scanner.scan(element);
+		Tree tree = scanner.getRoot();
+		tree.refresh();
+		TreeUtils.postOrderNumbering(tree);
+		
 		scanner.root = null;
 		scanner.nodes.clear();
-		return rootSpoonLeft;
+		return tree;
 	}
-	//refactor
+
 	public CtDiff analyze(CtElement left, CtElement right) {
 
-		SpoonGumTreeBuilder scanner = new SpoonGumTreeBuilder();
+		Tree rootSpoonLeft = getTree(left);
 
-		scanner.scan(left);
-		Tree rootSpoonLeft = scanner.getRoot();
-
-		scanner.root = null;
-		scanner.nodes.clear();
-		//reinit the scanner.
-		scanner.init();
-
-		scanner.scan(right);
-		Tree rootSpoonRight = scanner.getRoot();
+		Tree rootSpoonRight = getTree(right);
 
 		return compare(rootSpoonLeft, rootSpoonRight);
 	}
@@ -139,19 +132,34 @@ public class DiffSpoon {
 	
 		List<Action> actions = null;
 
-		GumTreeMatcher.prepare(rootSpoonLeft);
-		GumTreeMatcher.prepare(rootSpoonRight);
+	//	GumTreeMatcher.prepare(rootSpoonLeft);
+	//	GumTreeMatcher.prepare(rootSpoonRight);
+		
+		rootSpoonLeft.refresh();
+		TreeUtils.postOrderNumbering(rootSpoonLeft);
+		
+		rootSpoonRight.refresh();
+		TreeUtils.postOrderNumbering(rootSpoonRight);
+		
+		//---
 		logger.debug("-----Trees:----");
 		logger.debug("left tree:  " + rootSpoonLeft.toTreeString());
 		logger.debug("right tree: " + rootSpoonRight.toTreeString());
 
 		// --
-		Matcher matcher = new GumTreeMatcher(rootSpoonLeft, rootSpoonRight);
-		mappings = matcher.getMappings();
-		mappingsComp = new Mappings(mappings);
+		//Matcher matcher = new GumTreeMatcher(rootSpoonLeft, rootSpoonRight);
+		MatcherFactory f = new CompositeMatchers.GumTreeMatcherFactory();
+		Matcher matcher = f.newMatcher(rootSpoonLeft, rootSpoonRight);
+		
+		//new 
+		matcher.match();
+		//
+		mappings = matcher.getMappingSet();
+		mappingsComp = new MappingStore(mappings);
 
-		GenerateActions gt = new GenerateActions(rootSpoonLeft, rootSpoonRight,
-				matcher.getMappings());
+		//GenerateActions gt = new GenerateActions(rootSpoonLeft, rootSpoonRight,	matcher.getMappings());
+		ActionGenerator gt = new ActionGenerator(rootSpoonLeft, rootSpoonRight,	matcher.getMappings());
+		gt.generate();
 		actions = gt.getActions();
 
 		ActionClassifier gtfac = new ActionClassifier();
@@ -208,11 +216,12 @@ public class DiffSpoon {
 			this.getCtClass(factory, contents);
 		} catch (Exception e) {
 			// must fails
+		//	System.out.println(" e:  "+e);
 		}
 		List<CtSimpleType<?>> types = factory.Type().getAll();
 		if(types.isEmpty())
 		{
-			//System.err.println("");
+			System.err.println("");
 			throw new Exception("No Type was created by spoon");
 		}
 		CtSimpleType spt = types.get(0);
@@ -250,7 +259,7 @@ public class DiffSpoon {
 	
 
 		DiffSpoon ds = new DiffSpoon(true);
-		CtDiff result = ds.analyze(f1, f2);
+		CtDiff result = ds.compare(f1, f2);
 
 	}
 
