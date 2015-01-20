@@ -111,8 +111,7 @@ public class DiffSpoon {
 
 		scanner.scan(element);
 		Tree tree = scanner.getRoot();
-		tree.refresh();
-		TreeUtils.postOrderNumbering(tree);
+		prepare(tree);
 		
 		scanner.root = null;
 		scanner.nodes.clear();
@@ -135,17 +134,16 @@ public class DiffSpoon {
 	//	GumTreeMatcher.prepare(rootSpoonLeft);
 	//	GumTreeMatcher.prepare(rootSpoonRight);
 		
-		rootSpoonLeft.refresh();
-		TreeUtils.postOrderNumbering(rootSpoonLeft);
+
 		
-		rootSpoonRight.refresh();
-		TreeUtils.postOrderNumbering(rootSpoonRight);
+		prepare(rootSpoonLeft);
+		prepare(rootSpoonRight);
 		
 		//---
-		logger.debug("-----Trees:----");
+		/*logger.debug("-----Trees:----");
 		logger.debug("left tree:  " + rootSpoonLeft.toTreeString());
 		logger.debug("right tree: " + rootSpoonRight.toTreeString());
-
+*/
 		// --
 		//Matcher matcher = new GumTreeMatcher(rootSpoonLeft, rootSpoonRight);
 		MatcherFactory f = new CompositeMatchers.GumTreeMatcherFactory();
@@ -164,7 +162,7 @@ public class DiffSpoon {
 
 		ActionClassifier gtfac = new ActionClassifier();
 		List<Action> rootActions = gtfac.getRootActions(mappings, actions);
-		logger.debug("-----RESULT:----");
+		/*logger.debug("-----RESULT:----");
 		logger.debug("Root Actions: (" + rootActions.size()+ ")");
 		for (Action action : rootActions) {
 			logger.debug("--> " + action);
@@ -174,7 +172,7 @@ public class DiffSpoon {
 		for (Action action : actions) {
 			if (action.getNode().getParent() != null)
 				logger.debug("--> " + action);
-		}
+		}*/
 
 		return new CtDiff(actions, rootActions);
 	}
@@ -245,7 +243,14 @@ public class DiffSpoon {
 		return b.toString();
 
 	}
-
+	
+	public void prepare(Tree node){
+		node.refresh();
+		TreeUtils.postOrderNumbering(node);
+		TreeUtils.computeHeight(node);
+		TreeUtils.computeDigest(node);
+	}
+	
 	public static void main(String[] args) throws Exception {
 
 		if (args.length != 2) {
