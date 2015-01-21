@@ -1,7 +1,6 @@
 package fr.inria.sacha.spoon.diffSpoon;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
@@ -50,12 +49,15 @@ public class DiffSpoon {
 	
 	public DiffSpoon(Factory factory) {
 		this.factory = factory;
+		logger.setLevel(Level.DEBUG);
+		factory.getEnvironment().setNoClasspath(true);
 	}
 
 	public DiffSpoon() {
 		factory = new FactoryImpl(new DefaultCoreFactory(),
 				new StandardEnvironment());
 		logger.setLevel(Level.DEBUG);
+		factory.getEnvironment().setNoClasspath(true);
 	}
 
 	public DiffSpoon(boolean noClasspath) {
