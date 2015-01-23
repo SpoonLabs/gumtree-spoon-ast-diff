@@ -1,5 +1,6 @@
 DiffSpoon: gumtree-spoon-ast-diff
  
+DiffSpoom requires tree algorithm tool GumTree:  https://github.com/GumTreeDiff/gumtree   
 
 **to compile:
 mvn install
@@ -10,3 +11,4 @@ fr.inria.sacha.spoon.diffSpoon.DiffSpoon <file_1> <file_2>
 
 **Test Case 
 fr.inria.sacha.spoon.diffSpoon.DiffSpoonTest
+
