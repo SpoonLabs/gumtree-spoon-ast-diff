@@ -56,10 +56,19 @@ public class SpoonGumTreeBuilder extends CtScanner {
 
 	public static List<String> typesId = new ArrayList<String>();
 
+	boolean decorateTree = false;
+	
 	public SpoonGumTreeBuilder() {
 		super();
+		decorateTree = false;
 		init();
 	}
+	
+	public SpoonGumTreeBuilder(boolean decorateTree) {
+		this();
+		this.decorateTree = decorateTree;
+	}
+	
 
 	public void init() {
 		nodes = new Stack<Tree>();
@@ -122,8 +131,12 @@ public class SpoonGumTreeBuilder extends CtScanner {
 			}
 		}
 
-		createNode(label, type, id);
-
+		if(this.decorateTree){
+			createNode(obj,label, type, id);
+		}		
+		else{
+			createNode(label, type, id);
+		}
 	}
 	/**
 	 * Removes the "Ct" at the beginning and the "Impl" at the end
@@ -151,9 +164,10 @@ public class SpoonGumTreeBuilder extends CtScanner {
 			// System.out.println();
 			// return;
 		}
-		createNode((obj).getSimpleName(), obj.getClass().getSimpleName(),
+	
+			createNode((obj).getSimpleName(), obj.getClass().getSimpleName(),
 				revolveTypeId(obj));
-
+		
 	}
 
 	private void createNode(String label, String typeLabel, int typeId) {
@@ -166,6 +180,18 @@ public class SpoonGumTreeBuilder extends CtScanner {
 		nodes.push(node);
 	}
 
+	private void createNode(CtElement obj,String label, String typeLabel, int typeId) {
+		TreeLabeled node = new TreeLabeled(typeId);
+
+		node.setLabel(label);
+		node.setTypeLabel(typeLabel);
+		node.setNodeComplement(obj);
+		// --
+		nodes.peek().addChild(node);
+		nodes.push(node);
+	}
+	
+	
 	@Override
 	public void enter(CtElement element) {
 		createNode(element);

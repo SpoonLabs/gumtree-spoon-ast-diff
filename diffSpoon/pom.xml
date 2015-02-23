@@ -103,7 +103,6 @@
 		<dependency>
 			<groupId>fr.inria.gforge.spoon</groupId>
 			<artifactId>spoon-core</artifactId>
-			<!-- <version>3.0</version> -->
 			<version>4.0-SNAPSHOT</version>
 		</dependency>
 

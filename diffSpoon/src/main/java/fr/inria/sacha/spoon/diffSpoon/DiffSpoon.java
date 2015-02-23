@@ -22,6 +22,7 @@ import spoon.reflect.factory.Factory;
 import spoon.reflect.factory.FactoryImpl;
 import spoon.support.DefaultCoreFactory;
 import spoon.support.StandardEnvironment;
+import spoon.support.compiler.VirtualFile;
 import spoon.support.compiler.jdt.JDTBasedSpoonCompiler;
 import spoon.support.compiler.jdt.JDTSnippetCompiler;
 import fr.labri.gumtree.actions.ActionGenerator;
@@ -47,6 +48,25 @@ public class DiffSpoon {
 	protected Set<Mapping> mappings = null;
 	protected MappingStore mappingsComp = null;
 	
+	protected boolean decorateTree = false;
+	
+	public DiffSpoon(boolean noClasspath) {
+		this();
+		factory.getEnvironment().setNoClasspath(noClasspath);
+	}
+	
+	public DiffSpoon(boolean noClasspath,boolean decorate ) {
+		this();
+		factory.getEnvironment().setNoClasspath(noClasspath);
+		this.decorateTree = decorate;
+	}
+	
+	
+	public DiffSpoon(Factory factory, boolean decorate) {
+		this(factory);
+		this.decorateTree = decorate;
+	}
+	
 	public DiffSpoon(Factory factory) {
 		this.factory = factory;
 		logger.setLevel(Level.DEBUG);
@@ -60,22 +80,53 @@ public class DiffSpoon {
 		factory.getEnvironment().setNoClasspath(true);
 	}
 
-	public DiffSpoon(boolean noClasspath) {
-		this();
-		factory.getEnvironment().setNoClasspath(noClasspath);
-	}
+	
 
 	@Deprecated
 	public CtDiff compare(String left, String right) {
 
-		CtClass<?> clazz1 = factory.Code().createCodeSnippetStatement(left)
-				.compile();
+		CtSimpleType<?> clazz1;
+		try {
+			clazz1 = getCtType(left);
+	
 
-		CtClass<?> clazz2 = factory.Code().createCodeSnippetStatement(right)
-				.compile();
+		CtSimpleType<?> clazz2 = getCtType(right);
+		//factory.Code().createCodeSnippetStatement(right)
+		//		.compile();
 
 			
 		return analyze(clazz1, clazz2);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+			
+	}
+	
+	public  CtSimpleType<?> getCtType(String content) throws Exception{
+		/*factory.Package().getAllRoots().clear();
+		factory.Type().getAll().clear();
+		SpoonCompiler builder = new JDTSnippetCompiler(factory, content);
+
+		builder.addInputSource(new VirtualFile(content,""));
+		
+			try {
+				builder.build();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		
+			CtSimpleType<?> ret =  factory.Type().getAll().get(0);
+			factory.Package().getAllRoots().clear();
+			return ret;*/
+		
+		SpoonCompiler compiler = new JDTBasedSpoonCompiler(factory);
+		compiler.addInputSource(new VirtualFile(content,""));
+		compiler.build();
+		CtClass<?> clazz1 = (CtClass<?>) factory.Type().getAll().get(0);
+		factory.Package().getAllRoots().clear();
+		return clazz1;
 	}
 
 	public CtDiff compare(URL f1, URL f2) throws Exception {
