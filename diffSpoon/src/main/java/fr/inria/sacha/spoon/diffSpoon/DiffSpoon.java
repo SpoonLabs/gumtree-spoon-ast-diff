@@ -160,7 +160,7 @@ public class DiffSpoon {
 		
 	
 	public Tree getTree(CtElement element){
-		SpoonGumTreeBuilder scanner = new SpoonGumTreeBuilder();
+		SpoonGumTreeBuilder scanner = new SpoonGumTreeBuilder(this.decorateTree );
 
 		scanner.scan(element);
 		Tree tree = scanner.getRoot();
