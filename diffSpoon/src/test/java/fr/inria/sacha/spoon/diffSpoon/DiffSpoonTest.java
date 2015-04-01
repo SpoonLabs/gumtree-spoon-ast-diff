@@ -7,11 +7,16 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import fr.labri.gumtree.actions.model.Action;
+import spoon.Launcher;
+import spoon.compiler.SpoonCompiler;
 import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtSimpleType;
+import spoon.reflect.factory.Factory;
+import spoon.support.compiler.jdt.JDTSnippetCompiler;
 
 /**
  * Test Spoon Diff 
@@ -20,6 +25,18 @@ import spoon.reflect.declaration.CtSimpleType;
  */
 public class DiffSpoonTest {
 
+	
+	@Test
+	public void testgetCtType() throws Exception {
+		String c1 = "package spoon1.test; import org.junit.Test; " 
+	+ "" + "class X {" + "public void foo0() {" + " int x = 0;"
+				+ "}" + "};";
+		DiffSpoon diff = new DiffSpoon(true);
+		CtSimpleType<?> t1 = diff.getCtType(c1);
+		assertTrue(t1 != null);
+	
+	}
+	
 	@Test
 	public void testAnalyzeStringString() {
 		String c1 = "" + "class X {" + "public void foo0() {" + " int x = 0;"
@@ -134,4 +151,27 @@ public class DiffSpoonTest {
 		}
 		return false;
 	}
+	
+	@Test
+	public void testJDTBasedSpoonCompiler(){
+		
+	/*	String c1 = "package spoon1.test; import org.junit.Test; " + "class X {" + "public void foo0() {" + " int x = 0;"
+				+ "}" + "};";*/
+		
+		
+		String content1 = "package spoon1.test; import org.junit.Test; " 
+				+ "" + "class X {" + "public void foo0() {" + " int x = 0;"
+							+ "}" + "};";
+		
+		Factory factory = new Launcher().createFactory();
+		
+		SpoonCompiler compiler = new JDTSnippetCompiler(factory, content1);//new JDTBasedSpoonCompiler(factory);
+	//	compiler.addInputSource(new VirtualFile(c1,""));
+		compiler.build();
+		CtClass<?> clazz1 = (CtClass<?>) factory.Type().getAll().get(0);
+	//	factory.Package().getAllRoots().clear();
+		
+		Assert.assertNotNull(clazz1);
+	}
+	
 }

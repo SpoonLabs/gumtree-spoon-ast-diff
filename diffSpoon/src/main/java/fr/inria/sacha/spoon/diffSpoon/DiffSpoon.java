@@ -104,39 +104,51 @@ public class DiffSpoon {
 			
 	}
 	
-	public  CtSimpleType<?> getCtType(String content) throws Exception{
-		/*factory.Package().getAllRoots().clear();
-		factory.Type().getAll().clear();
-		SpoonCompiler builder = new JDTSnippetCompiler(factory, content);
-
-		builder.addInputSource(new VirtualFile(content,""));
-		
-			try {
-				builder.build();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		
-			CtSimpleType<?> ret =  factory.Type().getAll().get(0);
-			factory.Package().getAllRoots().clear();
-			return ret;*/
-		
+	public CtClass getCtClass(File f) throws Exception{
+		SpoonResource sr1 = SpoonResourceHelper .createResource(f) ;
 		SpoonCompiler compiler = new JDTBasedSpoonCompiler(factory);
-		compiler.addInputSource(new VirtualFile(content,""));
+		compiler.addInputSource(sr1);
 		compiler.build();
 		CtClass<?> clazz1 = (CtClass<?>) factory.Type().getAll().get(0);
 		factory.Package().getAllRoots().clear();
 		return clazz1;
 	}
 
+	
+	public  CtSimpleType<?> getCtType(String content) throws Exception{
+				
+		SpoonCompiler compiler = new JDTSnippetCompiler(factory, content);//new JDTBasedSpoonCompiler(factory);
+		//compiler.addInputSource(new VirtualFile(content,""));
+		compiler.build();
+		CtClass<?> clazz1 = (CtClass<?>) factory.Type().getAll().get(0);
+		factory.Package().getAllRoots().clear();
+		return clazz1;
+	}
+	
+	public  CtSimpleType<?> getCtType2(String content) throws Exception{
+		
+/*	factory.Package().getAllRoots().clear();
+	factory.Type().getAll().clear();*/
+	SpoonCompiler builder = new JDTSnippetCompiler(factory, content);
+
+	builder.addInputSource(new VirtualFile(content,""));
+	
+		try {
+			builder.build();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	
+		CtSimpleType<?> ret =  factory.Type().getAll().get(0);
+		factory.Package().getAllRoots().clear();
+		return ret;
+	}
+	
 	public CtDiff compare(URL f1, URL f2) throws Exception {
 		return this.compare(new File(f1.getFile()), new File(f1.getFile()));
 	}
 	
 	public CtDiff compare(File f1, File f2) throws Exception {
-	//String content1 = readFile(f1);
-	//	String content2 = readFile(f2);
-	//	CtDiff result = this.analyze(content1, content2);
 		 
 		CtClass<?> clazz1 = getCtClass(f1);
 			
@@ -147,15 +159,6 @@ public class DiffSpoon {
 		return result;
 	}
 
-	public CtClass getCtClass(File f) throws Exception{
-		SpoonResource sr1 = SpoonResourceHelper .createResource(f) ;
-		SpoonCompiler compiler = new JDTBasedSpoonCompiler(factory);
-		compiler.addInputSource(sr1);
-		compiler.build();
-		CtClass<?> clazz1 = (CtClass<?>) factory.Type().getAll().get(0);
-		factory.Package().getAllRoots().clear();
-		return clazz1;
-	}
 
 		
 	
@@ -208,25 +211,13 @@ public class DiffSpoon {
 		mappings = matcher.getMappingSet();
 		mappingsComp = new MappingStore(mappings);
 
-		//GenerateActions gt = new GenerateActions(rootSpoonLeft, rootSpoonRight,	matcher.getMappings());
 		ActionGenerator gt = new ActionGenerator(rootSpoonLeft, rootSpoonRight,	matcher.getMappings());
 		gt.generate();
 		actions = gt.getActions();
 
 		ActionClassifier gtfac = new ActionClassifier();
 		List<Action> rootActions = gtfac.getRootActions(mappings, actions);
-		/*logger.debug("-----RESULT:----");
-		logger.debug("Root Actions: (" + rootActions.size()+ ")");
-		for (Action action : rootActions) {
-			logger.debug("--> " + action);
-		}
-
-		logger.debug("All Actions: (" + actions.size()+ ")");
-		for (Action action : actions) {
-			if (action.getNode().getParent() != null)
-				logger.debug("--> " + action);
-		}*/
-
+	
 		return new CtDiff(actions, rootActions);
 	}
 
@@ -267,12 +258,12 @@ public class DiffSpoon {
 			this.getCtClass(factory, contents);
 		} catch (Exception e) {
 			// must fails
-		//	System.out.println(" e:  "+e);
+			//System.out.println(" e:  "+e.getCause());
 		}
 		List<CtSimpleType<?>> types = factory.Type().getAll();
 		if(types.isEmpty())
 		{
-			System.err.println("");
+			//System.err.println("No Type was created by spoon");
 			throw new Exception("No Type was created by spoon");
 		}
 		CtSimpleType spt = types.get(0);
