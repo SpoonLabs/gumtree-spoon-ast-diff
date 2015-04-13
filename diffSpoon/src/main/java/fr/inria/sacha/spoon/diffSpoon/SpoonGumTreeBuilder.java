@@ -117,7 +117,9 @@ public class SpoonGumTreeBuilder extends CtScanner {
 		}
 
 		if (obj.getParent() instanceof CtInvocation 
-				&& !(obj instanceof CtVariableAccess)) {
+				&& !(obj instanceof CtVariableAccess) 
+				&& !(obj instanceof CtArrayAccess)
+				) {
 			try {
 				CtInvocation inv = (CtInvocation) obj.getParent();
 				boolean isInArgs = inv.getArguments().contains(obj);
