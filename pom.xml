@@ -2,13 +2,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>fr.inria.sacha.spoon</groupId>
-	<artifactId>diffSpoon</artifactId>
-	<version>0.0.2-SNAPSHOT</version>
+	<groupId>fr.inria.spirals</groupId>
+	<artifactId>gumtree-spoon-ast-diff</artifactId>
+	<version>0.0.3-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>diffSpoon</name>
-	<url>http://maven.apache.org</url>
+	<name>gumtree-spoon-ast-diff</name>
+	<url>https://github.com/SpoonLabs/gumtree-spoon-ast-diff</url>
 
 	<developers>
 		<developer>
