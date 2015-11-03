@@ -1,22 +1,24 @@
 package fr.inria.sacha.spoon.diffSpoon;
 
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import fr.labri.gumtree.actions.model.Action;
 import spoon.Launcher;
 import spoon.compiler.SpoonCompiler;
 import spoon.reflect.declaration.CtClass;
-import spoon.reflect.declaration.CtSimpleType;
+import spoon.reflect.declaration.CtType;
 import spoon.reflect.factory.Factory;
 import spoon.support.compiler.jdt.JDTSnippetCompiler;
+import fr.labri.gumtree.actions.model.Action;
 
 /**
  * Test Spoon Diff 
@@ -32,7 +34,7 @@ public class DiffSpoonTest {
 	+ "" + "class X {" + "public void foo0() {" + " int x = 0;"
 				+ "}" + "}";
 		DiffSpoon diff = new DiffSpoon(true);
-		CtSimpleType<?> t1 = diff.getCtType(c1);
+		CtType<?> t1 = diff.getCtType(c1);
 		assertTrue(t1 != null);
 	
 	}
@@ -62,9 +64,11 @@ public class DiffSpoonTest {
 		CtDiff result = diff.compare(fl,fr);
 		List<Action> actions = result.getRootActions();
 		assertEquals(actions.size(), 2);
+
+		System.out.println(actions);
 		
 		assertTrue(containsAction(actions, "INS", "Invocation"));
-		assertTrue(containsAction(actions, "UPD", "FieldAccess"));
+		assertTrue(containsAction(actions, "UPD", "FieldRead"));
 		
 		assertFalse(containsAction(actions, "DEL", "Invocation"));
 		assertFalse(containsAction(actions, "UPD", "Invocation"));
@@ -127,7 +131,7 @@ public class DiffSpoonTest {
 		File fl = new File("src/test/resources/examples/test4/CommandLine1.java");
 		File fr = new File("src/test/resources/examples/test4/CommandLine2.java");
 		DiffSpoon diff = new DiffSpoon(true);
-		CtSimpleType ctl = diff.getSpoonType(diff.readFile(fl));
+		CtType ctl = diff.getSpoonType(diff.readFile(fl));
 		assertNotNull(ctl);
 	}
 	
