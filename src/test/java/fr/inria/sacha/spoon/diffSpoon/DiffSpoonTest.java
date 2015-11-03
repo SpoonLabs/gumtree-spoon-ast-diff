@@ -28,9 +28,9 @@ public class DiffSpoonTest {
 	
 	@Test
 	public void testgetCtType() throws Exception {
-		String c1 = "package spoon1.test; import org.junit.Test; " 
+		String c1 = "package spoon1.test; " 
 	+ "" + "class X {" + "public void foo0() {" + " int x = 0;"
-				+ "}" + "};";
+				+ "}" + "}";
 		DiffSpoon diff = new DiffSpoon(true);
 		CtSimpleType<?> t1 = diff.getCtType(c1);
 		assertTrue(t1 != null);
@@ -56,19 +56,19 @@ public class DiffSpoonTest {
 	public void exampleInsertAndUpdate() throws Exception{
 		
 		DiffSpoon diff = new DiffSpoon(true);
-		File fl = new File(getClass().
-				getResource("/examples/test1/TypeHandler1.java").getFile());
-		File fr = new File(getClass().
-				getResource("/examples/test1/TypeHandler2.java").getFile());
+		File fl = new File("src/test/resources/examples/test1/TypeHandler1.java");
+		File fr = new File("src/test/resources/examples/test1/TypeHandler2.java");
 	
 		CtDiff result = diff.compare(fl,fr);
 		List<Action> actions = result.getRootActions();
 		assertEquals(actions.size(), 2);
+		
 		assertTrue(containsAction(actions, "INS", "Invocation"));
+		assertTrue(containsAction(actions, "UPD", "FieldAccess"));
+		
 		assertFalse(containsAction(actions, "DEL", "Invocation"));
 		assertFalse(containsAction(actions, "UPD", "Invocation"));
 		
-		assertTrue(containsAction(actions, "UPD", "FieldAccess"));
 	}
 	
 	
@@ -76,10 +76,8 @@ public class DiffSpoonTest {
 	public void exampleSingleUpdate() throws Exception{
 		
 		DiffSpoon diff = new DiffSpoon(true);
-		File fl = new File(getClass().
-				getResource("/examples/test2/CommandLine1.java").getFile());
-		File fr = new File(getClass().
-				getResource("/examples/test2/CommandLine2.java").getFile());
+		File fl = new File("src/test/resources/examples/test2/CommandLine1.java");
+		File fr = new File("src/test/resources/examples/test2/CommandLine2.java");
 	
 		CtDiff result = diff.compare(fl,fr);
 		List<Action> actions = result.getRootActions();
@@ -92,10 +90,8 @@ public class DiffSpoonTest {
 	public void exampleRemoveMethod() throws Exception{
 		
 		DiffSpoon diff = new DiffSpoon(true);
-		File fl = new File(getClass().
-				getResource("/examples/test3/CommandLine1.java").getFile());
-		File fr = new File(getClass().
-				getResource("/examples/test3/CommandLine2.java").getFile());
+		File fl = new File("src/test/resources/examples/test3/CommandLine1.java");
+		File fr = new File("src/test/resources/examples/test3/CommandLine2.java");
 	
 		CtDiff result = diff.compare(fl,fr);
 		List<Action> actions = result.getRootActions();
@@ -108,10 +104,8 @@ public class DiffSpoonTest {
 	public void exampleInsert() throws Exception{
 		
 		DiffSpoon diff = new DiffSpoon(true);
-		File fl = new File(getClass().
-				getResource("/examples/test4/CommandLine1.java").getFile());
-		File fr = new File(getClass().
-				getResource("/examples/test4/CommandLine2.java").getFile());
+		File fl = new File("src/test/resources/examples/test4/CommandLine1.java");
+		File fr = new File("src/test/resources/examples/test4/CommandLine2.java");
 	
 		CtDiff result = diff.compare(fl,fr);
 		List<Action> actions = result.getRootActions();
@@ -123,19 +117,15 @@ public class DiffSpoonTest {
 	public void testMain() throws Exception{
 		
 		DiffSpoon diff = new DiffSpoon(true);
-		File fl = new File(getClass().
-				getResource("/examples/test4/CommandLine1.java").getFile());
-		File fr = new File(getClass().
-				getResource("/examples/test4/CommandLine2.java").getFile());
+		File fl = new File("src/test/resources/examples/test4/CommandLine1.java");
+		File fr = new File("src/test/resources/examples/test4/CommandLine2.java");
 	
 		DiffSpoon.main(new String []{fl.getAbsolutePath(), fr.getAbsolutePath()});
 	}
 	@Test
 	public void testContent() throws Exception{
-		File fl = new File(getClass().
-				getResource("/examples/test4/CommandLine1.java").getFile());
-		File fr = new File(getClass().
-				getResource("/examples/test4/CommandLine2.java").getFile());
+		File fl = new File("src/test/resources/examples/test4/CommandLine1.java");
+		File fr = new File("src/test/resources/examples/test4/CommandLine2.java");
 		DiffSpoon diff = new DiffSpoon(true);
 		CtSimpleType ctl = diff.getSpoonType(diff.readFile(fl));
 		assertNotNull(ctl);
@@ -159,9 +149,9 @@ public class DiffSpoonTest {
 				+ "}" + "};";*/
 		
 		
-		String content1 = "package spoon1.test; import org.junit.Test; " 
+		String content1 = "package spoon1.test;  " 
 				+ "" + "class X {" + "public void foo0() {" + " int x = 0;"
-							+ "}" + "};";
+							+ "}" + "}";
 		
 		Factory factory = new Launcher().createFactory();
 		
