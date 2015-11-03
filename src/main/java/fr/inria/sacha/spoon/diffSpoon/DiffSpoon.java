@@ -307,6 +307,7 @@ public class DiffSpoon {
 
 		DiffSpoon ds = new DiffSpoon(true);
 		CtDiff result = ds.compare(f1, f2);
+		System.out.println(result);
 
 	}
 

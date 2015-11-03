@@ -42,4 +42,8 @@ public class CtDiff {
 		this.rootActions = rootActions;
 	}
 	
+	@Override
+	public String toString() {
+		return rootActions.toString();
+	}
 }
