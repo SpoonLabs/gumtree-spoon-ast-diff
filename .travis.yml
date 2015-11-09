@@ -1,6 +1,6 @@
 language: java
 
-script:
+before_install:
     mvn initialize
 
 cache:
