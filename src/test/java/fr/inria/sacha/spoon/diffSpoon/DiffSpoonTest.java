@@ -66,7 +66,6 @@ public class DiffSpoonTest {
 		assertEquals(actions.size(), 2);
 
 		System.out.println(actions);
-		
 		assertTrue(containsAction(actions, "INS", "Invocation"));
 		assertTrue(containsAction(actions, "UPD", "FieldRead"));
 		
@@ -140,7 +139,9 @@ public class DiffSpoonTest {
 		for (Action action : actions) {
 			String toSt = action.toString();
 			if(toSt.startsWith(kindAction)){
-				return action.getNode().getTypeLabel().endsWith(kindNode);
+				if (action.getNode().getTypeLabel().endsWith(kindNode)) {
+					return true;
+				}
 			}
 		}
 		return false;
