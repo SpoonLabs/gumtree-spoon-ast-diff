@@ -3,9 +3,11 @@ gumtree-spoon-ast-diff
 
 Computes the AST difference between two Spoon abstract syntax trees using the Gumtree algorithm [1]
 
-
 Launch tests
+    mvn test # copies a library into .m2
     mvn test
+
+[![Build Status](https://travis-ci.org//SpoonLabs/gumtree-spoon-ast-diff.svg?branch=master)](https://travis-ci.org//SpoonLabs/gumtree-spoon-ast-diff)
 
 **Main class
 fr.inria.sacha.spoon.diffSpoon.DiffSpoon <file_1> <file_2>

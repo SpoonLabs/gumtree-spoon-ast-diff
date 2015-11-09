@@ -55,15 +55,6 @@
 
 
 		<dependency>
-			<!-- https://github.com/GumTreeDiff/gumtree -->
-			<groupId>fr.labri.gumtree</groupId>
-			<artifactId>core</artifactId>
-			<version>1.0-SNAPSHOT</version>
-			<scope>compile</scope>
-
-		</dependency>
-
-		<dependency>
 			<groupId>fr.inria.gforge.spoon</groupId>
 			<artifactId>spoon-core</artifactId>
 			<version>4.3.0</version>
@@ -87,6 +78,13 @@
 			<version>3.0.3</version>
 		</dependency>
 
+		<dependency>
+			<!-- installed by mvn initialize -->
+			<groupId>fr.labri.gumtree</groupId>
+			<artifactId>core</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+
                 </dependencies>
 	<build>
 		<plugins>
@@ -101,7 +99,30 @@
 					<testTarget>${java.test.version}</testTarget>
 				</configuration>
 			</plugin>
-		</plugins>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-install-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>gt</id>
+						<phase>initialize</phase>
+						<goals>
+							<goal>install-file</goal>
+						</goals>
+						<configuration>
+							<groupId>fr.labri.gumtree</groupId>
+							<artifactId>core</artifactId>
+							<version>1.0-SNAPSHOT</version>
+							<packaging>jar</packaging>
+							<file>${project.basedir}/lib/gt.jar</file>
+							<createChecksum>true</createChecksum>
+							<generatePom>true</generatePom>
+						</configuration>
+					</execution>
+				</executions>
+                        </plugin>
+                </plugins>
 	</build>
 	
 	<repositories>
