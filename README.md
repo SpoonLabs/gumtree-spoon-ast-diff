@@ -8,7 +8,7 @@ Launch tests:
     mvn initialize # copies a library into .m2
     mvn test
 
-[![Build Status](https://travis-ci.org//SpoonLabs/gumtree-spoon-ast-diff.svg?branch=master)](https://travis-ci.org//SpoonLabs/gumtree-spoon-ast-diff)
+[![Build Status](https://travis-ci.org/SpoonLabs/gumtree-spoon-ast-diff.svg?branch=master)](https://travis-ci.org/SpoonLabs/gumtree-spoon-ast-diff)
 
 **Main class
 fr.inria.sacha.spoon.diffSpoon.DiffSpoon <file_1> <file_2>
