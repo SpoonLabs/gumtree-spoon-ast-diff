@@ -169,4 +169,17 @@ public class DiffSpoonTest {
 		Assert.assertNotNull(clazz1);
 	}
 	
+	@Test
+	public void test5() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		File fl = new File("src/test/resources/examples/test5/left_LmiInitialContext_1.5.java");
+		File fr = new File("src/test/resources/examples/test5/right_LmiInitialContext_1.6.java");
+		CtDiff result = diff.compare(fl,fr);
+		List<Action> actions = result.getRootActions();
+		System.out.println(actions);
+		assertEquals(actions.size(), 1);
+		assertTrue(containsAction(actions, "UPD", "BinaryOperator"));
+	}
+	
+
 }
