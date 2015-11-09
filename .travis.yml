@@ -1,1 +1,8 @@
 language: java
+
+script:
+    mvn initialize
+
+cache:
+    directories:
+        $HOME/.m2
