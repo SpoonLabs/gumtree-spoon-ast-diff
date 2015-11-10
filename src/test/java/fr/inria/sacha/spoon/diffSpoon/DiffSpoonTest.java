@@ -181,5 +181,16 @@ public class DiffSpoonTest {
 		assertTrue(containsAction(actions, "UPD", "BinaryOperator"));
 	}
 	
+	@Test
+	public void test6() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		File fl = new File("src/test/resources/examples/test6/A.java");
+		File fr = new File("src/test/resources/examples/test6/B.java");
+		CtDiff result = diff.compare(fl,fr);
+		List<Action> actions = result.getRootActions();
+		System.out.println(actions);
+		assertEquals(actions.size(), 1);
+		assertTrue(containsAction(actions, "DEL", "Parameter"));
+	}
 
 }
