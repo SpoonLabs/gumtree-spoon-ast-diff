@@ -193,4 +193,17 @@ public class DiffSpoonTest {
 		assertTrue(containsAction(actions, "DEL", "Parameter"));
 	}
 
+	@Test
+	public void test7() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		File fl = new File("src/test/resources/examples/test7/left_QuickNotepad_1.13.java");
+		File fr = new File("src/test/resources/examples/test7/right_QuickNotepad_1.14.java");
+		CtDiff result = diff.compare(fl,fr);
+		List<Action> actions = result.getRootActions();
+		System.out.println(actions);
+		assertEquals(actions.size(), 2);
+		assertTrue(containsAction(actions, "DEL", "Invocation"));
+		assertTrue(containsAction(actions, "DEL", "Class"));
+	}
+
 }
