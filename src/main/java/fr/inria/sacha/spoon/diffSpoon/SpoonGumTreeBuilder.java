@@ -99,13 +99,10 @@ public class SpoonGumTreeBuilder extends CtScanner {
 			label = obj.toString();
 		} else if (obj instanceof CtVariableAccess) {
 			CtVariableAccess va = (CtVariableAccess) obj;
+			// if is a workaround for some bug in noclasspath
 			if (va.getVariable()!=null) {
 				label = va.getVariable().getSimpleName();
-			} else {
-				// some bug in noclasspath
-				throw new RuntimeException(va.getParent().toString());
-				//label = va.toString();
-			}
+			} 
 		}
 		else if (obj instanceof CtBinaryOperator) {
 			CtBinaryOperator bin = (CtBinaryOperator) obj;
