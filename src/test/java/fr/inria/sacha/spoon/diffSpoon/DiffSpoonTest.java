@@ -15,10 +15,10 @@ import org.junit.Test;
 import spoon.Launcher;
 import spoon.compiler.SpoonCompiler;
 import spoon.reflect.code.CtLocalVariable;
+import spoon.reflect.code.CtReturn;
 import spoon.reflect.code.CtThrow;
 import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtElement;
-import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.declaration.CtType;
 import spoon.reflect.factory.Factory;
 import spoon.support.compiler.jdt.JDTSnippetCompiler;
@@ -330,6 +330,67 @@ public class DiffSpoonTest {
 
 	}
 
+	@Test
+	public void test_t_214614() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_214614/left_JXButtonGroupPanel_1.2.java src/test/resources/examples/t_214614/right_JXButtonGroupPanel_1.3.java
+		File fl = new File("src/test/resources/examples/t_214614/left_JXButtonGroupPanel_1.2.java");
+		File fr = new File("src/test/resources/examples/t_214614/right_JXButtonGroupPanel_1.3.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		diff.printActions(actions);
+		assertEquals(actions.size(), 1);
+		assertTrue(diff.containsAction(actions, "DEL", "Invocation", "setFocusTraversalPolicyProvider"));
+	}
 
+	@Test
+	public void test_t_220985() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_220985/left_Server_1.20.java src/test/resources/examples/t_220985/right_Server_1.21.java
+		File fl = new File("src/test/resources/examples/t_220985/left_Server_1.20.java");
+		File fr = new File("src/test/resources/examples/t_220985/right_Server_1.21.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		diff.printActions(actions);
+		assertTrue(diff.containsAction(actions, "Insert", "Conditional"));
+		
+		// the delete literal "." found could also be a move to the new conditional, so we don't specify this		
+	}
+
+	@Test
+	public void test_t_221070() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_221070/left_Server_1.68.java src/test/resources/examples/t_221070/right_Server_1.69.java
+		File fl = new File("src/test/resources/examples/t_221070/left_Server_1.68.java");
+		File fr = new File("src/test/resources/examples/t_221070/right_Server_1.69.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		diff.printActions(actions);
+		assertEquals(actions.size(), 1);
+		assertTrue(diff.containsAction(actions, "DEL", "Break"));
+	}
+
+	@Test
+	public void test_t_221295() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_221295/left_Board_1.5.java src/test/resources/examples/t_221295/right_Board_1.6.java
+		File fl = new File("src/test/resources/examples/t_221295/left_Board_1.5.java");
+		File fr = new File("src/test/resources/examples/t_221295/right_Board_1.6.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		diff.printActions(actions);
+		assertEquals(actions.size(), 1);
+		assertTrue(diff.containsAction(actions, "Update", "BinaryOperator", "GT"));
+		
+		// the change is in a throw
+		CtElement elem = (CtElement) actions.get(0).getNode().getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT);
+		assertNotNull(elem);
+		assertNotNull(elem.getParent(CtReturn.class));
+
+	}
 
 }
