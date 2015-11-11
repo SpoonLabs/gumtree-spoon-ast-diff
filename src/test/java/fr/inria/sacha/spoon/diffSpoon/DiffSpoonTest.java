@@ -392,4 +392,19 @@ public class DiffSpoonTest {
 
 	}
 
+	@Test
+	public void test_t_221966() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_221966/left_TurnOrdered_1.3.java src/test/resources/examples/t_221966/right_TurnOrdered_1.4.java
+		File fl = new File("src/test/resources/examples/t_221966/left_TurnOrdered_1.3.java");
+		File fr = new File("src/test/resources/examples/t_221966/right_TurnOrdered_1.4.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		diff.printActions(actions);
+		assertEquals(actions.size(), 1);
+		assertTrue(diff.containsAction(actions, "Delete", "Invocation", "println"));
+	}
+
+	
 }
