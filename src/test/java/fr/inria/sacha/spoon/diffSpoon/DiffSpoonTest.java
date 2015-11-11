@@ -406,5 +406,18 @@ public class DiffSpoonTest {
 		assertTrue(diff.containsAction(actions, "Delete", "Invocation", "println"));
 	}
 
+	@Test
+	public void test_t_221343() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_221343/left_Server_1.186.java src/test/resources/examples/t_221343/right_Server_1.187.java
+		File fl = new File("src/test/resources/examples/t_221343/left_Server_1.186.java");
+		File fr = new File("src/test/resources/examples/t_221343/right_Server_1.187.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		diff.printActions(actions);
+		assertEquals(actions.size(), 1);
+		assertTrue(diff.containsAction(actions, "Update", "Invocation", "remove"));
+	}
 	
 }
