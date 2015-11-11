@@ -24,14 +24,17 @@ import java.util.Stack;
 import spoon.reflect.code.CtArrayAccess;
 import spoon.reflect.code.CtBinaryOperator;
 import spoon.reflect.code.CtConditional;
+import spoon.reflect.code.CtConstructorCall;
 import spoon.reflect.code.CtInvocation;
 import spoon.reflect.code.CtLiteral;
 import spoon.reflect.code.CtNewArray;
+import spoon.reflect.code.CtReturn;
 import spoon.reflect.code.CtStatement;
 import spoon.reflect.code.CtThisAccess;
 import spoon.reflect.code.CtUnaryOperator;
 import spoon.reflect.code.CtVariableAccess;
 import spoon.reflect.declaration.CtAnonymousExecutable;
+import spoon.reflect.declaration.CtConstructor;
 import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtNamedElement;
 import spoon.reflect.reference.CtExecutableReference;
@@ -52,6 +55,8 @@ import com.github.gumtreediff.tree.TreeContext;
  * 
  */
 public class SpoonGumTreeBuilder extends CtScanner {
+
+	public static final String SPOON_OBJECT = "spoon_object";
 
 	public Stack<ITree> nodes;
 
@@ -78,12 +83,19 @@ public class SpoonGumTreeBuilder extends CtScanner {
 		String type = getTypeName(obj.getClass().getSimpleName());
 		int id = revolveTypeId(obj);
 
-		if (obj instanceof CtInvocation) {
+		if (obj instanceof CtInvocation ) {
 			CtInvocation inv = (CtInvocation) obj;
-			if (((CtInvocation) obj).getExecutable() == null) {
+			if (inv.getExecutable() == null) {
 
 			} else {
-				label = ((CtInvocation) obj).getExecutable().getSimpleName();
+				label = inv.getExecutable().getSimpleName();
+			}
+		} else 	if (obj instanceof CtConstructorCall ) {
+			CtConstructorCall inv = (CtConstructorCall) obj;
+			if (inv.getExecutable() == null) {
+
+			} else {
+				label = inv.getExecutable().getDeclaringType().getSimpleName();
 			}
 		} else if (obj instanceof CtNamedElement) {
 			label = ((CtNamedElement) obj).getSimpleName();
@@ -111,8 +123,8 @@ public class SpoonGumTreeBuilder extends CtScanner {
 			label = "";
 		}
 
-		createNode(label, type, id);
-
+		ITree newNode = createNode(label, type, id);
+		newNode.setMetadata(SPOON_OBJECT, obj);
 	}
 	/**
 	 * Removes the "Ct" at the beginning and the "Impl" at the end
@@ -123,47 +135,23 @@ public class SpoonGumTreeBuilder extends CtScanner {
 		
 		return simpleName.substring(2, simpleName.length()-4);
 	}
-
-	static String PARAMETER = "PAR";
-
-	@SuppressWarnings("rawtypes")
-	private void createNode(CtReference obj) {
-		// System.out.println();
-		if (obj instanceof CtTypeReference) {
-			// System.out.println();
-			// return;
-			// label = ((CtTypeReference) obj).getSimpleName();
-		} else if (obj instanceof CtExecutableReference) {
-			// System.out.println();
-			// return;
-		} else if (obj instanceof CtVariableReference) {
-			// System.out.println();
-			// return;
-		}
-	
-			createNode((obj).getSimpleName(), obj.getClass().getSimpleName(),
-				revolveTypeId(obj));
-		
-	}
 	
 	TreeContext gtContext = new TreeContext();
 
-	private void createNode(String label, String typeLabel, int typeId) {
+	private ITree createNode(String label, String typeLabel, int typeId) {
 		
 		ITree node = gtContext.createTree(typeId, label, typeLabel);
 
-		//ITree node = gtContext.createTree(typeId, label, "");// TODO
-
-		// --
 		nodes.peek().addChild(node);
 		nodes.push(node);
+		
+		return node;
 	}
 
 	
 	@Override
 	public void enter(CtElement element) {
 		createNode(element);
-		super.enter(element);
 	}
 
 	@Override

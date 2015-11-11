@@ -14,7 +14,10 @@ import org.junit.Test;
 
 import spoon.Launcher;
 import spoon.compiler.SpoonCompiler;
+import spoon.reflect.code.CtLocalVariable;
+import spoon.reflect.code.CtThrow;
 import spoon.reflect.declaration.CtClass;
+import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtType;
 import spoon.reflect.factory.Factory;
 import spoon.support.compiler.jdt.JDTSnippetCompiler;
@@ -196,5 +199,134 @@ public class DiffSpoonTest {
 		assertTrue(diff.containsAction(actions, "DEL", "Invocation", "addKeyListener"));
 		assertTrue(diff.containsAction(actions, "DEL", "Class","KeyHandler"));
 	}
+
+	@Test
+	public void test_t_286700() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		File fl = new File("src/test/resources/examples/t_286700/left_CmiContext_1.2.java");
+		File fr = new File("src/test/resources/examples/t_286700/right_CmiContext_1.3.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		System.out.println(actions);
+		assertEquals(actions.size(), 1);
+		assertTrue(diff.containsAction(actions, "INS", "Method", "getObjectPort"));
+	}
+
+	@Test
+	public void test_t_202564() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_202564/left_PropPanelModelElement_1.9.java src/test/resources/examples/t_202564/right_PropPanelModelElement_1.10.java
+		File fl = new File("src/test/resources/examples/t_202564/left_PropPanelModelElement_1.9.java");
+		File fr = new File("src/test/resources/examples/t_202564/right_PropPanelModelElement_1.10.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		diff.printActions(actions);
+		assertEquals(actions.size(), 1);
+		assertTrue(diff.containsAction(actions, "Insert", "Field", "_assocEndRoleIcon"));
+	}
+
+	@Test
+	public void test_t_204225() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_204225/left_UMLModelElementStereotypeComboBoxModel_1.3.java src/test/resources/examples/t_204225/right_UMLModelElementStereotypeComboBoxModel_1.4.java
+		File fl = new File("src/test/resources/examples/t_204225/left_UMLModelElementStereotypeComboBoxModel_1.3.java");
+		File fr = new File("src/test/resources/examples/t_204225/right_UMLModelElementStereotypeComboBoxModel_1.4.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		diff.printActions(actions);
+		assertEquals(actions.size(), 2);
+		assertTrue(diff.containsAction(actions, "Insert", "BinaryOperator", "OR"));
+		assertTrue(diff.containsAction(actions, "Move", "BinaryOperator", "AND"));
+	}
+
+	// @Test
+	//bug in Spoon
+	public void test_t_208618() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_208618/left_PropPanelUseCase_1.39.java src/test/resources/examples/t_208618/right_PropPanelUseCase_1.40.java
+		File fl = new File("src/test/resources/examples/t_208618/left_PropPanelUseCase_1.39.java");
+		File fr = new File("src/test/resources/examples/t_208618/right_PropPanelUseCase_1.40.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		diff.printActions(actions);
+		assertEquals(actions.size(), 2);
+		assertTrue(diff.containsAction(actions, "Insert", "Invocation", "addField"));
+	}
+
+	@Test
+	public void test_t_209184() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_209184/left_ActionCollaborationDiagram_1.28.java src/test/resources/examples/t_209184/right_ActionCollaborationDiagram_1.29.java
+		File fl = new File("src/test/resources/examples/t_209184/left_ActionCollaborationDiagram_1.28.java");
+		File fr = new File("src/test/resources/examples/t_209184/right_ActionCollaborationDiagram_1.29.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		diff.printActions(actions);
+		assertEquals(actions.size(), 1);
+		assertTrue(diff.containsAction(actions, "UPD", "Invocation", "getTarget"));
+	}
+
+	@Test
+	public void test_t_211903() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_211903/left_MemberFilePersister_1.4.java src/test/resources/examples/t_211903/right_MemberFilePersister_1.5.java
+		File fl = new File("src/test/resources/examples/t_211903/left_MemberFilePersister_1.4.java");
+		File fr = new File("src/test/resources/examples/t_211903/right_MemberFilePersister_1.5.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		diff.printActions(actions);
+		assertEquals(actions.size(), 4);
+		assertTrue(diff.containsAction(actions, "Update", "ConstructorCall", "FileReader"));
+		assertTrue(diff.containsAction(actions, "Insert", "Literal", "\"UTF-8\""));
+		assertTrue(diff.containsAction(actions, "Insert", "ConstructorCall", "FileInputStream"));
+		assertTrue(diff.containsAction(actions, "Move", "VariableRead", "file"));
+		
+		// the change is in the local variable declaration
+		CtElement elem = (CtElement) actions.get(0).getNode().getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT);
+		assertNotNull(elem);
+		assertNotNull(elem.getParent(CtLocalVariable.class));
+	}
+	
+	@Test
+	public void test_t_212496() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_212496/left_CoreHelperImpl_1.29.java src/test/resources/examples/t_212496/right_CoreHelperImpl_1.30.java
+		File fl = new File("src/test/resources/examples/t_212496/left_CoreHelperImpl_1.29.java");
+		File fr = new File("src/test/resources/examples/t_212496/right_CoreHelperImpl_1.30.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		diff.printActions(actions);
+		assertEquals(actions.size(), 1);
+		assertTrue(diff.containsAction(actions, "Insert", "Method", "setEnumerationLiterals"));
+	}
+
+	@Test
+	public void test_t_214116() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_214116/left_Modeller_1.134.java src/test/resources/examples/t_214116/right_Modeller_1.135.java
+		File fl = new File("src/test/resources/examples/t_214116/left_Modeller_1.134.java");
+		File fr = new File("src/test/resources/examples/t_214116/right_Modeller_1.135.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		diff.printActions(actions);
+		assertEquals(actions.size(), 2);
+		assertTrue(diff.containsAction(actions, "Update", "Literal", "\" \""));
+		
+		// the change is in a throw
+		CtElement elem = (CtElement) actions.get(0).getNode().getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT);
+		assertNotNull(elem);
+		assertNotNull(elem.getParent(CtThrow.class));
+
+	}
+
+
 
 }

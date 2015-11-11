@@ -28,6 +28,7 @@ import spoon.support.compiler.jdt.JDTSnippetCompiler;
 
 import com.github.gumtreediff.actions.ActionGenerator;
 import com.github.gumtreediff.actions.model.Action;
+import com.github.gumtreediff.actions.model.Update;
 import com.github.gumtreediff.matchers.CompositeMatchers;
 import com.github.gumtreediff.matchers.Mapping;
 import com.github.gumtreediff.matchers.MappingStore;
@@ -318,10 +319,24 @@ public class DiffSpoon {
 		return content;
 	}
 
+	// Action.getName is private
+	private String workAroundVisibility(String actionKind) {
+		if ("INS".equals(actionKind)) {
+			actionKind = "Insert";
+		}
+		if ("DEL".equals(actionKind)) {
+			actionKind = "Delete";
+		}
+		if ("UPD".equals(actionKind)) {
+			actionKind = "Update";
+		}
+		return actionKind;
+	}
+	
 	public boolean containsAction(List<Action> actions, String actionKind, String nodeKind){
+		actionKind = workAroundVisibility(actionKind);
 		for (Action action : actions) {
-			String toSt = action.toString();
-			if(toSt.startsWith(actionKind)){
+			if(action.getClass().getSimpleName().equals(actionKind)){
 				if (scanner.gtContext.getTypeLabel(action.getNode()).equals(nodeKind)) {
 					return true;
 				}
@@ -329,11 +344,12 @@ public class DiffSpoon {
 		}
 		return false;
 	}
+
 	
 	public boolean containsAction(List<Action> actions, String actionKind, String nodeKind, String nodeLabel){
+		actionKind = workAroundVisibility(actionKind);
 		for (Action action : actions) {
-			String toSt = action.toString();
-			if(toSt.startsWith(actionKind)){
+			if(action.getClass().getSimpleName().equals(actionKind)){
 				if (scanner.gtContext.getTypeLabel(action.getNode()).equals(nodeKind)) {
 					if (action.getNode().getLabel().equals(nodeLabel)) {
 						return true;
@@ -346,9 +362,16 @@ public class DiffSpoon {
 
 	public void printActions(List<Action> actions){
 		for (Action action : actions) {
-			System.out.println(action.getClass().getSimpleName());
-			
-			// TODO print tree with context
+			String label = "\"" + action.getNode().getLabel() + "\"";
+			if (action instanceof Update) {
+				label+= " to \""+((Update)action).getValue()+"\"";
+			}
+			System.out.println(
+					"\"" + action.getClass().getSimpleName()+ "\"," 
+					+ " " +"\"" + scanner.gtContext.getTypeLabel(action.getNode())+ "\","
+					+ " " +label					
+					+ " (size: " +action.getNode().getDescendants().size()	+")"				
+					);
 		}
 	}
 
