@@ -1,8 +1,1 @@
 language: java
-
-before_install:
-    mvn initialize
-
-cache:
-    directories:
-        $HOME/.m2

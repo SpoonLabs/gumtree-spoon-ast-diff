@@ -8,10 +8,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import fr.labri.gumtree.actions.model.*;
-import fr.labri.gumtree.matchers.Mapping;
-import fr.labri.gumtree.matchers.MappingStore;
-import fr.labri.gumtree.tree.Tree;
+import com.github.gumtreediff.actions.model.Action;
+import com.github.gumtreediff.actions.model.Delete;
+import com.github.gumtreediff.actions.model.Insert;
+import com.github.gumtreediff.actions.model.Move;
+import com.github.gumtreediff.actions.model.Update;
+import com.github.gumtreediff.matchers.Mapping;
+import com.github.gumtreediff.matchers.MappingStore;
+import com.github.gumtreediff.tree.ITree;
+import com.github.gumtreediff.tree.Tree;
 /**
  * Action Classifier
  * 
@@ -22,28 +27,28 @@ public class ActionClassifier {
 
 	public boolean defaultOnlyRoots = true;
 
-	Tree tl = null;
-	Tree tr = null;
+	ITree tl = null;
+	ITree tr = null;
 	public Set<Mapping> mappings = null;
 
 
 	// /
 	// ROOT CLASSIFIER
 	// /
-	protected Set<Tree> srcUpdTrees = new HashSet<Tree>();
+	protected Set<ITree> srcUpdTrees = new HashSet<>();
 
-	protected Set<Tree> dstUpdTrees = new HashSet<Tree>();
+	protected Set<ITree> dstUpdTrees = new HashSet<>();
 
-	protected Set<Tree> srcMvTrees = new HashSet<Tree>();
+	protected Set<ITree> srcMvTrees = new HashSet<>();
 
-	protected Set<Tree> dstMvTrees = new HashSet<Tree>();
+	protected Set<ITree> dstMvTrees = new HashSet<>();
 
-	protected Set<Tree> srcDelTrees = new HashSet<Tree>();
+	protected Set<ITree> srcDelTrees = new HashSet<>();
 
-	protected Set<Tree> dstAddTrees = new HashSet<Tree>();
+	protected Set<ITree> dstAddTrees = new HashSet<>();
 
-	protected Map<Tree, Action> originalActionsSrc = new HashMap<Tree, Action>();
-	protected Map<Tree, Action> originalActionsDst = new HashMap<Tree, Action>();
+	protected Map<ITree, Action> originalActionsSrc = new HashMap<>();
+	protected Map<ITree, Action> originalActionsDst = new HashMap<>();
 
 	/**
 	 * @return
@@ -64,15 +69,15 @@ public class ActionClassifier {
 			} else if (a instanceof Update) {
 				srcUpdTrees.add(a.getNode());
 				dstUpdTrees.add(mappings.getDst(a.getNode()));
-				Tree dest = mappings.getDst(a.getNode());
+				ITree dest = mappings.getDst(a.getNode());
 				//dstMvTrees.add(dest);
 				//originalActionsDst.put(dest, a);
 				//New
 				originalActionsSrc.put(a.getNode(), a);
 
-			} else if (a instanceof Move || a instanceof Permute) {
+			} else if (a instanceof Move /* || a instanceof Permute*/) {
 				srcMvTrees.add(a.getNode());
-				Tree dest = mappings.getDst(a.getNode());
+				ITree dest = mappings.getDst(a.getNode());
 				dstMvTrees.add(dest);
 				//Bugfix? 
 				//originalActionsDst.put(a.getNode(), a);
@@ -99,20 +104,20 @@ public class ActionClassifier {
 		}*/
 		
 		//New: iterates source instead of dest
-		for (Tree t : srcUpdTrees) {
+		for (ITree t : srcUpdTrees) {
 			// inc("UPD " + t.getTypeLabel() + " IN " +
 			// t.getParent().getTypeLabel(), summary);
 			Action a = originalActionsSrc.get(t);
 			rootActions.add(a);
 		}
-		for (Tree t : srcDelTrees) {
+		for (ITree t : srcDelTrees) {
 			if (!srcDelTrees.contains(t.getParent())) {
 				Action a = originalActionsSrc.get(t);
 				rootActions.add(a);
 
 			}
 		}
-		for (Tree t : dstAddTrees) {
+		for (ITree t : dstAddTrees) {
 			if (!dstAddTrees.contains(t.getParent())) {
 				Action a = originalActionsDst.get(t);
 				rootActions.add(a);
@@ -125,7 +130,7 @@ public class ActionClassifier {
 				rootActions.add(a);
 			}
 		}*/
-		for (Tree t : dstMvTrees) {
+		for (ITree t : dstMvTrees) {
 			if (!dstMvTrees.contains(t.getParent())) {
 				Action a = originalActionsDst.get(t);
 				rootActions.add(a);

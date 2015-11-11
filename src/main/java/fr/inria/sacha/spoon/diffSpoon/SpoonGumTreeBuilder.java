@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import fr.labri.gumtree.tree.Tree;
 import spoon.reflect.code.CtArrayAccess;
 import spoon.reflect.code.CtBinaryOperator;
 import spoon.reflect.code.CtConditional;
@@ -41,6 +40,10 @@ import spoon.reflect.reference.CtTypeReference;
 import spoon.reflect.reference.CtVariableReference;
 import spoon.reflect.visitor.CtScanner;
 
+import com.github.gumtreediff.tree.ITree;
+import com.github.gumtreediff.tree.Tree;
+import com.github.gumtreediff.tree.TreeContext;
+
 
 /**
  * Scanner to create a GumTree's Tree representation for a Spoon CtClass.
@@ -50,29 +53,21 @@ import spoon.reflect.visitor.CtScanner;
  */
 public class SpoonGumTreeBuilder extends CtScanner {
 
-	public Stack<Tree> nodes;
+	public Stack<ITree> nodes;
 
-	public Tree root;
+	public ITree root;
 
 	public static List<String> typesId = new ArrayList<String>();
 
-	boolean decorateTree = false;
 	
 	public SpoonGumTreeBuilder() {
 		super();
-		decorateTree = false;
 		init();
 	}
 	
-	public SpoonGumTreeBuilder(boolean decorateTree) {
-		this();
-		this.decorateTree = decorateTree;
-	}
-	
-
 	public void init() {
-		nodes = new Stack<Tree>();
-		root = new Tree(-1, "root");
+		nodes = new Stack<ITree>();
+		root = gtContext.createTree(-1, "", "root");
 		nodes.push(root);
 	}
 
@@ -116,29 +111,8 @@ public class SpoonGumTreeBuilder extends CtScanner {
 			label = "";
 		}
 
-		if (obj.getParent() instanceof CtInvocation 
-				&& !(obj instanceof CtVariableAccess) 
-				&& !(obj instanceof CtArrayAccess)
-				) {
-			try {
-				CtInvocation inv = (CtInvocation) obj.getParent();
-				boolean isInArgs = inv.getArguments().contains(obj);
-				if (isInArgs) {
-					//type = PARAMETER + "-" + type;
-					id = resolveTypeId(PARAMETER);
-				}
-			} catch (Exception e) {
-				System.err.println("Ex: "+e.getMessage());
-				e.printStackTrace();
-			}
-		}
+		createNode(label, type, id);
 
-		if(this.decorateTree){
-			createNode(obj,label, type, id);
-		}		
-		else{
-			createNode(label, type, id);
-		}
 	}
 	/**
 	 * Removes the "Ct" at the beginning and the "Impl" at the end
@@ -171,28 +145,20 @@ public class SpoonGumTreeBuilder extends CtScanner {
 				revolveTypeId(obj));
 		
 	}
+	
+	TreeContext gtContext = new TreeContext();
 
 	private void createNode(String label, String typeLabel, int typeId) {
-		Tree node = new Tree(typeId);
+		
+		ITree node = gtContext.createTree(typeId, label, typeLabel);
 
-		node.setLabel(label);
-		node.setTypeLabel(typeLabel);
+		//ITree node = gtContext.createTree(typeId, label, "");// TODO
+
 		// --
 		nodes.peek().addChild(node);
 		nodes.push(node);
 	}
 
-	private void createNode(CtElement obj,String label, String typeLabel, int typeId) {
-		TreeLabeled node = new TreeLabeled(typeId);
-
-		node.setLabel(label);
-		node.setTypeLabel(typeLabel);
-		node.setNodeComplement(obj);
-		// --
-		nodes.peek().addChild(node);
-		nodes.push(node);
-	}
-	
 	
 	@Override
 	public void enter(CtElement element) {
@@ -226,7 +192,7 @@ public class SpoonGumTreeBuilder extends CtScanner {
 		super.exit(element);
 	}
 
-	public Tree getRoot() {
+	public ITree getRoot() {
 		return root;
 	}
 

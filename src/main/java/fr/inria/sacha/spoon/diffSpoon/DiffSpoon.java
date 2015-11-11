@@ -25,15 +25,16 @@ import spoon.support.StandardEnvironment;
 import spoon.support.compiler.VirtualFile;
 import spoon.support.compiler.jdt.JDTBasedSpoonCompiler;
 import spoon.support.compiler.jdt.JDTSnippetCompiler;
-import fr.labri.gumtree.actions.ActionGenerator;
-import fr.labri.gumtree.actions.model.Action;
-import fr.labri.gumtree.matchers.CompositeMatchers;
-import fr.labri.gumtree.matchers.Mapping;
-import fr.labri.gumtree.matchers.MappingStore;
-import fr.labri.gumtree.matchers.Matcher;
-import fr.labri.gumtree.matchers.MatcherFactory;
-import fr.labri.gumtree.tree.Tree;
-import fr.labri.gumtree.tree.TreeUtils;
+
+import com.github.gumtreediff.actions.ActionGenerator;
+import com.github.gumtreediff.actions.model.Action;
+import com.github.gumtreediff.matchers.CompositeMatchers;
+import com.github.gumtreediff.matchers.Mapping;
+import com.github.gumtreediff.matchers.MappingStore;
+import com.github.gumtreediff.matchers.Matcher;
+import com.github.gumtreediff.tree.ITree;
+import com.github.gumtreediff.tree.Tree;
+import com.github.gumtreediff.tree.TreeUtils;
 
 /**
  * Computes the differences between two CtElements.
@@ -44,11 +45,9 @@ public class DiffSpoon {
 
 	public static final Logger logger = Logger.getLogger(DiffSpoon.class);
 	protected Factory factory = null;
-
+	protected SpoonGumTreeBuilder scanner = new SpoonGumTreeBuilder();
 	protected Set<Mapping> mappings = null;
 	protected MappingStore mappingsComp = null;
-	
-	protected boolean decorateTree = false;
 	
 	public DiffSpoon(boolean noClasspath) {
 		this();
@@ -58,13 +57,11 @@ public class DiffSpoon {
 	public DiffSpoon(boolean noClasspath,boolean decorate ) {
 		this();
 		factory.getEnvironment().setNoClasspath(noClasspath);
-		this.decorateTree = decorate;
 	}
 	
 	
 	public DiffSpoon(Factory factory, boolean decorate) {
 		this(factory);
-		this.decorateTree = decorate;
 	}
 	
 	public DiffSpoon(Factory factory) {
@@ -160,11 +157,10 @@ public class DiffSpoon {
 
 		
 	
-	public Tree getTree(CtElement element){
-		SpoonGumTreeBuilder scanner = new SpoonGumTreeBuilder(this.decorateTree );
-
+	public ITree getTree(CtElement element){
+		scanner.init();
 		scanner.scan(element);
-		Tree tree = scanner.getRoot();
+		ITree tree = scanner.getRoot();
 		prepare(tree);
 		
 		scanner.root = null;
@@ -174,14 +170,14 @@ public class DiffSpoon {
 
 	public CtDiff analyze(CtElement left, CtElement right) {
 
-		Tree rootSpoonLeft = getTree(left);
+		ITree rootSpoonLeft = getTree(left);
 
-		Tree rootSpoonRight = getTree(right);
+		ITree rootSpoonRight = getTree(right);
 
 		return compare(rootSpoonLeft, rootSpoonRight);
 	}
 
-	public CtDiff compare(Tree rootSpoonLeft, Tree rootSpoonRight) {
+	public CtDiff compare(ITree rootSpoonLeft, ITree rootSpoonRight) {
 	
 		List<Action> actions = null;
 
@@ -200,14 +196,16 @@ public class DiffSpoon {
 */
 		// --
 		//Matcher matcher = new GumTreeMatcher(rootSpoonLeft, rootSpoonRight);
-		MatcherFactory f = new CompositeMatchers.GumTreeMatcherFactory();
-		Matcher matcher = f.newMatcher(rootSpoonLeft, rootSpoonRight);
+		//MatcherFactory f = new CompositeMatchers.GumTreeMatcherFactory();
+		// matcher = f.newMatcher(rootSpoonLeft, rootSpoonRight);
+		Matcher matcher;
+		mappingsComp = new MappingStore();
+		matcher=new CompositeMatchers.ClassicGumtree(rootSpoonLeft, rootSpoonRight, mappingsComp);
 		
 		//new 
 		matcher.match();
 		//
 		mappings = matcher.getMappingSet();
-		mappingsComp = new MappingStore(mappings);
 
 		ActionGenerator gt = new ActionGenerator(rootSpoonLeft, rootSpoonRight,	matcher.getMappings());
 		gt.generate();
@@ -231,7 +229,7 @@ public class DiffSpoon {
 		List<Action> actions = new ArrayList<Action>();
 
 		for (Action action : rootActions) {
-			Tree t = action.getNode();
+			ITree t = action.getNode();
 			if (t.getParent().equals(actionParent)) {
 				actions.add(action);
 			}
@@ -271,13 +269,13 @@ public class DiffSpoon {
 
 	}
 
-	public String printTree(String tab, Tree t) {
+	public String printTree(String tab, ITree t) {
 
 		StringBuffer b = new StringBuffer();
-		b.append(t.getTypeLabel() + ":" + t.getLabel() + " \n");
-		Iterator<Tree> cIt = t.getChildren().iterator();
+		b.append(t.getType() + ":" + t.getLabel() + " \n");
+		Iterator<ITree> cIt = t.getChildren().iterator();
 		while (cIt.hasNext()) {
-			Tree c = cIt.next();
+			ITree c = cIt.next();
 			b.append(tab + " " + printTree("\t" + tab, c));
 			// if (cIt.hasNext()) b.append(" ");
 		}
@@ -286,11 +284,11 @@ public class DiffSpoon {
 
 	}
 	
-	public void prepare(Tree node){
+	public void prepare(ITree node){
 		node.refresh();
 		TreeUtils.postOrderNumbering(node);
 		TreeUtils.computeHeight(node);
-		TreeUtils.computeDigest(node);
+		//TreeUtils.computeDigest(node);
 	}
 	
 	public static void main(String[] args) throws Exception {
@@ -318,6 +316,40 @@ public class DiffSpoon {
 		String content = new String(chars);
 		reader.close();
 		return content;
+	}
+
+	public boolean containsAction(List<Action> actions, String actionKind, String nodeKind){
+		for (Action action : actions) {
+			String toSt = action.toString();
+			if(toSt.startsWith(actionKind)){
+				if (scanner.gtContext.getTypeLabel(action.getNode()).equals(nodeKind)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	public boolean containsAction(List<Action> actions, String actionKind, String nodeKind, String nodeLabel){
+		for (Action action : actions) {
+			String toSt = action.toString();
+			if(toSt.startsWith(actionKind)){
+				if (scanner.gtContext.getTypeLabel(action.getNode()).equals(nodeKind)) {
+					if (action.getNode().getLabel().equals(nodeLabel)) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	public void printActions(List<Action> actions){
+		for (Action action : actions) {
+			System.out.println(action.getClass().getSimpleName());
+			
+			// TODO print tree with context
+		}
 	}
 
 }

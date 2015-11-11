@@ -18,7 +18,8 @@ import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtType;
 import spoon.reflect.factory.Factory;
 import spoon.support.compiler.jdt.JDTSnippetCompiler;
-import fr.labri.gumtree.actions.model.Action;
+
+import com.github.gumtreediff.actions.model.Action;
 
 /**
  * Test Spoon Diff 
@@ -66,11 +67,11 @@ public class DiffSpoonTest {
 		assertEquals(actions.size(), 2);
 
 		System.out.println(actions);
-		assertTrue(containsAction(actions, "INS", "Invocation"));
-		assertTrue(containsAction(actions, "UPD", "FieldRead"));
+		assertTrue(diff.containsAction(actions, "INS", "Invocation"));
+		assertTrue(diff.containsAction(actions, "UPD", "FieldRead"));
 		
-		assertFalse(containsAction(actions, "DEL", "Invocation"));
-		assertFalse(containsAction(actions, "UPD", "Invocation"));
+		assertFalse(diff.containsAction(actions, "DEL", "Invocation"));
+		assertFalse(diff.containsAction(actions, "UPD", "Invocation"));
 		
 	}
 	
@@ -85,7 +86,7 @@ public class DiffSpoonTest {
 		CtDiff result = diff.compare(fl,fr);
 		List<Action> actions = result.getRootActions();
 		assertEquals(actions.size(), 1);
-		assertTrue(containsAction(actions, "UPD", "Literal"/*"PAR-Literal"*/));
+		assertTrue(diff.containsAction(actions, "UPD", "Literal"/*"PAR-Literal"*/));
 	
 	}
 	
@@ -99,7 +100,7 @@ public class DiffSpoonTest {
 		CtDiff result = diff.compare(fl,fr);
 		List<Action> actions = result.getRootActions();
 		assertEquals(actions.size(), 1);
-		assertTrue(containsAction(actions, "DEL", "Method"));
+		assertTrue(diff.containsAction(actions, "DEL", "Method"));
 	}
 	
 	
@@ -112,8 +113,9 @@ public class DiffSpoonTest {
 	
 		CtDiff result = diff.compare(fl,fr);
 		List<Action> actions = result.getRootActions();
+		System.out.println(actions);
 		assertEquals(actions.size(), 1);
-		assertTrue(containsAction(actions, "INS", "Method"));
+		assertTrue(diff.containsAction(actions, "INS", "Method","resolveOptionNew"));
 	}
 	
 	@Test
@@ -134,18 +136,6 @@ public class DiffSpoonTest {
 		assertNotNull(ctl);
 	}
 	
-	private boolean containsAction(List<Action> actions, String kindAction, String kindNode){
-		//TODO: the kind of the action is not visible, To see in the next version of GumTree
-		for (Action action : actions) {
-			String toSt = action.toString();
-			if(toSt.startsWith(kindAction)){
-				if (action.getNode().getTypeLabel().endsWith(kindNode)) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
 	
 	@Test
 	public void testJDTBasedSpoonCompiler(){
@@ -178,7 +168,7 @@ public class DiffSpoonTest {
 		List<Action> actions = result.getRootActions();
 		System.out.println(actions);
 		assertEquals(actions.size(), 1);
-		assertTrue(containsAction(actions, "UPD", "BinaryOperator"));
+		assertTrue(diff.containsAction(actions, "UPD", "BinaryOperator","AND"));
 	}
 	
 	@Test
@@ -190,7 +180,7 @@ public class DiffSpoonTest {
 		List<Action> actions = result.getRootActions();
 		System.out.println(actions);
 		assertEquals(actions.size(), 1);
-		assertTrue(containsAction(actions, "DEL", "Parameter"));
+		assertTrue(diff.containsAction(actions, "DEL", "Parameter","i"));
 	}
 
 	@Test
@@ -199,11 +189,12 @@ public class DiffSpoonTest {
 		File fl = new File("src/test/resources/examples/test7/left_QuickNotepad_1.13.java");
 		File fr = new File("src/test/resources/examples/test7/right_QuickNotepad_1.14.java");
 		CtDiff result = diff.compare(fl,fr);
+		
 		List<Action> actions = result.getRootActions();
 		System.out.println(actions);
 		assertEquals(actions.size(), 2);
-		assertTrue(containsAction(actions, "DEL", "Invocation"));
-		assertTrue(containsAction(actions, "DEL", "Class"));
+		assertTrue(diff.containsAction(actions, "DEL", "Invocation", "addKeyListener"));
+		assertTrue(diff.containsAction(actions, "DEL", "Class","KeyHandler"));
 	}
 
 }
