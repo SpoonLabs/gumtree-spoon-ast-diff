@@ -18,6 +18,7 @@ import spoon.reflect.code.CtLocalVariable;
 import spoon.reflect.code.CtThrow;
 import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtElement;
+import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.declaration.CtType;
 import spoon.reflect.factory.Factory;
 import spoon.support.compiler.jdt.JDTSnippetCompiler;
@@ -203,14 +204,16 @@ public class DiffSpoonTest {
 	@Test
 	public void test_t_286700() throws Exception{
 		DiffSpoon diff = new DiffSpoon(true);
+		// meld src/test/resources/examples/t_286700/left_CmiContext_1.2.java src/test/resources/examples/t_286700/right_CmiContext_1.3.java
 		File fl = new File("src/test/resources/examples/t_286700/left_CmiContext_1.2.java");
 		File fr = new File("src/test/resources/examples/t_286700/right_CmiContext_1.3.java");
 		CtDiff result = diff.compare(fl,fr);
 		
 		List<Action> actions = result.getRootActions();
-		System.out.println(actions);
+		diff.printActions(actions);
 		assertEquals(actions.size(), 1);
 		assertTrue(diff.containsAction(actions, "INS", "Method", "getObjectPort"));
+		
 	}
 
 	@Test
@@ -282,9 +285,9 @@ public class DiffSpoonTest {
 		List<Action> actions = result.getRootActions();
 		diff.printActions(actions);
 		assertEquals(actions.size(), 4);
-		assertTrue(diff.containsAction(actions, "Update", "ConstructorCall", "FileReader"));
+		assertTrue(diff.containsAction(actions, "Update", "ConstructorCall", "java.io.FileReader"));
 		assertTrue(diff.containsAction(actions, "Insert", "Literal", "\"UTF-8\""));
-		assertTrue(diff.containsAction(actions, "Insert", "ConstructorCall", "FileInputStream"));
+		assertTrue(diff.containsAction(actions, "Insert", "ConstructorCall", "java.io.FileInputStream"));
 		assertTrue(diff.containsAction(actions, "Move", "VariableRead", "file"));
 		
 		// the change is in the local variable declaration
