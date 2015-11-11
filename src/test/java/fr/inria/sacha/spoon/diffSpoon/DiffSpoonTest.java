@@ -245,8 +245,7 @@ public class DiffSpoonTest {
 		assertTrue(diff.containsAction(actions, "Move", "BinaryOperator", "AND"));
 	}
 
-	// @Test
-	//bug in Spoon
+	 @Test
 	public void test_t_208618() throws Exception{
 		DiffSpoon diff = new DiffSpoon(true);
 		// meld  src/test/resources/examples/t_208618/left_PropPanelUseCase_1.39.java src/test/resources/examples/t_208618/right_PropPanelUseCase_1.40.java
@@ -256,7 +255,7 @@ public class DiffSpoonTest {
 		
 		List<Action> actions = result.getRootActions();
 		diff.printActions(actions);
-		assertEquals(actions.size(), 2);
+		assertEquals(actions.size(), 1);
 		assertTrue(diff.containsAction(actions, "Insert", "Invocation", "addField"));
 	}
 

@@ -28,23 +28,17 @@ import spoon.reflect.code.CtConstructorCall;
 import spoon.reflect.code.CtInvocation;
 import spoon.reflect.code.CtLiteral;
 import spoon.reflect.code.CtNewArray;
-import spoon.reflect.code.CtReturn;
 import spoon.reflect.code.CtStatement;
 import spoon.reflect.code.CtThisAccess;
 import spoon.reflect.code.CtUnaryOperator;
 import spoon.reflect.code.CtVariableAccess;
 import spoon.reflect.declaration.CtAnonymousExecutable;
-import spoon.reflect.declaration.CtConstructor;
 import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtNamedElement;
-import spoon.reflect.reference.CtExecutableReference;
 import spoon.reflect.reference.CtReference;
-import spoon.reflect.reference.CtTypeReference;
-import spoon.reflect.reference.CtVariableReference;
 import spoon.reflect.visitor.CtScanner;
 
 import com.github.gumtreediff.tree.ITree;
-import com.github.gumtreediff.tree.Tree;
 import com.github.gumtreediff.tree.TreeContext;
 
 
@@ -103,8 +97,16 @@ public class SpoonGumTreeBuilder extends CtScanner {
 			label = ((CtNamedElement) obj).getSimpleName();
 		} else if (obj instanceof CtLiteral) {
 			label = obj.toString();
-		} else if (obj instanceof CtVariableAccess)
-			label = ((CtVariableAccess) obj).getVariable().getSimpleName();
+		} else if (obj instanceof CtVariableAccess) {
+			CtVariableAccess va = (CtVariableAccess) obj;
+			if (va.getVariable()!=null) {
+				label = va.getVariable().getSimpleName();
+			} else {
+				// some bug in noclasspath
+				throw new RuntimeException(va.getParent().toString());
+				//label = va.toString();
+			}
+		}
 		else if (obj instanceof CtBinaryOperator) {
 			CtBinaryOperator bin = (CtBinaryOperator) obj;
 			label = bin.getKind().toString();
