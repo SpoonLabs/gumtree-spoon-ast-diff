@@ -5,12 +5,12 @@ Computes the AST difference between two Spoon abstract syntax trees using the Gu
 
 Launch tests:
 
-    mvn initialize # copies a library into .m2
+    mvn compile
     mvn test
 
 [![Build Status](https://travis-ci.org/SpoonLabs/gumtree-spoon-ast-diff.svg?branch=master)](https://travis-ci.org/SpoonLabs/gumtree-spoon-ast-diff)
 
-**Main class
+The main class is used this way:
 fr.inria.sacha.spoon.diffSpoon.DiffSpoon <file_1> <file_2>
 
 
