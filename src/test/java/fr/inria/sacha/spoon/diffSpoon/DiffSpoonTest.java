@@ -577,5 +577,18 @@ public class DiffSpoonTest {
 		assertTrue(diff.containsAction(actions, "Insert", "Invocation", "refresh"));
 	}
 
-	
+	@Test
+	public void test_t_223454() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_223454/left_EntityListFile_1.17.java src/test/resources/examples/t_223454/right_EntityListFile_1.18.java
+		File fl = new File("src/test/resources/examples/t_223454/left_EntityListFile_1.17.java");
+		File fr = new File("src/test/resources/examples/t_223454/right_EntityListFile_1.18.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		diff.printActions(actions);
+		assertEquals(actions.size(), 1);
+		assertTrue(diff.containsAction(actions, "DEL", "Literal", "\"UTF-8\""));
+	}
+
 }
