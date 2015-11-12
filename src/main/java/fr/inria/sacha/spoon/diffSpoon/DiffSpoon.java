@@ -306,8 +306,7 @@ public class DiffSpoon {
 
 		DiffSpoon ds = new DiffSpoon(true);
 		CtDiff result = ds.compare(f1, f2);
-		System.out.println(result);
-
+		ds.printActions(result.getRootActions());
 	}
 
 	public static String readFile(File f) throws IOException {
