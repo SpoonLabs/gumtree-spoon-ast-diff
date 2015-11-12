@@ -630,6 +630,7 @@ public class DiffSpoonTest {
 		diff.printActions(actions);
 		assertEquals(actions.size(), 1);
 		assertTrue(diff.containsAction(actions, "DEL", "Literal", "\"UTF-8\""));
+		assertEquals(442, result.changedNode().getPosition().getLine());
 	}
 
 	@Test
@@ -683,8 +684,7 @@ public class DiffSpoonTest {
 		assertTrue(diff.containsAction(actions, "Delete", "Invocation", "format"));
 		assertTrue(diff.containsAction(actions, "Insert", "BinaryOperator", "PLUS"));
 		assertTrue(diff.containsAction(actions, "Move", "Invocation", "getShortName"));
-		
-		
+				
 	}
 
 

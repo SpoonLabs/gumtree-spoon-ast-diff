@@ -56,6 +56,14 @@ public class CtDiff {
 		return rootActions.toString();
 	}
 	
+	/** returns the changed node if there is a single one */
+	public CtElement changedNode() {
+		if (rootActions.size()!=1) {
+			throw new IllegalArgumentException();
+		}
+		return commonAncestor();
+	}
+	
 	/** returns the common ancestor of all changes */
 	public CtElement commonAncestor() {
 		List<CtElement> copy = new ArrayList<>();
