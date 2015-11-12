@@ -385,7 +385,6 @@ public class DiffSpoonTest {
 		assertEquals(actions.size(), 1);
 		assertTrue(diff.containsAction(actions, "Update", "BinaryOperator", "GT"));
 		
-		// the change is in a throw
 		CtElement elem = (CtElement) actions.get(0).getNode().getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT);
 		assertNotNull(elem);
 		assertNotNull(elem.getParent(CtReturn.class));
@@ -446,6 +445,25 @@ public class DiffSpoonTest {
 		diff.printActions(actions);
 		assertEquals(actions.size(), 1);
 		assertTrue(diff.containsAction(actions, "Update", "Invocation", "add"));
+	}
+
+	@Test
+	public void test_t_221958() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_221958/left_TilesetManager_1.22.java src/test/resources/examples/t_221958/right_TilesetManager_1.23.java
+		File fl = new File("src/test/resources/examples/t_221958/left_TilesetManager_1.22.java");
+		File fr = new File("src/test/resources/examples/t_221958/right_TilesetManager_1.23.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		diff.printActions(actions);
+		assertEquals(actions.size(), 1);
+		assertTrue(diff.containsAction(actions, "Insert", "Literal", "null"));
+		
+		CtElement elem = (CtElement) actions.get(0).getNode().getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT);
+		assertNotNull(elem);
+		assertNotNull(elem.getParent(CtReturn.class));
+
 	}
 
 }
