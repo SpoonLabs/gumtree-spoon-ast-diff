@@ -688,5 +688,19 @@ public class DiffSpoonTest {
 	}
 
 
-	
+	@Test
+	public void test_t_224766() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_224766/left_SegmentTermEnum_1.1.java src/test/resources/examples/t_224766/right_SegmentTermEnum_1.2.java
+		File fl = new File("src/test/resources/examples/t_224766/left_SegmentTermEnum_1.1.java");
+		File fr = new File("src/test/resources/examples/t_224766/right_SegmentTermEnum_1.2.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		diff.printActions(actions);
+		assertEquals(actions.size(), 2);
+		assertTrue(diff.containsAction(actions, "Insert", "If"));
+		assertTrue(diff.containsAction(actions, "Move", "Invocation", "growBuffer"));
+	}
+
 }
