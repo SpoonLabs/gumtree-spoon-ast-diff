@@ -517,4 +517,21 @@ public class DiffSpoonTest {
 		assertTrue(diff.containsAction(actions, "Insert", "Invocation", "append"));
 	}
 	
+	@Test
+	public void test_t_222894() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_222894/left_Client_1.150.java src/test/resources/examples/t_222894/right_Client_1.151.java
+		File fl = new File("src/test/resources/examples/t_222894/left_Client_1.150.java");
+		File fr = new File("src/test/resources/examples/t_222894/right_Client_1.151.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		diff.printActions(actions);
+		assertTrue(diff.containsAction(actions,"Insert", "BinaryOperator", "AND"));
+		
+		// there is a move that is not detected but should be
+		//assertEquals(actions.size(), 2);
+		// assertTrue(diff.containsAction(actions, "Move", VariableRead", "Settings.keepServerlog"));
+	}
+
 }
