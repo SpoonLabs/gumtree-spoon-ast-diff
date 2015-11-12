@@ -466,4 +466,18 @@ public class DiffSpoonTest {
 
 	}
 
+	@Test
+	public void test_t_222361() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_222361/left_CommonSettingsDialog_1.22.java src/test/resources/examples/t_222361/right_CommonSettingsDialog_1.23.java
+		File fl = new File("src/test/resources/examples/t_222361/left_CommonSettingsDialog_1.22.java");
+		File fr = new File("src/test/resources/examples/t_222361/right_CommonSettingsDialog_1.23.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		diff.printActions(actions);
+		assertEquals(actions.size(), 1);
+		assertTrue(diff.containsAction(actions, "Update", "Literal", "\"By holding down CTL and dragging.\""));
+	}
+
 }
