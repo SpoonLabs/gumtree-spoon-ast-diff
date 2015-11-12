@@ -503,5 +503,18 @@ public class DiffSpoonTest {
 
 	}
 
+	@Test
+	public void test_t_222884() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_222884/left_MechView_1.21.java src/test/resources/examples/t_222884/right_MechView_1.22.java
+		File fl = new File("src/test/resources/examples/t_222884/left_MechView_1.21.java");
+		File fr = new File("src/test/resources/examples/t_222884/right_MechView_1.22.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		diff.printActions(actions);
+		assertEquals(actions.size(), 1);
+		assertTrue(diff.containsAction(actions, "Insert", "Invocation", "append"));
+	}
 	
 }
