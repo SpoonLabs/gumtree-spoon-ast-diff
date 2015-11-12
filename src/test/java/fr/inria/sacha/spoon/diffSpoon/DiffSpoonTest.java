@@ -548,4 +548,20 @@ public class DiffSpoonTest {
 		assertTrue(diff.containsAction(actions, "Update", "Field", "GAME_NEW_ATTACK"));
 	}
 
+	@Test
+	public void test_t_223056() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_223056/left_Server_1.646.java src/test/resources/examples/t_223056/right_Server_1.647.java
+		File fl = new File("src/test/resources/examples/t_223056/left_Server_1.646.java");
+		File fr = new File("src/test/resources/examples/t_223056/right_Server_1.647.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		diff.printActions(actions);
+		assertEquals(actions.size(), 2);
+		assertTrue(diff.containsAction(actions, "Update", "Literal", "\" \""));
+		assertTrue(diff.containsAction(actions, "Update", "Literal","\"        \\n\""));
+	}
+
+	
 }
