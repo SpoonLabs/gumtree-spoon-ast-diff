@@ -14,6 +14,7 @@ import org.junit.Test;
 
 import spoon.Launcher;
 import spoon.compiler.SpoonCompiler;
+import spoon.reflect.code.CtIf;
 import spoon.reflect.code.CtLocalVariable;
 import spoon.reflect.code.CtReturn;
 import spoon.reflect.code.CtThrow;
@@ -480,4 +481,27 @@ public class DiffSpoonTest {
 		assertTrue(diff.containsAction(actions, "Update", "Literal", "\"By holding down CTL and dragging.\""));
 	}
 
+	@Test
+	public void test_t_222399() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_222399/left_TdbFile_1.7.java src/test/resources/examples/t_222399/right_TdbFile_1.8.java
+		File fl = new File("src/test/resources/examples/t_222399/left_TdbFile_1.7.java");
+		File fr = new File("src/test/resources/examples/t_222399/right_TdbFile_1.8.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		diff.printActions(actions);
+		assertEquals(actions.size(), 3);
+		assertTrue(diff.containsAction(actions, "Update", "Invocation", "equals"));
+		assertTrue(diff.containsAction(actions, "Insert", "BinaryOperator", "NE"));
+		assertTrue(diff.containsAction(actions, "Move", "Invocation", "equals"));
+
+		// updated the if condition
+		CtElement elem = (CtElement) actions.get(0).getNode().getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT);
+		assertNotNull(elem);
+		assertNotNull(elem.getParent(CtIf.class));
+
+	}
+
+	
 }
