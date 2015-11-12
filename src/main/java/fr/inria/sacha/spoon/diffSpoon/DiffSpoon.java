@@ -28,13 +28,13 @@ import spoon.support.compiler.jdt.JDTSnippetCompiler;
 
 import com.github.gumtreediff.actions.ActionGenerator;
 import com.github.gumtreediff.actions.model.Action;
+import com.github.gumtreediff.actions.model.Insert;
 import com.github.gumtreediff.actions.model.Update;
 import com.github.gumtreediff.matchers.CompositeMatchers;
 import com.github.gumtreediff.matchers.Mapping;
 import com.github.gumtreediff.matchers.MappingStore;
 import com.github.gumtreediff.matchers.Matcher;
 import com.github.gumtreediff.tree.ITree;
-import com.github.gumtreediff.tree.Tree;
 import com.github.gumtreediff.tree.TreeUtils;
 
 /**
@@ -48,7 +48,6 @@ public class DiffSpoon {
 	protected Factory factory = null;
 	protected SpoonGumTreeBuilder scanner = new SpoonGumTreeBuilder();
 	protected Set<Mapping> mappings = null;
-	protected MappingStore mappingsComp = null;
 	
 	public DiffSpoon(boolean noClasspath) {
 		this();
@@ -200,9 +199,9 @@ public class DiffSpoon {
 		//MatcherFactory f = new CompositeMatchers.GumTreeMatcherFactory();
 		// matcher = f.newMatcher(rootSpoonLeft, rootSpoonRight);
 		Matcher matcher;
+		MappingStore mappingsComp = null;
 		mappingsComp = new MappingStore();
 		matcher=new CompositeMatchers.ClassicGumtree(rootSpoonLeft, rootSpoonRight, mappingsComp);
-		
 		//new 
 		matcher.match();
 		//
@@ -215,7 +214,7 @@ public class DiffSpoon {
 		ActionClassifier gtfac = new ActionClassifier();
 		List<Action> rootActions = gtfac.getRootActions(mappings, actions);
 	
-		return new CtDiff(actions, rootActions);
+		return new CtDiff(actions, rootActions, mappingsComp);
 	}
 
 	/**
@@ -371,7 +370,8 @@ public class DiffSpoon {
 					+ " " +label					
 					+ " (size: " +action.getNode().getDescendants().size()	+")"				
 					);
-		}
+		}		
 	}
+	
 
 }

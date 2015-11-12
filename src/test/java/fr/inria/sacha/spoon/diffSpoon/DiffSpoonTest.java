@@ -14,7 +14,10 @@ import org.junit.Test;
 
 import spoon.Launcher;
 import spoon.compiler.SpoonCompiler;
+import spoon.reflect.code.CtBinaryOperator;
+import spoon.reflect.code.CtConstructorCall;
 import spoon.reflect.code.CtIf;
+import spoon.reflect.code.CtInvocation;
 import spoon.reflect.code.CtLocalVariable;
 import spoon.reflect.code.CtReturn;
 import spoon.reflect.code.CtThrow;
@@ -64,12 +67,16 @@ public class DiffSpoonTest {
 	public void exampleInsertAndUpdate() throws Exception{
 		
 		DiffSpoon diff = new DiffSpoon(true);
+		// meld src/test/resources/examples/test1/TypeHandler1.java src/test/resources/examples/test1/TypeHandler2.java
 		File fl = new File("src/test/resources/examples/test1/TypeHandler1.java");
 		File fr = new File("src/test/resources/examples/test1/TypeHandler2.java");
 	
 		CtDiff result = diff.compare(fl,fr);
 		List<Action> actions = result.getRootActions();
 		assertEquals(actions.size(), 2);
+
+		CtElement ancestor = result.commonAncestor();		
+		assertTrue(ancestor instanceof CtClass);
 
 		System.out.println(actions);
 		assertTrue(diff.containsAction(actions, "INS", "Invocation"));
@@ -191,6 +198,7 @@ public class DiffSpoonTest {
 	@Test
 	public void test7() throws Exception{
 		DiffSpoon diff = new DiffSpoon(true);
+		// meld src/test/resources/examples/test7/left_QuickNotepad_1.13.java src/test/resources/examples/test7/right_QuickNotepad_1.14.java
 		File fl = new File("src/test/resources/examples/test7/left_QuickNotepad_1.13.java");
 		File fr = new File("src/test/resources/examples/test7/right_QuickNotepad_1.14.java");
 		CtDiff result = diff.compare(fl,fr);
@@ -200,6 +208,11 @@ public class DiffSpoonTest {
 		assertEquals(actions.size(), 2);
 		assertTrue(diff.containsAction(actions, "DEL", "Invocation", "addKeyListener"));
 		assertTrue(diff.containsAction(actions, "DEL", "Class","KeyHandler"));
+		
+		CtElement ancestor = result.commonAncestor();		
+		assertTrue(ancestor instanceof CtClass);
+		assertEquals("QuickNotepad", ((CtClass)ancestor).getSimpleName());
+
 	}
 
 	@Test
@@ -239,11 +252,16 @@ public class DiffSpoonTest {
 		File fr = new File("src/test/resources/examples/t_204225/right_UMLModelElementStereotypeComboBoxModel_1.4.java");
 		CtDiff result = diff.compare(fl,fr);
 		
+		CtElement ancestor = result.commonAncestor();		
+		assertTrue(ancestor instanceof CtReturn);
+		
 		List<Action> actions = result.getRootActions();
 		diff.printActions(actions);
 		assertEquals(actions.size(), 2);
 		assertTrue(diff.containsAction(actions, "Insert", "BinaryOperator", "OR"));
 		assertTrue(diff.containsAction(actions, "Move", "BinaryOperator", "AND"));
+		
+		
 	}
 
 	 @Test
@@ -282,6 +300,11 @@ public class DiffSpoonTest {
 		File fr = new File("src/test/resources/examples/t_211903/right_MemberFilePersister_1.5.java");
 		CtDiff result = diff.compare(fl,fr);
 		
+		CtElement ancestor = result.commonAncestor();		
+		assertTrue(ancestor instanceof CtConstructorCall);
+		assertEquals(88,ancestor.getPosition().getLine());
+
+		
 		List<Action> actions = result.getRootActions();
 		diff.printActions(actions);
 		assertEquals(actions.size(), 4);
@@ -317,6 +340,11 @@ public class DiffSpoonTest {
 		File fl = new File("src/test/resources/examples/t_214116/left_Modeller_1.134.java");
 		File fr = new File("src/test/resources/examples/t_214116/right_Modeller_1.135.java");
 		CtDiff result = diff.compare(fl,fr);
+		
+		CtElement ancestor = result.commonAncestor();	
+		System.out.println(ancestor.toString());
+		assertTrue(ancestor instanceof CtBinaryOperator);
+
 		
 		List<Action> actions = result.getRootActions();
 		diff.printActions(actions);
@@ -489,9 +517,15 @@ public class DiffSpoonTest {
 		File fr = new File("src/test/resources/examples/t_222399/right_TdbFile_1.8.java");
 		CtDiff result = diff.compare(fl,fr);
 		
+		CtElement ancestor = result.commonAncestor();		
+		assertTrue(ancestor instanceof CtIf);
+		assertEquals(229,ancestor.getPosition().getLine());
+
 		List<Action> actions = result.getRootActions();
 		diff.printActions(actions);
 		assertEquals(actions.size(), 3);
+		assertEquals(229,ancestor.getPosition().getLine());
+		
 		assertTrue(diff.containsAction(actions, "Update", "Invocation", "equals"));
 		assertTrue(diff.containsAction(actions, "Insert", "BinaryOperator", "NE"));
 		assertTrue(diff.containsAction(actions, "Move", "Invocation", "equals"));
@@ -525,6 +559,10 @@ public class DiffSpoonTest {
 		File fr = new File("src/test/resources/examples/t_222894/right_Client_1.151.java");
 		CtDiff result = diff.compare(fl,fr);
 		
+		CtElement ancestor = result.commonAncestor();		
+		assertTrue(ancestor instanceof CtIf);
+
+		
 		List<Action> actions = result.getRootActions();
 		diff.printActions(actions);
 		assertTrue(diff.containsAction(actions,"Insert", "BinaryOperator", "AND"));
@@ -556,6 +594,9 @@ public class DiffSpoonTest {
 		File fr = new File("src/test/resources/examples/t_223056/right_Server_1.647.java");
 		CtDiff result = diff.compare(fl,fr);
 		
+		CtElement ancestor = result.commonAncestor();		
+		assertTrue(ancestor instanceof CtClass);
+
 		List<Action> actions = result.getRootActions();
 		diff.printActions(actions);
 		assertEquals(actions.size(), 2);
@@ -613,12 +654,39 @@ public class DiffSpoonTest {
 		File fr = new File("src/test/resources/examples/t_224512/right_Server_1.926.java");
 		CtDiff result = diff.compare(fl,fr);
 		
+		CtElement ancestor = result.commonAncestor();		
+		assertTrue(ancestor instanceof CtBinaryOperator);
+		
 		List<Action> actions = result.getRootActions();
 		diff.printActions(actions);
 		assertEquals(actions.size(), 2);
 		assertTrue(diff.containsAction(actions, "Insert", "BinaryOperator", "AND"));
 		assertTrue(diff.containsAction(actions, "Move", "BinaryOperator", "AND"));
 	}
+	
+	@Test
+	public void test_t_224542() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_224542/left_TestBot_1.75.java src/test/resources/examples/t_224542/right_TestBot_1.76.java
+		File fl = new File("src/test/resources/examples/t_224542/left_TestBot_1.75.java");
+		File fr = new File("src/test/resources/examples/t_224542/right_TestBot_1.76.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		CtElement ancestor = result.commonAncestor();		
+		assertTrue(ancestor instanceof CtInvocation);
+		assertEquals("println", ((CtInvocation)ancestor).getExecutable().getSimpleName());
+		assertEquals(344,ancestor.getPosition().getLine());
+		
+		List<Action> actions = result.getRootActions();
+		diff.printActions(actions);
+		assertEquals(actions.size(), 3);
+		assertTrue(diff.containsAction(actions, "Delete", "Invocation", "format"));
+		assertTrue(diff.containsAction(actions, "Insert", "BinaryOperator", "PLUS"));
+		assertTrue(diff.containsAction(actions, "Move", "Invocation", "getShortName"));
+		
+		
+	}
+
 
 	
 }
