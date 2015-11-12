@@ -605,5 +605,20 @@ public class DiffSpoonTest {
 		assertTrue(diff.containsAction(actions, "Update", "VariableRead", "IEntityMovementType.MOVE_VTOL_RUN"));
 	}
 
+	@Test
+	public void test_t_224512() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_224512/left_Server_1.925.java src/test/resources/examples/t_224512/right_Server_1.926.java
+		File fl = new File("src/test/resources/examples/t_224512/left_Server_1.925.java");
+		File fr = new File("src/test/resources/examples/t_224512/right_Server_1.926.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		diff.printActions(actions);
+		assertEquals(actions.size(), 2);
+		assertTrue(diff.containsAction(actions, "Insert", "BinaryOperator", "AND"));
+		assertTrue(diff.containsAction(actions, "Move", "BinaryOperator", "AND"));
+	}
+
 	
 }
