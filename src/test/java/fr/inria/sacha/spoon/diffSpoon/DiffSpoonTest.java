@@ -591,4 +591,19 @@ public class DiffSpoonTest {
 		assertTrue(diff.containsAction(actions, "DEL", "Literal", "\"UTF-8\""));
 	}
 
+	@Test
+	public void test_t_223542() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_223542/left_BoardView1_1.214.java src/test/resources/examples/t_223542/right_BoardView1_1.215.java
+		File fl = new File("src/test/resources/examples/t_223542/left_BoardView1_1.214.java");
+		File fr = new File("src/test/resources/examples/t_223542/right_BoardView1_1.215.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		diff.printActions(actions);
+		assertEquals(actions.size(), 1);
+		assertTrue(diff.containsAction(actions, "Update", "VariableRead", "IEntityMovementType.MOVE_VTOL_RUN"));
+	}
+
+	
 }
