@@ -70,6 +70,7 @@ public class ActionClassifier {
 				srcUpdTrees.add(a.getNode());
 				dstUpdTrees.add(mappings.getDst(a.getNode()));
 				ITree dest = mappings.getDst(a.getNode());
+				a.getNode().setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT_DEST, dest.getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT));
 				//dstMvTrees.add(dest);
 				//originalActionsDst.put(dest, a);
 				//New
@@ -78,6 +79,7 @@ public class ActionClassifier {
 			} else if (a instanceof Move /* || a instanceof Permute*/) {
 				srcMvTrees.add(a.getNode());
 				ITree dest = mappings.getDst(a.getNode());
+				a.getNode().setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT_DEST, dest.getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT));
 				dstMvTrees.add(dest);
 				//Bugfix? 
 				//originalActionsDst.put(a.getNode(), a);

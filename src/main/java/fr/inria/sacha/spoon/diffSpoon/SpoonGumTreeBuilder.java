@@ -51,6 +51,7 @@ import com.github.gumtreediff.tree.TreeContext;
 public class SpoonGumTreeBuilder extends CtScanner {
 
 	public static final String SPOON_OBJECT = "spoon_object";
+	public static final String SPOON_OBJECT_DEST = "spoon_object_dest";
 
 	public Stack<ITree> nodes;
 
