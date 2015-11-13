@@ -726,4 +726,20 @@ public class DiffSpoonTest {
 		assertTrue(diff.containsAction(actions, "Update", "Invocation", "delete" ));
 	}
 	
+	@Test
+	public void test_t_224834() throws Exception{
+		// wonderful example where the text diff is impossible to  comprehend
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_224834/left_TestPriorityQueue_1.2.java src/test/resources/examples/t_224834/right_TestPriorityQueue_1.3.java
+		File fl = new File("src/test/resources/examples/t_224834/left_TestPriorityQueue_1.2.java");
+		File fr = new File("src/test/resources/examples/t_224834/right_TestPriorityQueue_1.3.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		diff.printActions(actions);
+		assertEquals(actions.size(), 1);
+		assertTrue(diff.containsAction(actions, "Insert", "Method", "testClear"));
+	}
+
+	
 }
