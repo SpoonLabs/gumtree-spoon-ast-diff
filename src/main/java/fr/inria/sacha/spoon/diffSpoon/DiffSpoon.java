@@ -104,6 +104,7 @@ public class DiffSpoon {
 	public CtClass getCtClass(File f) throws Exception{
 		SpoonResource sr1 = SpoonResourceHelper .createResource(f) ;
 		SpoonCompiler compiler = new JDTBasedSpoonCompiler(factory);
+		compiler.getFactory().getEnvironment().setLevel("OFF");
 		compiler.addInputSource(sr1);
 		compiler.build();
 		CtClass<?> clazz1 = (CtClass<?>) factory.Type().getAll().get(0);

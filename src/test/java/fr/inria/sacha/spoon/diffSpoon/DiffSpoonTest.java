@@ -78,7 +78,6 @@ public class DiffSpoonTest {
 		CtElement ancestor = result.commonAncestor();		
 		assertTrue(ancestor instanceof CtClass);
 
-		System.out.println(actions);
 		assertTrue(diff.containsAction(actions, "INS", "Invocation"));
 		assertTrue(diff.containsAction(actions, "UPD", "FieldRead"));
 		
@@ -125,7 +124,6 @@ public class DiffSpoonTest {
 	
 		CtDiff result = diff.compare(fl,fr);
 		List<Action> actions = result.getRootActions();
-		System.out.println(actions);
 		assertEquals(actions.size(), 1);
 		assertTrue(diff.containsAction(actions, "INS", "Method","resolveOptionNew"));
 	}
@@ -178,7 +176,6 @@ public class DiffSpoonTest {
 		File fr = new File("src/test/resources/examples/test5/right_LmiInitialContext_1.6.java");
 		CtDiff result = diff.compare(fl,fr);
 		List<Action> actions = result.getRootActions();
-		System.out.println(actions);
 		assertEquals(actions.size(), 1);
 		assertTrue(diff.containsAction(actions, "UPD", "BinaryOperator","AND"));
 	}
@@ -190,7 +187,6 @@ public class DiffSpoonTest {
 		File fr = new File("src/test/resources/examples/test6/B.java");
 		CtDiff result = diff.compare(fl,fr);
 		List<Action> actions = result.getRootActions();
-		System.out.println(actions);
 		assertEquals(actions.size(), 1);
 		assertTrue(diff.containsAction(actions, "DEL", "Parameter","i"));
 	}
@@ -204,7 +200,6 @@ public class DiffSpoonTest {
 		CtDiff result = diff.compare(fl,fr);
 		
 		List<Action> actions = result.getRootActions();
-		System.out.println(actions);
 		assertEquals(actions.size(), 2);
 		assertTrue(diff.containsAction(actions, "DEL", "Invocation", "addKeyListener"));
 		assertTrue(diff.containsAction(actions, "DEL", "Class","KeyHandler"));
@@ -342,7 +337,6 @@ public class DiffSpoonTest {
 		CtDiff result = diff.compare(fl,fr);
 		
 		CtElement ancestor = result.commonAncestor();	
-		System.out.println(ancestor.toString());
 		assertTrue(ancestor instanceof CtBinaryOperator);
 
 		
