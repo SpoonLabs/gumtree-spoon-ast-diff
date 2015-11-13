@@ -378,7 +378,7 @@ public class DiffSpoonTest {
 		diff.printActions(actions);
 		assertTrue(diff.containsAction(actions, "Insert", "Conditional"));
 		
-		// the delete literal "." found could also be a move to the new conditional, so we don't specify this		
+		// TODO the delete literal "." found could also be a move to the new conditional, so we don't specify this		
 	}
 
 	@Test
@@ -697,4 +697,33 @@ public class DiffSpoonTest {
 		assertTrue(diff.containsAction(actions, "Move", "Invocation", "growBuffer"));
 	}
 
+	//@Test // bug in Spoon
+	public void test_t_224771() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_224771/left_IndexWriter_1.2.java src/test/resources/examples/t_224771/right_IndexWriter_1.3.java
+		File fl = new File("src/test/resources/examples/t_224771/left_IndexWriter_1.2.java");
+		File fr = new File("src/test/resources/examples/t_224771/right_IndexWriter_1.3.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		diff.printActions(actions);
+		assertEquals(actions.size(), 2);
+		assertTrue(diff.containsAction(actions, "DEL", "Invocation", "addKeyListener"));
+		assertTrue(diff.containsAction(actions, "DEL", "Class","KeyHandler"));
+	}
+
+	@Test
+	public void test_t_224798() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_224798/left_SegmentsReader_1.4.java src/test/resources/examples/t_224798/right_SegmentsReader_1.5.java
+		File fl = new File("src/test/resources/examples/t_224798/left_SegmentsReader_1.4.java");
+		File fr = new File("src/test/resources/examples/t_224798/right_SegmentsReader_1.5.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		diff.printActions(actions);
+		assertEquals(actions.size(), 1);
+		assertTrue(diff.containsAction(actions, "Update", "Invocation", "delete" ));
+	}
+	
 }

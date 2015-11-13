@@ -28,9 +28,8 @@ import spoon.support.compiler.jdt.JDTSnippetCompiler;
 
 import com.github.gumtreediff.actions.ActionGenerator;
 import com.github.gumtreediff.actions.model.Action;
-import com.github.gumtreediff.actions.model.Insert;
 import com.github.gumtreediff.actions.model.Update;
-import com.github.gumtreediff.matchers.CompositeMatchers;
+import com.github.gumtreediff.matchers.CompositeMatchers.ClassicGumtree;
 import com.github.gumtreediff.matchers.Mapping;
 import com.github.gumtreediff.matchers.MappingStore;
 import com.github.gumtreediff.matchers.Matcher;
@@ -202,7 +201,7 @@ public class DiffSpoon {
 		Matcher matcher;
 		MappingStore mappingsComp = null;
 		mappingsComp = new MappingStore();
-		matcher=new CompositeMatchers.ClassicGumtree(rootSpoonLeft, rootSpoonRight, mappingsComp);
+		matcher=new ClassicGumtree(rootSpoonLeft, rootSpoonRight, mappingsComp);
 		//new 
 		matcher.match();
 		//
