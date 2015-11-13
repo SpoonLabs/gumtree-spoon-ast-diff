@@ -741,5 +741,19 @@ public class DiffSpoonTest {
 		assertTrue(diff.containsAction(actions, "Insert", "Method", "testClear"));
 	}
 
+	@Test
+	public void test_t_224863() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_224863/left_PhraseQuery_1.4.java src/test/resources/examples/t_224863/right_PhraseQuery_1.5.java
+		File fl = new File("src/test/resources/examples/t_224863/left_PhraseQuery_1.4.java");
+		File fr = new File("src/test/resources/examples/t_224863/right_PhraseQuery_1.5.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		diff.printActions(actions);
+		assertEquals(actions.size(), 1);
+		assertTrue(diff.containsAction(actions, "Insert", "Assignment"));
+	}
+
 	
 }
