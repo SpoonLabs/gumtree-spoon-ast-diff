@@ -22,7 +22,7 @@ fr.inria.sacha.spoon.diffSpoon.DiffSpoon <file_1> <file_2>
 
 gumtree-spoon-ast-diff is heavily tested. The testing of AST tree differencing is quite interesting.
 
-There are cases where the oracle is pretty clear, for instance for the addition of a new node.
+There are cases where the oracle is pretty clear, for instance for the deletion of a node.
 
 ```
 // there is only one deletion at line 442
