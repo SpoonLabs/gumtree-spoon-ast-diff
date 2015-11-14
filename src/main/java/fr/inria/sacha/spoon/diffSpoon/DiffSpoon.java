@@ -28,7 +28,6 @@ import spoon.support.compiler.jdt.JDTSnippetCompiler;
 
 import com.github.gumtreediff.actions.ActionGenerator;
 import com.github.gumtreediff.actions.model.Action;
-import com.github.gumtreediff.actions.model.Update;
 import com.github.gumtreediff.matchers.CompositeMatchers.ClassicGumtree;
 import com.github.gumtreediff.matchers.Mapping;
 import com.github.gumtreediff.matchers.MappingStore;
@@ -305,7 +304,7 @@ public class DiffSpoon {
 
 		DiffSpoon ds = new DiffSpoon(true);
 		CtDiff result = ds.compare(f1, f2);
-		ds.printActions(result.getRootActions());
+		System.out.println(result.toString());
 	}
 
 	public static String readFile(File f) throws IOException {
@@ -357,21 +356,4 @@ public class DiffSpoon {
 		}
 		return false;
 	}
-
-	public void printActions(List<Action> actions){
-		for (Action action : actions) {
-			String label = "\"" + action.getNode().getLabel() + "\"";
-			if (action instanceof Update) {
-				label+= " to \""+((Update)action).getValue()+"\"";
-			}
-			System.out.println(
-					"\"" + action.getClass().getSimpleName()+ "\"," 
-					+ " " +"\"" + scanner.gtContext.getTypeLabel(action.getNode())+ "\","
-					+ " " +label					
-					+ " (size: " +action.getNode().getDescendants().size()	+")"				
-					);
-		}		
-	}
-	
-
 }
