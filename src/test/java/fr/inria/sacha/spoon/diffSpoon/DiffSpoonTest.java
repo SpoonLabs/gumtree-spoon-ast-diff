@@ -219,7 +219,7 @@ public class DiffSpoonTest {
 		CtDiff result = diff.compare(fl,fr);
 		
 		List<Action> actions = result.getRootActions();
-		diff.printActions(actions);
+		System.out.println(result.toString());
 		assertEquals(actions.size(), 1);
 		assertTrue(diff.containsAction(actions, "INS", "Method", "getObjectPort"));
 		
@@ -234,7 +234,7 @@ public class DiffSpoonTest {
 		CtDiff result = diff.compare(fl,fr);
 		
 		List<Action> actions = result.getRootActions();
-		diff.printActions(actions);
+		System.out.println(result.toString());
 		assertEquals(actions.size(), 1);
 		assertTrue(diff.containsAction(actions, "Insert", "Field", "_assocEndRoleIcon"));
 	}
@@ -251,7 +251,7 @@ public class DiffSpoonTest {
 		assertTrue(ancestor instanceof CtReturn);
 		
 		List<Action> actions = result.getRootActions();
-		diff.printActions(actions);
+		System.out.println(result.toString());
 		assertEquals(actions.size(), 2);
 		assertTrue(diff.containsAction(actions, "Insert", "BinaryOperator", "OR"));
 		assertTrue(diff.containsAction(actions, "Move", "BinaryOperator", "AND"));
@@ -268,7 +268,7 @@ public class DiffSpoonTest {
 		CtDiff result = diff.compare(fl,fr);
 		
 		List<Action> actions = result.getRootActions();
-		diff.printActions(actions);
+		 System.out.println(result.toString());
 		assertEquals(actions.size(), 1);
 		assertTrue(diff.containsAction(actions, "Insert", "Invocation", "addField"));
 	}
@@ -282,7 +282,7 @@ public class DiffSpoonTest {
 		CtDiff result = diff.compare(fl,fr);
 		
 		List<Action> actions = result.getRootActions();
-		diff.printActions(actions);
+		System.out.println(result.toString());
 		assertEquals(actions.size(), 1);
 		assertTrue(diff.containsAction(actions, "UPD", "Invocation", "getTarget"));
 	}
@@ -301,7 +301,7 @@ public class DiffSpoonTest {
 
 		
 		List<Action> actions = result.getRootActions();
-		diff.printActions(actions);
+		System.out.println(result.toString());
 		assertEquals(actions.size(), 4);
 		assertTrue(diff.containsAction(actions, "Update", "ConstructorCall", "java.io.FileReader"));
 		assertTrue(diff.containsAction(actions, "Insert", "Literal", "\"UTF-8\""));
@@ -323,7 +323,7 @@ public class DiffSpoonTest {
 		CtDiff result = diff.compare(fl,fr);
 		
 		List<Action> actions = result.getRootActions();
-		diff.printActions(actions);
+		System.out.println(result.toString());
 		assertEquals(actions.size(), 1);
 		assertTrue(diff.containsAction(actions, "Insert", "Method", "setEnumerationLiterals"));
 	}
@@ -341,7 +341,7 @@ public class DiffSpoonTest {
 
 		
 		List<Action> actions = result.getRootActions();
-		diff.printActions(actions);
+		System.out.println(result.toString());
 		assertEquals(actions.size(), 2);
 		assertTrue(diff.containsAction(actions, "Update", "Literal", "\" \""));
 		
@@ -361,7 +361,7 @@ public class DiffSpoonTest {
 		CtDiff result = diff.compare(fl,fr);
 		
 		List<Action> actions = result.getRootActions();
-		diff.printActions(actions);
+		System.out.println(result.toString());
 		assertEquals(actions.size(), 1);
 		assertTrue(diff.containsAction(actions, "DEL", "Invocation", "setFocusTraversalPolicyProvider"));
 	}
@@ -375,7 +375,7 @@ public class DiffSpoonTest {
 		CtDiff result = diff.compare(fl,fr);
 		
 		List<Action> actions = result.getRootActions();
-		diff.printActions(actions);
+		System.out.println(result.toString());
 		assertTrue(diff.containsAction(actions, "Insert", "Conditional"));
 		
 		// TODO the delete literal "." found could also be a move to the new conditional, so we don't specify this		
@@ -390,7 +390,7 @@ public class DiffSpoonTest {
 		CtDiff result = diff.compare(fl,fr);
 		
 		List<Action> actions = result.getRootActions();
-		diff.printActions(actions);
+		System.out.println(result.toString());
 		assertEquals(actions.size(), 1);
 		assertTrue(diff.containsAction(actions, "DEL", "Break"));
 	}
@@ -404,7 +404,7 @@ public class DiffSpoonTest {
 		CtDiff result = diff.compare(fl,fr);
 		
 		List<Action> actions = result.getRootActions();
-		diff.printActions(actions);
+		System.out.println(result.toString());
 		assertEquals(actions.size(), 1);
 		assertTrue(diff.containsAction(actions, "Update", "BinaryOperator", "GT"));
 		
@@ -423,7 +423,7 @@ public class DiffSpoonTest {
 		CtDiff result = diff.compare(fl,fr);
 		
 		List<Action> actions = result.getRootActions();
-		diff.printActions(actions);
+		System.out.println(result.toString());
 		assertEquals(actions.size(), 1);
 		assertTrue(diff.containsAction(actions, "Delete", "Invocation", "println"));
 	}
@@ -437,7 +437,7 @@ public class DiffSpoonTest {
 		CtDiff result = diff.compare(fl,fr);
 		
 		List<Action> actions = result.getRootActions();
-		diff.printActions(actions);
+		System.out.println(result.toString());
 		assertEquals(actions.size(), 1);
 		assertTrue(diff.containsAction(actions, "Update", "Invocation", "remove"));
 	}
@@ -451,7 +451,7 @@ public class DiffSpoonTest {
 		CtDiff result = diff.compare(fl,fr);
 		
 		List<Action> actions = result.getRootActions();
-		diff.printActions(actions);
+		System.out.println(result.toString());
 		assertEquals(actions.size(), 1);
 		assertTrue(diff.containsAction(actions, "Update", "Invocation", "removeElement"));
 	}
@@ -465,7 +465,7 @@ public class DiffSpoonTest {
 		CtDiff result = diff.compare(fl,fr);
 		
 		List<Action> actions = result.getRootActions();
-		diff.printActions(actions);
+		System.out.println(result.toString());
 		assertEquals(actions.size(), 1);
 		assertTrue(diff.containsAction(actions, "Update", "Invocation", "add"));
 	}
@@ -479,7 +479,7 @@ public class DiffSpoonTest {
 		CtDiff result = diff.compare(fl,fr);
 		
 		List<Action> actions = result.getRootActions();
-		diff.printActions(actions);
+		System.out.println(result.toString());
 		assertEquals(actions.size(), 1);
 		assertTrue(diff.containsAction(actions, "Insert", "Literal", "null"));
 		
@@ -498,7 +498,7 @@ public class DiffSpoonTest {
 		CtDiff result = diff.compare(fl,fr);
 		
 		List<Action> actions = result.getRootActions();
-		diff.printActions(actions);
+		System.out.println(result.toString());
 		assertEquals(actions.size(), 1);
 		assertTrue(diff.containsAction(actions, "Update", "Literal", "\"By holding down CTL and dragging.\""));
 	}
@@ -516,7 +516,7 @@ public class DiffSpoonTest {
 		assertEquals(229,ancestor.getPosition().getLine());
 
 		List<Action> actions = result.getRootActions();
-		diff.printActions(actions);
+		System.out.println(result.toString());
 		assertEquals(actions.size(), 3);
 		assertEquals(229,ancestor.getPosition().getLine());
 		
@@ -540,7 +540,7 @@ public class DiffSpoonTest {
 		CtDiff result = diff.compare(fl,fr);
 		
 		List<Action> actions = result.getRootActions();
-		diff.printActions(actions);
+		System.out.println(result.toString());
 		assertEquals(actions.size(), 1);
 		assertTrue(diff.containsAction(actions, "Insert", "Invocation", "append"));
 	}
@@ -558,7 +558,7 @@ public class DiffSpoonTest {
 
 		
 		List<Action> actions = result.getRootActions();
-		diff.printActions(actions);
+		System.out.println(result.toString());
 		assertTrue(diff.containsAction(actions,"Insert", "BinaryOperator", "AND"));
 		
 		// TODO there is a move that is not detected but should be
@@ -575,7 +575,7 @@ public class DiffSpoonTest {
 		CtDiff result = diff.compare(fl,fr);
 		
 		List<Action> actions = result.getRootActions();
-		diff.printActions(actions);
+		System.out.println(result.toString());
 		assertEquals(actions.size(), 1);
 		assertTrue(diff.containsAction(actions, "Update", "Field", "GAME_NEW_ATTACK"));
 	}
@@ -592,7 +592,7 @@ public class DiffSpoonTest {
 		assertTrue(ancestor instanceof CtClass);
 
 		List<Action> actions = result.getRootActions();
-		diff.printActions(actions);
+		System.out.println(result.toString());
 		assertEquals(actions.size(), 2);
 		assertTrue(diff.containsAction(actions, "Update", "Literal", "\" \""));
 		assertTrue(diff.containsAction(actions, "Update", "Literal","\"        \\n\""));
@@ -607,7 +607,7 @@ public class DiffSpoonTest {
 		CtDiff result = diff.compare(fl,fr);
 		
 		List<Action> actions = result.getRootActions();
-		diff.printActions(actions);
+		System.out.println(result.toString());
 		assertEquals(actions.size(), 1);
 		assertTrue(diff.containsAction(actions, "Insert", "Invocation", "refresh"));
 	}
@@ -621,7 +621,7 @@ public class DiffSpoonTest {
 		CtDiff result = diff.compare(fl,fr);
 		
 		List<Action> actions = result.getRootActions();
-		diff.printActions(actions);
+		System.out.println(result.toString());
 		assertEquals(actions.size(), 1);
 		assertTrue(diff.containsAction(actions, "DEL", "Literal", "\"UTF-8\""));
 		assertEquals(442, result.changedNode().getPosition().getLine());
@@ -636,7 +636,7 @@ public class DiffSpoonTest {
 		CtDiff result = diff.compare(fl,fr);
 		
 		List<Action> actions = result.getRootActions();
-		diff.printActions(actions);
+		System.out.println(result.toString());
 		assertEquals(actions.size(), 1);
 		assertTrue(diff.containsAction(actions, "Update", "VariableRead", "IEntityMovementType.MOVE_VTOL_RUN"));
 	}
@@ -653,7 +653,7 @@ public class DiffSpoonTest {
 		assertTrue(ancestor instanceof CtBinaryOperator);
 		
 		List<Action> actions = result.getRootActions();
-		diff.printActions(actions);
+		System.out.println(result.toString());
 		assertEquals(actions.size(), 2);
 		assertTrue(diff.containsAction(actions, "Insert", "BinaryOperator", "AND"));
 		assertTrue(diff.containsAction(actions, "Move", "BinaryOperator", "AND"));
@@ -673,7 +673,7 @@ public class DiffSpoonTest {
 		assertEquals(344,ancestor.getPosition().getLine());
 		
 		List<Action> actions = result.getRootActions();
-		diff.printActions(actions);
+		System.out.println(result.toString());
 		assertEquals(actions.size(), 3);
 		assertTrue(diff.containsAction(actions, "Delete", "Invocation", "format"));
 		assertTrue(diff.containsAction(actions, "Insert", "BinaryOperator", "PLUS"));
@@ -691,7 +691,7 @@ public class DiffSpoonTest {
 		CtDiff result = diff.compare(fl,fr);
 		
 		List<Action> actions = result.getRootActions();
-		diff.printActions(actions);
+		System.out.println(result.toString());
 		assertEquals(actions.size(), 2);
 		assertTrue(diff.containsAction(actions, "Insert", "If"));
 		assertTrue(diff.containsAction(actions, "Move", "Invocation", "growBuffer"));
@@ -706,7 +706,7 @@ public class DiffSpoonTest {
 		CtDiff result = diff.compare(fl,fr);
 		
 		List<Action> actions = result.getRootActions();
-		diff.printActions(actions);
+		System.out.println(result.toString());
 		assertEquals(actions.size(), 2);
 		assertTrue(diff.containsAction(actions, "DEL", "Invocation", "addKeyListener"));
 		assertTrue(diff.containsAction(actions, "DEL", "Class","KeyHandler"));
@@ -721,7 +721,7 @@ public class DiffSpoonTest {
 		CtDiff result = diff.compare(fl,fr);
 		
 		List<Action> actions = result.getRootActions();
-		diff.printActions(actions);
+		System.out.println(result.toString());
 		assertEquals(actions.size(), 1);
 		assertTrue(diff.containsAction(actions, "Update", "Invocation", "delete" ));
 	}
@@ -736,7 +736,7 @@ public class DiffSpoonTest {
 		CtDiff result = diff.compare(fl,fr);
 		
 		List<Action> actions = result.getRootActions();
-		diff.printActions(actions);
+		System.out.println(result.toString());
 		assertEquals(actions.size(), 1);
 		assertTrue(diff.containsAction(actions, "Insert", "Method", "testClear"));
 	}
@@ -750,7 +750,7 @@ public class DiffSpoonTest {
 		CtDiff result = diff.compare(fl,fr);
 		
 		List<Action> actions = result.getRootActions();
-		diff.printActions(actions);
+		System.out.println(result.toString());
 		assertEquals(actions.size(), 1);
 		assertTrue(diff.containsAction(actions, "Insert", "Assignment"));
 	}
