@@ -800,4 +800,20 @@ public class DiffSpoonTest {
 		assertEquals(324, result.changedNode().getPosition().getLine());
 	}
 
+	@Test
+	public void test_t_225073() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_225073/left_IndexWriter_1.21.java src/test/resources/examples/t_225073/right_IndexWriter_1.22.java
+		File fl = new File("src/test/resources/examples/t_225073/left_IndexWriter_1.21.java");
+		File fr = new File("src/test/resources/examples/t_225073/right_IndexWriter_1.22.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		result.debugInformation();
+		assertEquals(1, actions.size());
+		assertTrue(diff.containsAction(actions, "Insert", "VariableRead", "COMMIT_LOCK_TIMEOUT"));
+		// the change is in a constructor call
+		assertTrue(result.changedNode() instanceof CtConstructorCall);
+	}
+
 }

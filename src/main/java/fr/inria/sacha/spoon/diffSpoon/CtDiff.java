@@ -173,9 +173,12 @@ public class CtDiff {
 			if (action instanceof Update) {
 				label+= " to \""+((Update)action).getValue()+"\"";
 			}
+			String nodeType = action.getNode().getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT).getClass().getSimpleName();
+			nodeType = nodeType.substring(2, nodeType.length() - 4);
+
 			System.out.println(
 					"\"" + action.getClass().getSimpleName()+ "\"," 
-					+ " " +"\"" + action.getNode().getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT).getClass().getName()+ "\","
+					+ " " +"\"" + nodeType+ "\","
 					+ " " +label					
 					+ " (size: " +action.getNode().getDescendants().size()	+")"				
 					);
