@@ -769,4 +769,19 @@ public class DiffSpoonTest {
 		assertTrue(diff.containsAction(actions, "UPD", "Literal", "\"Increment must be positive: \""));
 	}
 
+	@Test
+	public void test_t_224890() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_224890/left_DateField_1.4.java src/test/resources/examples/t_224890/right_DateField_1.5.java
+		File fl = new File("src/test/resources/examples/t_224890/left_DateField_1.4.java");
+		File fr = new File("src/test/resources/examples/t_224890/right_DateField_1.5.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		System.out.println(result.toString());
+		assertEquals(actions.size(), 1);
+		assertTrue(diff.containsAction(actions, "UPD", "Literal"));
+		assertEquals(112, result.changedNode().getPosition().getLine());
+	}
+
 }
