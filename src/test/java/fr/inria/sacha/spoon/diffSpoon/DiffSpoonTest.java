@@ -815,5 +815,20 @@ public class DiffSpoonTest {
 		// the change is in a constructor call
 		assertTrue(result.changedNode() instanceof CtConstructorCall);
 	}
+	
+	@Test
+	public void test_t_286696() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_286696/left_IrmiPRODelegate_1.2.java src/test/resources/examples/t_286696/right_IrmiPRODelegate_1.3.java
+		File fl = new File("src/test/resources/examples/t_286696/left_IrmiPRODelegate_1.2.java");
+		File fr = new File("src/test/resources/examples/t_286696/right_IrmiPRODelegate_1.3.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		result.debugInformation();
+		assertEquals(actions.size(), 1);
+		assertTrue(diff.containsAction(actions, "Update", "FieldRead", "CarolDefaultValues.SERVER_JRMP_PORT"));
+	}
+
 
 }
