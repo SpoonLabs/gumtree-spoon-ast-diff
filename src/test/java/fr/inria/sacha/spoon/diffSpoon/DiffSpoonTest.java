@@ -220,7 +220,8 @@ public class DiffSpoonTest {
 		
 		List<Action> actions = result.getRootActions();
 		System.out.println(result.toString());
-		assertEquals(actions.size(), 1);
+		result.debugInformation();//TODO there is still a bug there
+		assertEquals(1, actions.size());
 		assertTrue(diff.containsAction(actions, "INS", "Method", "getObjectPort"));
 		
 	}
@@ -301,7 +302,7 @@ public class DiffSpoonTest {
 
 		
 		List<Action> actions = result.getRootActions();
-		System.out.println(result.toString());
+		result.debugInformation();
 		assertEquals(actions.size(), 4);
 		assertTrue(diff.containsAction(actions, "Update", "ConstructorCall", "java.io.FileReader"));
 		assertTrue(diff.containsAction(actions, "Insert", "Literal", "\"UTF-8\""));
@@ -782,6 +783,21 @@ public class DiffSpoonTest {
 		assertEquals(actions.size(), 1);
 		assertTrue(diff.containsAction(actions, "UPD", "Literal"));
 		assertEquals(112, result.changedNode().getPosition().getLine());
+	}
+
+	@Test
+	public void test_t_225008() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_225008/left_Similarity_1.9.java src/test/resources/examples/t_225008/right_Similarity_1.10.java
+		File fl = new File("src/test/resources/examples/t_225008/left_Similarity_1.9.java");
+		File fr = new File("src/test/resources/examples/t_225008/right_Similarity_1.10.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		System.out.println(result.toString());
+		assertEquals(actions.size(), 1);
+		assertTrue(diff.containsAction(actions, "Update", "Modifier", "protected"));
+		assertEquals(324, result.changedNode().getPosition().getLine());
 	}
 
 }

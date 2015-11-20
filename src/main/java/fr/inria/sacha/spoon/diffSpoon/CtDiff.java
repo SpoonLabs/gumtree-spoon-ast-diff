@@ -3,8 +3,11 @@ package fr.inria.sacha.spoon.diffSpoon;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.plaf.basic.BasicSliderUI.ActionScroller;
+
 import com.github.gumtreediff.actions.model.Move;
 import com.github.gumtreediff.actions.model.Update;
+
 import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtPackage;
@@ -101,6 +104,9 @@ public class CtDiff {
 
 	@Override
 	public String toString(){
+		if (getRootActions().size()==0) {
+			return "no AST change";
+		}
 		StringBuilder stringBuilder = new StringBuilder();
 		CtElement ctElement = commonAncestor();
 		for (Action action : getRootActions()) {
@@ -161,4 +167,20 @@ public class CtDiff {
 		return stringBuilder.toString();
 	}
 
+	public void debugInformation(){
+		for (Action action : getRootActions()) {
+			String label = "\"" + action.getNode().getLabel() + "\"";
+			if (action instanceof Update) {
+				label+= " to \""+((Update)action).getValue()+"\"";
+			}
+			System.out.println(
+					"\"" + action.getClass().getSimpleName()+ "\"," 
+					+ " " +"\"" + action.getNode().getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT).getClass().getName()+ "\","
+					+ " " +label					
+					+ " (size: " +action.getNode().getDescendants().size()	+")"				
+					);
+		}		
+	}
+
+	
 }

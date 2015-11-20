@@ -34,7 +34,9 @@ import spoon.reflect.code.CtUnaryOperator;
 import spoon.reflect.code.CtVariableAccess;
 import spoon.reflect.declaration.CtAnonymousExecutable;
 import spoon.reflect.declaration.CtElement;
+import spoon.reflect.declaration.CtModifiable;
 import spoon.reflect.declaration.CtNamedElement;
+import spoon.reflect.declaration.ModifierKind;
 import spoon.reflect.reference.CtReference;
 import spoon.reflect.visitor.CtScanner;
 
@@ -74,10 +76,7 @@ public class SpoonGumTreeBuilder extends CtScanner {
 	@SuppressWarnings("rawtypes")
 	private void createNode(CtElement obj) {
 
-		String label = "";
-		String type = getTypeName(obj.getClass().getSimpleName());
-		int id = revolveTypeId(obj);
-
+		String label = "";		
 		if (obj instanceof CtInvocation ) {
 			CtInvocation inv = (CtInvocation) obj;
 			if (inv.getExecutable() == null) {
@@ -87,12 +86,8 @@ public class SpoonGumTreeBuilder extends CtScanner {
 			}
 		} else 	if (obj instanceof CtConstructorCall ) {
 			CtConstructorCall inv = (CtConstructorCall) obj;
-			//workaround, the alternative that follows should be better
-			//label = inv.getType().toString();
-			
-			// bug in some case 
-			if (inv.getExecutable() != null) {
-				label = inv.getExecutable().getDeclaringType().getQualifiedName();
+			if (inv.getType() != null) {
+				label = inv.getType().toString();
 			}
 		} else if (obj instanceof CtNamedElement) {
 			label = ((CtNamedElement) obj).getSimpleName();
@@ -125,9 +120,27 @@ public class SpoonGumTreeBuilder extends CtScanner {
 			label = "";
 		}
 
-		ITree newNode = createNode(label, type, id);
+		String type = getTypeName(obj.getClass().getSimpleName());
+		ITree newNode = createNode(label, type);
+		
+		if (obj instanceof CtModifiable) {
+			addModifiers(newNode, (CtModifiable) obj);
+		}
+
+		addNodeToTree(newNode);
+		
 		newNode.setMetadata(SPOON_OBJECT, obj);
 	}
+	private void addModifiers(ITree node, CtModifiable obj) {
+		ITree modifiers = createNode("", "Modifiers");
+		for(ModifierKind kind : obj.getModifiers()) {
+			ITree modifier = createNode(kind.toString(), "Modifier");
+			modifier.setMetadata(SPOON_OBJECT, obj);
+			modifiers.addChild(modifier);			
+		}
+		node.addChild(modifiers);
+	}
+
 	/**
 	 * Removes the "Ct" at the beginning and the "Impl" at the end
 	 * @param simpleName
@@ -140,16 +153,16 @@ public class SpoonGumTreeBuilder extends CtScanner {
 	
 	TreeContext gtContext = new TreeContext();
 
-	private ITree createNode(String label, String typeLabel, int typeId) {
-		
+	private ITree createNode(String label, String typeLabel) {
+		int typeId = resolveTypeId(typeLabel);
 		ITree node = gtContext.createTree(typeId, label, typeLabel);
-
-		nodes.peek().addChild(node);
-		nodes.push(node);
-		
 		return node;
 	}
 
+	private void addNodeToTree(ITree node) {
+		nodes.peek().addChild(node);
+		nodes.push(node);
+	}
 	
 	@Override
 	public void enter(CtElement element) {
@@ -184,11 +197,6 @@ public class SpoonGumTreeBuilder extends CtScanner {
 
 	public ITree getRoot() {
 		return root;
-	}
-
-	public int revolveTypeId(Object e) {
-		String typeClass = e.getClass().getCanonicalName();
-		return resolveTypeId(typeClass);
 	}
 
 	public int resolveTypeId(String typeClass) {
