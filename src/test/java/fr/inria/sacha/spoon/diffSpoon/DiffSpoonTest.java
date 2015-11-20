@@ -638,7 +638,7 @@ public class DiffSpoonTest {
 		List<Action> actions = result.getRootActions();
 		diff.printActions(actions);
 		assertEquals(actions.size(), 1);
-		assertTrue(diff.containsAction(actions, "Update", "VariableRead", "IEntityMovementType.MOVE_VTOL_RUN"));
+		assertTrue(diff.containsAction(actions, "Update", "FieldRead", "IEntityMovementType.MOVE_VTOL_RUN"));
 	}
 
 	@Test
@@ -697,7 +697,7 @@ public class DiffSpoonTest {
 		assertTrue(diff.containsAction(actions, "Move", "Invocation", "growBuffer"));
 	}
 
-	//@Test // bug in Spoon
+	@Test 
 	public void test_t_224771() throws Exception{
 		DiffSpoon diff = new DiffSpoon(true);
 		// meld  src/test/resources/examples/t_224771/left_IndexWriter_1.2.java src/test/resources/examples/t_224771/right_IndexWriter_1.3.java
@@ -708,8 +708,8 @@ public class DiffSpoonTest {
 		List<Action> actions = result.getRootActions();
 		diff.printActions(actions);
 		assertEquals(actions.size(), 2);
-		assertTrue(diff.containsAction(actions, "DEL", "Invocation", "addKeyListener"));
-		assertTrue(diff.containsAction(actions, "DEL", "Class","KeyHandler"));
+		assertTrue(diff.containsAction(actions, "Insert", "BinaryOperator", "OR"));
+		assertTrue(diff.containsAction(actions, "Move", "Invocation", "hasDeletions"));
 	}
 
 	@Test

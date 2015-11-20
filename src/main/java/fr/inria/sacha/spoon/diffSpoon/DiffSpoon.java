@@ -135,7 +135,6 @@ public class DiffSpoon {
 		}
 	
 		CtType<?> ret =  factory.Type().getAll().get(0);
-		factory.Package().getAllRoots().clear();
 		return ret;
 	}
 	
