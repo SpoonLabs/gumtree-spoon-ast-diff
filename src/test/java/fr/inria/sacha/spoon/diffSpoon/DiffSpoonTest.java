@@ -830,5 +830,18 @@ public class DiffSpoonTest {
 		assertTrue(diff.containsAction(actions, "Update", "FieldRead", "CarolDefaultValues.SERVER_JRMP_PORT"));
 	}
 
+	@Test
+	public void test_t_225106() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_225106/left_SegmentTermDocs_1.6.java src/test/resources/examples/t_225106/right_SegmentTermDocs_1.7.java
+		File fl = new File("src/test/resources/examples/t_225106/left_SegmentTermDocs_1.6.java");
+		File fr = new File("src/test/resources/examples/t_225106/right_SegmentTermDocs_1.7.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		result.debugInformation();
+		assertEquals(1, actions.size());
+		assertTrue(diff.containsAction(actions, "Update", "BinaryOperator", "GT"));
+	}
 
 }
