@@ -844,4 +844,19 @@ public class DiffSpoonTest {
 		assertTrue(diff.containsAction(actions, "Update", "BinaryOperator", "GT"));
 	}
 
+	// @Test TODO bug, should detect a move invocation
+	public void test_t_213712() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_213712/left_ActionAddSignalsToSignalEvent_1.2.java src/test/resources/examples/t_213712/right_ActionAddSignalsToSignalEvent_1.3.java
+		File fl = new File("src/test/resources/examples/t_213712/left_ActionAddSignalsToSignalEvent_1.2.java");
+		File fr = new File("src/test/resources/examples/t_213712/right_ActionAddSignalsToSignalEvent_1.3.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		result.debugInformation();
+		assertEquals(2, actions.size());
+		assertTrue(diff.containsAction(actions, "DEL", "Invocation", "addKeyListener"));
+		assertTrue(diff.containsAction(actions, "DEL", "Class","KeyHandler"));
+	}
+
 }
