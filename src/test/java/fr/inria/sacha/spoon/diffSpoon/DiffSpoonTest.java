@@ -859,4 +859,18 @@ public class DiffSpoonTest {
 		assertTrue(diff.containsAction(actions, "DEL", "Class","KeyHandler"));
 	}
 
+	@Test
+	public void test_t_225225() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_225225/left_TestSpans_1.3.java src/test/resources/examples/t_225225/right_TestSpans_1.4.java
+		File fl = new File("src/test/resources/examples/t_225225/left_TestSpans_1.3.java");
+		File fr = new File("src/test/resources/examples/t_225225/right_TestSpans_1.4.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		result.debugInformation();
+		assertEquals(1, actions.size());
+		assertTrue(diff.containsAction(actions, "DEL", "LocalVariable", "buffer"));
+	}
+
 }
