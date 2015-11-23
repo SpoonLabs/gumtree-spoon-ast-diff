@@ -99,13 +99,13 @@ public class DiffSpoon {
 			
 	}
 	
-	public CtClass getCtClass(File f) throws Exception{
+	public CtType getCtClass(File f) throws Exception{
 		SpoonResource sr1 = SpoonResourceHelper .createResource(f) ;
 		SpoonCompiler compiler = new JDTBasedSpoonCompiler(factory);
 		compiler.getFactory().getEnvironment().setLevel("OFF");
 		compiler.addInputSource(sr1);
 		compiler.build();
-		CtClass<?> clazz1 = (CtClass<?>) factory.Type().getAll().get(0);
+		CtType<?> clazz1 = (CtType<?>) factory.Type().getAll().get(0);
 		return clazz1;
 	}
 
@@ -115,7 +115,7 @@ public class DiffSpoon {
 		SpoonCompiler compiler = new JDTSnippetCompiler(factory, content);//new JDTBasedSpoonCompiler(factory);
 		//compiler.addInputSource(new VirtualFile(content,""));
 		compiler.build();
-		CtClass<?> clazz1 = (CtClass<?>) factory.Type().getAll().get(0);
+		CtType<?> clazz1 = (CtType<?>) factory.Type().getAll().get(0);
 		return clazz1;
 	}
 	
@@ -143,9 +143,9 @@ public class DiffSpoon {
 	
 	public CtDiff compare(File f1, File f2) throws Exception {
 		 
-		CtClass<?> clazz1 = getCtClass(f1);
+		CtType<?> clazz1 = getCtClass(f1);
 			
-		CtClass<?> clazz2 = getCtClass(f2);
+		CtType<?> clazz2 = getCtClass(f2);
 		
 		CtDiff result = this.analyze(clazz1,clazz2);
 		
