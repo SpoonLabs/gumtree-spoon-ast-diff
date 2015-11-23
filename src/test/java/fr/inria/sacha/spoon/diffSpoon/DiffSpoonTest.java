@@ -220,7 +220,7 @@ public class DiffSpoonTest {
 		
 		List<Action> actions = result.getRootActions();
 		System.out.println(result.toString());
-		result.debugInformation();//TODO there is still a bug there
+		result.debugInformation();
 		assertEquals(1, actions.size());
 		assertTrue(diff.containsAction(actions, "INS", "Method", "getObjectPort"));
 		
@@ -844,7 +844,7 @@ public class DiffSpoonTest {
 		assertTrue(diff.containsAction(actions, "Update", "BinaryOperator", "GT"));
 	}
 
-	// @Test TODO bug, should detect a move invocation
+	// @Test TODO bug, should detect a move invocation in the new block
 	public void test_t_213712() throws Exception{
 		DiffSpoon diff = new DiffSpoon(true);
 		// meld  src/test/resources/examples/t_213712/left_ActionAddSignalsToSignalEvent_1.2.java src/test/resources/examples/t_213712/right_ActionAddSignalsToSignalEvent_1.3.java
@@ -888,4 +888,18 @@ public class DiffSpoonTest {
 	}
 
 	
+	//@Test 
+	public void test_t_225262() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_225262/left_FieldInfos_1.9.java src/test/resources/examples/t_225262/right_FieldInfos_1.10.java
+		File fl = new File("src/test/resources/examples/t_225262/left_FieldInfos_1.9.java");
+		File fr = new File("src/test/resources/examples/t_225262/right_FieldInfos_1.10.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		result.debugInformation();
+		
+		// bug in Gumtree, no block insert + move assignment
+	}
+
 }
