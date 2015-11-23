@@ -902,4 +902,19 @@ public class DiffSpoonTest {
 		// bug in Gumtree, no block insert + move assignment
 	}
 
+	@Test
+	public void test_t_225391() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_225391/left_IndexHTML_1.4.java src/test/resources/examples/t_225391/right_IndexHTML_1.5.java
+		File fl = new File("src/test/resources/examples/t_225391/left_IndexHTML_1.4.java");
+		File fr = new File("src/test/resources/examples/t_225391/right_IndexHTML_1.5.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		result.debugInformation();
+		assertEquals(2, actions.size());
+		assertTrue(diff.containsAction(actions, "Delete", "Assignment"));
+		assertTrue(diff.containsAction(actions, "Insert", "Invocation", "setMaxFieldLength" ));
+	}
+
 }
