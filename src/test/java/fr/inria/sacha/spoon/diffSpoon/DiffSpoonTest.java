@@ -873,4 +873,19 @@ public class DiffSpoonTest {
 		assertTrue(diff.containsAction(actions, "DEL", "LocalVariable", "buffer"));
 	}
 
+	@Test
+	public void test_t_225247() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_225247/left_BooleanScorer_1.10.java src/test/resources/examples/t_225247/right_BooleanScorer_1.11.java
+		File fl = new File("src/test/resources/examples/t_225247/left_BooleanScorer_1.10.java");
+		File fr = new File("src/test/resources/examples/t_225247/right_BooleanScorer_1.11.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		result.debugInformation();
+		assertEquals(1, actions.size());
+		assertTrue(diff.containsAction(actions, "Update", "BinaryOperator", "BITOR"));
+	}
+
+	
 }
