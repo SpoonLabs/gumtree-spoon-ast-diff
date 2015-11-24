@@ -754,6 +754,12 @@ public class DiffSpoonTest {
 		System.out.println(result.toString());
 		assertEquals(actions.size(), 1);
 		assertTrue(diff.containsAction(actions, "Insert", "Assignment"));
+		
+		// the change is in the block that starts at line110
+		assertEquals(110, result.changedNode().getPosition().getLine());
+		
+		// and the new element is at line 111
+		assertEquals(111, ((CtElement)actions.get(0).getNode().getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT)).getPosition().getLine());
 	}
 
 	@Test
