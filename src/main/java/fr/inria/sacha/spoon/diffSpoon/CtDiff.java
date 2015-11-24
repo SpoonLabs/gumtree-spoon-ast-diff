@@ -2,11 +2,7 @@ package fr.inria.sacha.spoon.diffSpoon;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.plaf.basic.BasicSliderUI.ActionScroller;
-
-import com.github.gumtreediff.actions.model.Move;
-import com.github.gumtreediff.actions.model.Update;
+import java.util.NoSuchElementException;
 
 import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtElement;
@@ -15,6 +11,8 @@ import spoon.reflect.declaration.CtType;
 
 import com.github.gumtreediff.actions.model.Action;
 import com.github.gumtreediff.actions.model.Insert;
+import com.github.gumtreediff.actions.model.Move;
+import com.github.gumtreediff.actions.model.Update;
 import com.github.gumtreediff.matchers.MappingStore;
 
 
@@ -183,6 +181,16 @@ public class CtDiff {
 					+ " (size: " +action.getNode().getDescendants().size()	+")"				
 					);
 		}		
+	}
+
+	public CtElement changedNode(
+			Class class1) {
+		for (Action a:getRootActions()) {
+			if (class1.isAssignableFrom(a.getClass())) {
+				return (CtElement) a.getNode().getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT);
+			}
+		}
+		throw new NoSuchElementException();
 	}
 
 	
