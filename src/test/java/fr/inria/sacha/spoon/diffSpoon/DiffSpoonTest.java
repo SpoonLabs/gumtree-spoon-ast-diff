@@ -976,5 +976,18 @@ public class DiffSpoonTest {
 		assertTrue(diff.containsAction(actions,"Update", "Invocation", "getMessage"));
 	}
 
+	@Test
+	public void test_t_225434() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_225434/left_BufferedIndexInput_1.2.java src/test/resources/examples/t_225434/right_BufferedIndexInput_1.3.java
+		File fl = new File("src/test/resources/examples/t_225434/left_BufferedIndexInput_1.2.java");
+		File fr = new File("src/test/resources/examples/t_225434/right_BufferedIndexInput_1.3.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		result.debugInformation();
+		assertEquals(1, actions.size());
+		assertTrue(diff.containsAction(actions, "Update", "BinaryOperator", "EQ"));
+	}
 
 }
