@@ -40,7 +40,7 @@ public class CDiffTest {
 		fr =getClass().getResource("/examples/test3/CommandLine2.java");
 
 		result = diff.compare(fl,fr);
-		assertEquals("Delete Method at org.apache.commons.cli.CommandLine:168" + newline
+		assertEquals("Delete Method at org.apache.commons.cli.CommandLine:161" + newline
 				+ "\tpublic java.lang.String[] getOptionValues(java.lang.String opt) {" + newline
 				+ "\t    java.util.List<java.lang.String> values = new java.util.ArrayList<java.lang.String>();" + newline
 				+ "\t    for (org.apache.commons.cli.Option option : options) {" + newline

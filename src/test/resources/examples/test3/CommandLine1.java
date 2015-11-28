@@ -158,13 +158,6 @@ public class CommandLine implements Serializable
         return getOptionValue(String.valueOf(opt));
     }
 
-    /** 
-     * Retrieves the array of values, if any, of an option.
-     *
-     * @param opt string name of the option
-     * @return Values of the argument if option is set, and has an argument,
-     * otherwise null.
-     */
     public String[] getOptionValues(String opt)
     {
         List<String> values = new ArrayList<String>();
