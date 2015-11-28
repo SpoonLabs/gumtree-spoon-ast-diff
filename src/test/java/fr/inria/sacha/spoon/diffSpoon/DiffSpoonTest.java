@@ -961,5 +961,20 @@ public class DiffSpoonTest {
 		assertTrue(diff.containsAction(actions, "Delete", "Assignment"));
 		assertTrue(diff.containsAction(actions, "Insert", "Invocation", "setMaxFieldLength" ));
 	}
+	
+	@Test
+	public void test_t_225414() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_225414/left_IndexWriter_1.41.java src/test/resources/examples/t_225414/right_IndexWriter_1.42.java
+		File fl = new File("src/test/resources/examples/t_225414/left_IndexWriter_1.41.java");
+		File fr = new File("src/test/resources/examples/t_225414/right_IndexWriter_1.42.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		result.debugInformation();
+		assertEquals(1, actions.size());
+		assertTrue(diff.containsAction(actions,"Update", "Invocation", "getMessage"));
+	}
+
 
 }
