@@ -990,4 +990,17 @@ public class DiffSpoonTest {
 		assertTrue(diff.containsAction(actions, "Update", "BinaryOperator", "EQ"));
 	}
 
+	@Test
+	public void test_t_225525() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_225525/left_Module_1.6.java src/test/resources/examples/t_225525/right_Module_1.7.java
+		File fl = new File("src/test/resources/examples/t_225525/left_Module_1.6.java");
+		File fr = new File("src/test/resources/examples/t_225525/right_Module_1.7.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		result.debugInformation();
+		assertEquals(1, actions.size());
+		assertTrue(diff.containsAction(actions, "Insert", "Method", "getAttributes" ));
+	}
 }
