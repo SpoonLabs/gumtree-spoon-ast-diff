@@ -1021,5 +1021,20 @@ public class DiffSpoonTest {
 		assertEquals(1, actions.size());
 		assertTrue(diff.containsAction(actions, "Update", "Invocation", "error"));
 	}
+	
+	@Test
+	public void test_t_225893() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_225893/left_RQueryUser_1.1.java src/test/resources/examples/t_225893/right_RQueryUser_1.2.java
+		File fl = new File("src/test/resources/examples/t_225893/left_RQueryUser_1.1.java");
+		File fr = new File("src/test/resources/examples/t_225893/right_RQueryUser_1.2.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		result.debugInformation();
+		assertEquals(1, actions.size());
+		assertTrue(diff.containsAction(actions, "Insert", "Method", "delete"));
+	}
+
 
 }
