@@ -113,14 +113,14 @@ public class ActionClassifier {
 			rootActions.add(a);
 		}
 		for (ITree t : srcDelTrees) {
-			if (!srcDelTrees.contains(t.getParent())) {
+			if (!srcDelTrees.contains(t.getParent()) && !srcUpdTrees.contains(t.getParent()) ) {
 				Action a = originalActionsSrc.get(t);
 				rootActions.add(a);
 
 			}
 		}
 		for (ITree t : dstAddTrees) {
-			if (!dstAddTrees.contains(t.getParent())) {
+			if (!dstAddTrees.contains(t.getParent()) && !dstUpdTrees.contains(t.getParent())  ) {
 				Action a = originalActionsDst.get(t);
 				rootActions.add(a);
 			}

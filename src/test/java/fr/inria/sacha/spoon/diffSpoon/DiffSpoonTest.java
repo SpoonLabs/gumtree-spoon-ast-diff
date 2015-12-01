@@ -88,7 +88,7 @@ public class DiffSpoonTest {
 		
 		DiffSpoon diff = new DiffSpoon(true);
 		CtDiff editScript = diff.compare(c1, c2);
-		assertTrue(editScript.rootActions.size() == 1);
+		assertTrue(editScript.getRootActions().size() == 1);
 	}
 
 
@@ -332,11 +332,14 @@ public class DiffSpoonTest {
 		
 		List<Action> actions = result.getRootActions();
 		result.debugInformation();
-		assertEquals(actions.size(), 4);
+		assertEquals(2, actions.size());
 		assertTrue(diff.containsAction(actions, "Update", "ConstructorCall", "java.io.FileReader"));
-		assertTrue(diff.containsAction(actions, "Insert", "Literal", "\"UTF-8\""));
-		assertTrue(diff.containsAction(actions, "Insert", "ConstructorCall", "java.io.FileInputStream"));
 		assertTrue(diff.containsAction(actions, "Move", "VariableRead", "file"));
+		
+		// additional checks on low-level actions
+		assertTrue(diff.containsAction(result.getAllActions(), "Insert", "Literal", "\"UTF-8\""));
+		assertTrue(diff.containsAction(result.getAllActions(), "Insert", "ConstructorCall", "java.io.FileInputStream"));
+
 		
 		// the change is in the local variable declaration
 		CtElement elem = (CtElement) actions.get(0).getNode().getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT);
@@ -698,13 +701,14 @@ public class DiffSpoonTest {
 		File fr = new File("src/test/resources/examples/t_224542/right_TestBot_1.76.java");
 		CtDiff result = diff.compare(fl,fr);
 		
+		result.debugInformation();
+
 		CtElement ancestor = result.commonAncestor();		
 		assertTrue(ancestor instanceof CtInvocation);
 		assertEquals("println", ((CtInvocation)ancestor).getExecutable().getSimpleName());
 		assertEquals(344,ancestor.getPosition().getLine());
 		
 		List<Action> actions = result.getRootActions();
-		result.debugInformation();
 		assertEquals(3, actions.size());
 		assertTrue(diff.containsAction(actions, "Delete", "Invocation", "format"));
 		assertTrue(diff.containsAction(actions, "Insert", "BinaryOperator", "PLUS"));
@@ -1003,4 +1007,19 @@ public class DiffSpoonTest {
 		assertEquals(1, actions.size());
 		assertTrue(diff.containsAction(actions, "Insert", "Method", "getAttributes" ));
 	}
+	
+	@Test
+	public void test_t_225724() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_225724/left_ScarabRequestTool_1.36.java src/test/resources/examples/t_225724/right_ScarabRequestTool_1.37.java
+		File fl = new File("src/test/resources/examples/t_225724/left_ScarabRequestTool_1.36.java");
+		File fr = new File("src/test/resources/examples/t_225724/right_ScarabRequestTool_1.37.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		result.debugInformation();
+		assertEquals(1, actions.size());
+		assertTrue(diff.containsAction(actions, "Update", "Invocation", "error"));
+	}
+
 }
