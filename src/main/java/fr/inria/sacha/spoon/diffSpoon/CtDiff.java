@@ -14,6 +14,7 @@ import com.github.gumtreediff.actions.model.Insert;
 import com.github.gumtreediff.actions.model.Move;
 import com.github.gumtreediff.actions.model.Update;
 import com.github.gumtreediff.matchers.MappingStore;
+import com.github.gumtreediff.tree.ITree;
 
 
 
@@ -27,11 +28,11 @@ public class CtDiff {
 	/**
 	 * Actions over all tree nodes (CtElements) 
 	 */
-	List<Action> allActions = null;
+	private List<Action> allActions = null;
 	/**
 	 * Actions over the changes roots.
 	 */
-	List<Action> rootActions = null;
+	private List<Action> rootActions = null;
 
 	/** the mapping of this diff */
 	protected MappingStore _mappingsComp = null;
@@ -167,18 +168,22 @@ public class CtDiff {
 
 	public void debugInformation(){
 		for (Action action : getRootActions()) {
-			String label = "\"" + action.getNode().getLabel() + "\"";
+			ITree node = action.getNode();
+			String label = "\"" + node.getLabel() + "\"";
 			if (action instanceof Update) {
 				label+= " to \""+((Update)action).getValue()+"\"";
 			}
-			String nodeType = action.getNode().getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT).getClass().getSimpleName();
-			nodeType = nodeType.substring(2, nodeType.length() - 4);
-
+			String nodeType = "CtfakenodeImpl";
+			if (node.getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT)!=null) {
+				nodeType = node.getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT).getClass().getSimpleName();
+				nodeType = nodeType.substring(2, nodeType.length() - 4);
+			}
 			System.out.println(
 					"\"" + action.getClass().getSimpleName()+ "\"," 
 					+ " " +"\"" + nodeType+ "\","
 					+ " " +label					
-					+ " (size: " +action.getNode().getDescendants().size()	+")"				
+					+ " (size: " +node.getDescendants().size()	+")"				
+					+ node.toTreeString()
 					);
 		}		
 	}

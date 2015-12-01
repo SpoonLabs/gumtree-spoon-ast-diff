@@ -30,6 +30,7 @@ import spoon.reflect.code.CtLiteral;
 import spoon.reflect.code.CtNewArray;
 import spoon.reflect.code.CtStatement;
 import spoon.reflect.code.CtThisAccess;
+import spoon.reflect.code.CtTypeAccess;
 import spoon.reflect.code.CtUnaryOperator;
 import spoon.reflect.code.CtVariableAccess;
 import spoon.reflect.declaration.CtAnonymousExecutable;
@@ -37,7 +38,6 @@ import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtModifiable;
 import spoon.reflect.declaration.CtNamedElement;
 import spoon.reflect.declaration.ModifierKind;
-import spoon.reflect.reference.CtReference;
 import spoon.reflect.visitor.CtScanner;
 
 import com.github.gumtreediff.tree.ITree;
@@ -55,7 +55,7 @@ public class SpoonGumTreeBuilder extends CtScanner {
 	public static final String SPOON_OBJECT = "spoon_object";
 	public static final String SPOON_OBJECT_DEST = "spoon_object_dest";
 
-	public Stack<ITree> nodes;
+	private Stack<ITree> nodes;
 
 	public ITree root;
 
@@ -67,14 +67,21 @@ public class SpoonGumTreeBuilder extends CtScanner {
 		init();
 	}
 	
+	// cleans all nodes
 	public void init() {
 		nodes = new Stack<ITree>();
 		root = gtContext.createTree(-1, "", "root");
 		nodes.push(root);
 	}
 
+	// cleans all nodes
+	public void addNodeToTree(String nodeType) {
+		ITree node = gtContext.createTree(resolveTypeId(nodeType), "", nodeType);
+		addNodeToTree(node);
+	}
+
 	@SuppressWarnings("rawtypes")
-	private void createNode(CtElement obj) {
+	private ITree createNode(CtElement obj) {
 
 		String label = "";		
 		if (obj instanceof CtInvocation ) {
@@ -116,10 +123,10 @@ public class SpoonGumTreeBuilder extends CtScanner {
 			label = "";
 		} else if (obj instanceof CtArrayAccess) {
 			label = obj.toString();
-		} else {
-			label = "";
+		} else if (obj instanceof CtTypeAccess) {
+			label = ((CtTypeAccess)obj).getType().getQualifiedName();
 		}
-
+		
 		String type = getTypeName(obj.getClass().getSimpleName());
 		ITree newNode = createNode(label, type);
 		
@@ -127,9 +134,8 @@ public class SpoonGumTreeBuilder extends CtScanner {
 			addModifiers(newNode, (CtModifiable) obj);
 		}
 
-		addNodeToTree(newNode);
-		
 		newNode.setMetadata(SPOON_OBJECT, obj);
+		return newNode;
 	}
 	private void addModifiers(ITree node, CtModifiable obj) {
 		ITree modifiers = createNode("", "Modifiers");
@@ -166,27 +172,8 @@ public class SpoonGumTreeBuilder extends CtScanner {
 	
 	@Override
 	public void enter(CtElement element) {
-		createNode(element);
-	}
-
-	@Override
-	public void enterReference(CtReference e) {
-
-		/*
-		 * createNode(e); super.enterReference(e);
-		 */
-
-	}
-
-	@Override
-	public void exitReference(CtReference e) {
-		/*
-		 * if (e instanceof CtTypeReference) { return; } else
-		 */
-		/*
-		 * nodes.pop(); super.exitReference(e);
-		 */
-
+		ITree node = createNode(element);
+		addNodeToTree(node);		
 	}
 
 	@Override

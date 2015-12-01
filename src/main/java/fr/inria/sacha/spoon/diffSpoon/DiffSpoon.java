@@ -37,6 +37,7 @@ import com.github.gumtreediff.tree.TreeUtils;
 
 /**
  * Computes the differences between two CtElements.
+ * 
  * @author Matias Martinez, matias.martinez@inria.fr
  * 
  */
@@ -45,23 +46,21 @@ public class DiffSpoon {
 	public static final Logger logger = Logger.getLogger(DiffSpoon.class);
 	protected Factory factory = null;
 	protected SpoonGumTreeBuilder scanner = new SpoonGumTreeBuilder();
-	protected Set<Mapping> mappings = null;
-	
+
 	public DiffSpoon(boolean noClasspath) {
 		this();
 		factory.getEnvironment().setNoClasspath(noClasspath);
 	}
-	
-	public DiffSpoon(boolean noClasspath,boolean decorate ) {
+
+	public DiffSpoon(boolean noClasspath, boolean decorate) {
 		this();
 		factory.getEnvironment().setNoClasspath(noClasspath);
 	}
-	
-	
+
 	public DiffSpoon(Factory factory, boolean decorate) {
 		this(factory);
 	}
-	
+
 	public DiffSpoon(Factory factory) {
 		this.factory = factory;
 		logger.setLevel(Level.DEBUG);
@@ -75,32 +74,28 @@ public class DiffSpoon {
 		factory.getEnvironment().setNoClasspath(true);
 	}
 
-	
-
 	@Deprecated
 	public CtDiff compare(String left, String right) {
 
 		CtType<?> clazz1;
 		try {
 			clazz1 = getCtType(left);
-	
 
 			CtType<?> clazz2 = getCtType(right);
-		//factory.Code().createCodeSnippetStatement(right)
-		//		.compile();
+			// factory.Code().createCodeSnippetStatement(right)
+			// .compile();
 
-			
-		return analyze(clazz1, clazz2);
+			return analyze(clazz1, clazz2);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}
-			
+
 	}
-	
-	public CtType getCtClass(File f) throws Exception{
-		SpoonResource sr1 = SpoonResourceHelper .createResource(f) ;
+
+	public CtType getCtClass(File f) throws Exception {
+		SpoonResource sr1 = SpoonResourceHelper.createResource(f);
 		SpoonCompiler compiler = new JDTBasedSpoonCompiler(factory);
 		compiler.getFactory().getEnvironment().setLevel("OFF");
 		compiler.addInputSource(sr1);
@@ -109,60 +104,58 @@ public class DiffSpoon {
 		return clazz1;
 	}
 
-	
-	public  CtType<?> getCtType(String content) throws Exception{
-				
-		SpoonCompiler compiler = new JDTSnippetCompiler(factory, content);//new JDTBasedSpoonCompiler(factory);
-		//compiler.addInputSource(new VirtualFile(content,""));
+	public CtType<?> getCtType(String content) throws Exception {
+
+		SpoonCompiler compiler = new JDTSnippetCompiler(factory, content);// new
+																			// JDTBasedSpoonCompiler(factory);
+		// compiler.addInputSource(new VirtualFile(content,""));
 		compiler.build();
 		CtType<?> clazz1 = (CtType<?>) factory.Type().getAll().get(0);
 		return clazz1;
 	}
-	
-	public  CtType<?> getCtType2(String content) throws Exception{
-		
-/*	factory.Package().getAllRoots().clear();
-	factory.Type().getAll().clear();*/
-	SpoonCompiler builder = new JDTSnippetCompiler(factory, content);
 
-	builder.addInputSource(new VirtualFile(content,""));
-	
+	public CtType<?> getCtType2(String content) throws Exception {
+
+		/*
+		 * factory.Package().getAllRoots().clear();
+		 * factory.Type().getAll().clear();
+		 */
+		SpoonCompiler builder = new JDTSnippetCompiler(factory, content);
+
+		builder.addInputSource(new VirtualFile(content, ""));
+
 		try {
 			builder.build();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	
-		CtType<?> ret =  factory.Type().getAll().get(0);
+
+		CtType<?> ret = factory.Type().getAll().get(0);
 		return ret;
 	}
-	
+
 	public CtDiff compare(URL f1, URL f2) throws Exception {
 		return this.compare(new File(f1.getFile()), new File(f2.getFile()));
 	}
-	
+
 	public CtDiff compare(File f1, File f2) throws Exception {
-		 
+
 		CtType<?> clazz1 = getCtClass(f1);
-			
+
 		CtType<?> clazz2 = getCtClass(f2);
-		
-		CtDiff result = this.analyze(clazz1,clazz2);
-		
+
+		CtDiff result = this.analyze(clazz1, clazz2);
+
 		return result;
 	}
 
-
-		
-	
-	public ITree getTree(CtElement element){
+	public ITree getTree(CtElement element) {
 		scanner.init();
 		scanner.scan(element);
 		ITree tree = scanner.getRoot();
 		prepare(tree);
-		
+
 		scanner.root = null;
-		scanner.nodes.clear();
 		return tree;
 	}
 
@@ -176,42 +169,42 @@ public class DiffSpoon {
 	}
 
 	public CtDiff compare(ITree rootSpoonLeft, ITree rootSpoonRight) {
-	
+
 		List<Action> actions = null;
 
-	//	GumTreeMatcher.prepare(rootSpoonLeft);
-	//	GumTreeMatcher.prepare(rootSpoonRight);
-		
+		// GumTreeMatcher.prepare(rootSpoonLeft);
+		// GumTreeMatcher.prepare(rootSpoonRight);
 
-		
 		prepare(rootSpoonLeft);
 		prepare(rootSpoonRight);
-		
-		//---
-		/*logger.debug("-----Trees:----");
-		logger.debug("left tree:  " + rootSpoonLeft.toTreeString());
-		logger.debug("right tree: " + rootSpoonRight.toTreeString());
-*/
+
+		// ---
+		/*
+		 * logger.debug("-----Trees:----"); logger.debug("left tree:  " +
+		 * rootSpoonLeft.toTreeString()); logger.debug("right tree: " +
+		 * rootSpoonRight.toTreeString());
+		 */
 		// --
-		//Matcher matcher = new GumTreeMatcher(rootSpoonLeft, rootSpoonRight);
-		//MatcherFactory f = new CompositeMatchers.GumTreeMatcherFactory();
+		// Matcher matcher = new GumTreeMatcher(rootSpoonLeft, rootSpoonRight);
+		// MatcherFactory f = new CompositeMatchers.GumTreeMatcherFactory();
 		// matcher = f.newMatcher(rootSpoonLeft, rootSpoonRight);
 		Matcher matcher;
 		MappingStore mappingsComp = null;
 		mappingsComp = new MappingStore();
-		matcher=new ClassicGumtree(rootSpoonLeft, rootSpoonRight, mappingsComp);
-		//new 
+		matcher = new ClassicGumtree(rootSpoonLeft, rootSpoonRight,
+				mappingsComp);
+		// new
 		matcher.match();
 		//
-		mappings = matcher.getMappingSet();
 
-		ActionGenerator gt = new ActionGenerator(rootSpoonLeft, rootSpoonRight,	matcher.getMappings());
+		ActionGenerator gt = new ActionGenerator(rootSpoonLeft, rootSpoonRight,
+				matcher.getMappings());
 		gt.generate();
 		actions = gt.getActions();
 
 		ActionClassifier gtfac = new ActionClassifier();
-		List<Action> rootActions = gtfac.getRootActions(mappings, actions);
-	
+		List<Action> rootActions = gtfac.getRootActions(matcher.getMappingSet(), actions);
+
 		return new CtDiff(actions, rootActions, mappingsComp);
 	}
 
@@ -252,12 +245,11 @@ public class DiffSpoon {
 			this.getCtClass(factory, contents);
 		} catch (Exception e) {
 			// must fails
-			//System.out.println(" e:  "+e.getCause());
+			// System.out.println(" e:  "+e.getCause());
 		}
 		List<CtType<?>> types = factory.Type().getAll();
-		if(types.isEmpty())
-		{
-			//System.err.println("No Type was created by spoon");
+		if (types.isEmpty()) {
+			// System.err.println("No Type was created by spoon");
 			throw new Exception("No Type was created by spoon");
 		}
 		CtType spt = types.get(0);
@@ -281,14 +273,14 @@ public class DiffSpoon {
 		return b.toString();
 
 	}
-	
-	public void prepare(ITree node){
+
+	public void prepare(ITree node) {
 		node.refresh();
 		TreeUtils.postOrderNumbering(node);
 		TreeUtils.computeHeight(node);
-		//TreeUtils.computeDigest(node);
+		// TreeUtils.computeDigest(node);
 	}
-	
+
 	public static void main(String[] args) throws Exception {
 
 		if (args.length != 2) {
@@ -298,8 +290,6 @@ public class DiffSpoon {
 
 		File f1 = new File(args[0]);
 		File f2 = new File(args[1]);
-
-	
 
 		DiffSpoon ds = new DiffSpoon(true);
 		CtDiff result = ds.compare(f1, f2);
@@ -328,12 +318,14 @@ public class DiffSpoon {
 		}
 		return actionKind;
 	}
-	
-	public boolean containsAction(List<Action> actions, String actionKind, String nodeKind){
+
+	public boolean containsAction(List<Action> actions, String actionKind,
+			String nodeKind) {
 		actionKind = workAroundVisibility(actionKind);
 		for (Action action : actions) {
-			if(action.getClass().getSimpleName().equals(actionKind)){
-				if (scanner.gtContext.getTypeLabel(action.getNode()).equals(nodeKind)) {
+			if (action.getClass().getSimpleName().equals(actionKind)) {
+				if (scanner.gtContext.getTypeLabel(action.getNode()).equals(
+						nodeKind)) {
 					return true;
 				}
 			}
@@ -341,12 +333,13 @@ public class DiffSpoon {
 		return false;
 	}
 
-	
-	public boolean containsAction(List<Action> actions, String actionKind, String nodeKind, String nodeLabel){
+	public boolean containsAction(List<Action> actions, String actionKind,
+			String nodeKind, String nodeLabel) {
 		actionKind = workAroundVisibility(actionKind);
 		for (Action action : actions) {
-			if(action.getClass().getSimpleName().equals(actionKind)){
-				if (scanner.gtContext.getTypeLabel(action.getNode()).equals(nodeKind)) {
+			if (action.getClass().getSimpleName().equals(actionKind)) {
+				if (scanner.gtContext.getTypeLabel(action.getNode()).equals(
+						nodeKind)) {
 					if (action.getNode().getLabel().equals(nodeLabel)) {
 						return true;
 					}
