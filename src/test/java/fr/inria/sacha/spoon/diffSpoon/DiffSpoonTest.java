@@ -1064,4 +1064,18 @@ public class DiffSpoonTest {
 		assertTrue(diff.containsAction(actions, "Update", "TypeAccess", "DBImport.STATE_DB_INSERTION"));
 	}
 
+	@Test
+	public void test_t_226480() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_226480/left_ScarabRequestTool_1.113.java src/test/resources/examples/t_226480/right_ScarabRequestTool_1.114.java
+		File fl = new File("src/test/resources/examples/t_226480/left_ScarabRequestTool_1.113.java");
+		File fr = new File("src/test/resources/examples/t_226480/right_ScarabRequestTool_1.114.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		result.debugInformation();
+		assertEquals(1, actions.size());
+		assertTrue(diff.containsAction(actions, "Insert", "Invocation", "debug"));
+	}
+
 }
