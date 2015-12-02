@@ -1050,5 +1050,18 @@ public class DiffSpoonTest {
 		assertTrue(diff.containsAction(actions,"Insert", "Method", "getIssueByUniqueId"));
 	}
 
+	@Test
+	public void test_t_226330() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_226330/left_ActivityRule_1.4.java src/test/resources/examples/t_226330/right_ActivityRule_1.5.java
+		File fl = new File("src/test/resources/examples/t_226330/left_ActivityRule_1.4.java");
+		File fr = new File("src/test/resources/examples/t_226330/right_ActivityRule_1.5.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		result.debugInformation();
+		assertEquals(1, actions.size());
+		assertTrue(diff.containsAction(actions, "Update", "TypeAccess", "DBImport.STATE_DB_INSERTION"));
+	}
 
 }
