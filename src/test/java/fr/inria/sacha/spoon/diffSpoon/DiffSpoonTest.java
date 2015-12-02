@@ -53,7 +53,7 @@ public class DiffSpoonTest {
 		// System.setProperty("gumtree.match.bu.sim", "0.3");
 		
 		// default 2 
-		// 0 is really bad for example for t_224542
+		// 0 is really bad for 211903 t_224542 225391 226622
 		// 1 is required for t_225262 and t_213712 to pass
 		System.setProperty("gumtree.match.gt.minh", "1");
 		
@@ -325,13 +325,14 @@ public class DiffSpoonTest {
 		File fr = new File("src/test/resources/examples/t_211903/right_MemberFilePersister_1.5.java");
 		CtDiff result = diff.compare(fl,fr);
 		
+		result.debugInformation();
+
 		CtElement ancestor = result.commonAncestor();		
 		assertTrue(ancestor instanceof CtConstructorCall);
 		assertEquals(88,ancestor.getPosition().getLine());
 
 		
 		List<Action> actions = result.getRootActions();
-		result.debugInformation();
 		assertEquals(2, actions.size());
 		assertTrue(diff.containsAction(actions, "Update", "ConstructorCall", "java.io.FileReader"));
 		assertTrue(diff.containsAction(actions, "Move", "VariableRead", "file"));
@@ -1093,5 +1094,19 @@ public class DiffSpoonTest {
 		assertTrue(diff.containsAction(actions, "Insert", "Literal", "'/'" ));
 	}
 
+	@Test
+	public void test_t_226622() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_226622/left_AttributeValue_1.49.java src/test/resources/examples/t_226622/right_AttributeValue_1.50.java
+		File fl = new File("src/test/resources/examples/t_226622/left_AttributeValue_1.49.java");
+		File fr = new File("src/test/resources/examples/t_226622/right_AttributeValue_1.50.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		result.debugInformation();
+		
+		// no assert on number of actions because a move migt be detected (TODO?)
+		assertTrue(diff.containsAction(actions, "Insert", "BinaryOperator", "AND"));
+	}
 
 }
