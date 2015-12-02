@@ -1036,5 +1036,19 @@ public class DiffSpoonTest {
 		assertTrue(diff.containsAction(actions, "Insert", "Method", "delete"));
 	}
 
+	@Test
+	public void test_t_226145() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_226145/left_ScarabRequestTool_1.90.java src/test/resources/examples/t_226145/right_ScarabRequestTool_1.91.java
+		File fl = new File("src/test/resources/examples/t_226145/left_ScarabRequestTool_1.90.java");
+		File fr = new File("src/test/resources/examples/t_226145/right_ScarabRequestTool_1.91.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		result.debugInformation();
+		assertEquals(1, actions.size());
+		assertTrue(diff.containsAction(actions,"Insert", "Method", "getIssueByUniqueId"));
+	}
+
 
 }
