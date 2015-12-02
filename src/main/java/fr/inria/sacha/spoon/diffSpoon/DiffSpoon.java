@@ -52,15 +52,6 @@ public class DiffSpoon {
 		factory.getEnvironment().setNoClasspath(noClasspath);
 	}
 
-	public DiffSpoon(boolean noClasspath, boolean decorate) {
-		this();
-		factory.getEnvironment().setNoClasspath(noClasspath);
-	}
-
-	public DiffSpoon(Factory factory, boolean decorate) {
-		this(factory);
-	}
-
 	public DiffSpoon(Factory factory) {
 		this.factory = factory;
 		logger.setLevel(Level.DEBUG);
