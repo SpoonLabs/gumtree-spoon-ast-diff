@@ -1109,4 +1109,18 @@ public class DiffSpoonTest {
 		assertTrue(diff.containsAction(actions, "Insert", "BinaryOperator", "AND"));
 	}
 
+	@Test
+	public void test_t_226685() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_226685/left_ResetCacheValve_1.1.java src/test/resources/examples/t_226685/right_ResetCacheValve_1.2.java
+		File fl = new File("src/test/resources/examples/t_226685/left_ResetCacheValve_1.1.java");
+		File fr = new File("src/test/resources/examples/t_226685/right_ResetCacheValve_1.2.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		result.debugInformation();
+		assertEquals(1, actions.size());
+		assertTrue(diff.containsAction(actions, "DEL", "Invocation", "println"));
+	}
+
 }
