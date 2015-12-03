@@ -21,18 +21,15 @@ public class ActionClassifierTest {
 	 */
 	@Test
 	public void test_actionClassifier_1() throws Exception{
-		DiffSpoon diff = new DiffSpoon(true);
+		DiffSpoonImpl diff = new DiffSpoonImpl();
 		File fl = new File("src/test/resources/examples/roots/test8/left_QuickNotepad_1.13.java");
 		File fr = new File("src/test/resources/examples/roots/test8/right_QuickNotepad_1.14.java");
-		CtDiff result = diff.compare(fl,fr);
+		CtDiffImpl result = diff.compare(fl,fr);
 		
 		List<Action> actionsRoot = result.getRootActions();
 		result.debugInformation();
 		assertEquals(1, actionsRoot.size());
-		
-		List<Action> actionsAll = result.getAllActions();
-		assertTrue(actionsAll.size() > 1);
-		assertTrue(diff.containsAction(actionsAll, "Insert", "Invocation", "println"));
+		assertTrue(result.containsAction( "Insert", "If"));
 	}
 	/**
 	 * changes an element and adds a new child to it
@@ -40,17 +37,17 @@ public class ActionClassifierTest {
 	 */
 	@Test
 	public void test_actionClassifier_2() throws Exception{
-		DiffSpoon diff = new DiffSpoon(true);
+		DiffSpoonImpl diff = new DiffSpoonImpl();
 		File fl = new File("src/test/resources/examples/roots/test9/left_QuickNotepad_1.13.java");
 		File fr = new File("src/test/resources/examples/roots/test9/right_QuickNotepad_1.14.java");
-		CtDiff result = diff.compare(fl,fr);
+		CtDiffImpl result = diff.compare(fl,fr);
 		
 		List<Action> actionsRoot = result.getRootActions();
 		result.debugInformation();
 		assertEquals(2, actionsRoot.size());
 		
-		assertTrue(diff.containsAction(actionsRoot , "Update", "BinaryOperator"));
-		assertTrue(diff.containsAction(actionsRoot , "Insert", "Return"));
+		assertTrue(result.containsAction("Update", "BinaryOperator"));
+		assertTrue(result.containsAction("Insert", "Return"));
 	}
 
 	/**
@@ -59,17 +56,17 @@ public class ActionClassifierTest {
 	 */
 	@Test
 	public void test_actionClassifier_3() throws Exception{
-		DiffSpoon diff = new DiffSpoon(true);
+		DiffSpoonImpl diff = new DiffSpoonImpl();
 		File fl = new File("src/test/resources/examples/roots/test10/left_QuickNotepad_1.13.java");
 		File fr = new File("src/test/resources/examples/roots/test10/right_QuickNotepad_1.14.java");
-		CtDiff result = diff.compare(fl,fr);
+		CtDiffImpl result = diff.compare(fl,fr);
 		
 		List<Action> actionsRoot = result.getRootActions();
 		result.debugInformation();
 		assertEquals(2, actionsRoot.size());
 		
-		assertTrue(diff.containsAction(actionsRoot , "Delete", "If"));
-		assertTrue(diff.containsAction(actionsRoot , "Move", "Invocation"));
+		assertTrue(result.containsAction("Delete", "If"));
+		assertTrue(result.containsAction("Move", "Invocation"));
 	}
 	
 	/**
@@ -78,17 +75,17 @@ public class ActionClassifierTest {
 	 */
 	@Test
 	public void test_actionClassifier_4() throws Exception{
-		DiffSpoon diff = new DiffSpoon(true);
+		DiffSpoonImpl diff = new DiffSpoonImpl();
 		File fl = new File("src/test/resources/examples/roots/test11/left_QuickNotepad_1.13.java");
 		File fr = new File("src/test/resources/examples/roots/test11/right_QuickNotepad_1.14.java");
-		CtDiff result = diff.compare(fl,fr);
+		CtDiffImpl result = diff.compare(fl,fr);
 		
 		List<Action> actionsRoot = result.getRootActions();
 		result.debugInformation();
 		assertEquals(2, actionsRoot.size());
 		
-		assertTrue(diff.containsAction(actionsRoot , "Delete", "If"));
-		assertTrue(diff.containsAction(actionsRoot , "Move", "Invocation"));
+		assertTrue(result.containsAction("Delete", "If"));
+		assertTrue(result.containsAction("Move", "Invocation"));
 	}
 	
 	/**
@@ -97,16 +94,16 @@ public class ActionClassifierTest {
 	 */
 	@Test
 	public void test_actionClassifier_5() throws Exception{
-		DiffSpoon diff = new DiffSpoon(true);
+		DiffSpoonImpl diff = new DiffSpoonImpl();
 		File fl = new File("src/test/resources/examples/roots/test12/left_QuickNotepad_1.13.java");
 		File fr = new File("src/test/resources/examples/roots/test12/right_QuickNotepad_1.14.java");
-		CtDiff result = diff.compare(fl,fr);
+		CtDiffImpl result = diff.compare(fl,fr);
 		
 		List<Action> actionsRoot = result.getRootActions();
 		result.debugInformation();
 		assertEquals(2, actionsRoot.size());
 		
-		assertTrue(diff.containsAction(actionsRoot , "Insert", "If"));
-		assertTrue(diff.containsAction(actionsRoot , "Move", "Invocation"));
+		assertTrue(result.containsAction("Insert", "If"));
+		assertTrue(result.containsAction("Move", "Invocation"));
 	}
 }

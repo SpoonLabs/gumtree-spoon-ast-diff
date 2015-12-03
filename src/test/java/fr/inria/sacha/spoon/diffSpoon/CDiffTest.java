@@ -19,25 +19,25 @@ public class CDiffTest {
 	
 	@Test
 	public void testToString() throws Exception {
-		URL fl = getClass().getResource("/examples/test1/TypeHandler1.java");
-		URL fr = getClass().getResource("/examples/test1/TypeHandler2.java");
+		File fl = new File("src/test/resources/examples/test1/TypeHandler1.java");
+		File fr = new File("src/test/resources/examples/test1/TypeHandler2.java");
 
-		DiffSpoon diff = new DiffSpoon(true);
-		CtDiff result = diff.compare(fl,fr);
+		DiffSpoonImpl diff = new DiffSpoonImpl();
+		CtDiffImpl result = diff.compare(fl,fr);
 		assertEquals("Update FieldRead at org.apache.commons.cli.TypeHandler:80" +newline
 				+ "\t(org.apache.commons.cli.PatternOptionBuilder.DATE_VALUE) to (org.apache.commons.cli.PatternOptionBuilder.CLASS_VALUE)" + newline
 				+ "Insert Invocation at org.apache.commons.cli.TypeHandler:118" + newline
 				+ "\tjava.lang.System.out.println(\"Hola\")" + newline, result.toString());
 
-		fl = getClass().getResource("/examples/test2/CommandLine1.java");
-		fr =getClass().getResource("/examples/test2/CommandLine2.java");
+		fl = new File("src/test/resources/examples/test2/CommandLine1.java");
+		fr = new File("src/test/resources/examples/test2/CommandLine2.java");
 
 		result = diff.compare(fl,fr);
 		assertEquals("Update Literal at org.apache.commons.cli.CommandLine:275" + newline
 				+ "\t1 to 1000000" + newline, result.toString());
 
-		fl = getClass().getResource("/examples/test3/CommandLine1.java");
-		fr =getClass().getResource("/examples/test3/CommandLine2.java");
+		fl = new File("src/test/resources/examples/test3/CommandLine1.java");
+		fr = new File("src/test/resources/examples/test3/CommandLine2.java");
 
 		result = diff.compare(fl,fr);
 		assertEquals("Delete Method at org.apache.commons.cli.CommandLine:161" + newline
