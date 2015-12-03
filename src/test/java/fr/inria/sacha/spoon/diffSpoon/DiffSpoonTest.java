@@ -1138,5 +1138,20 @@ public class DiffSpoonTest {
 		assertTrue(diff.containsAction(actions, "Update", "Modifier", "public"));
 	}
 
+	
+	@Test
+	public void test_t_226963() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_226963/left_Issue_1.140.java src/test/resources/examples/t_226963/right_Issue_1.141.java
+		File fl = new File("src/test/resources/examples/t_226963/left_Issue_1.140.java");
+		File fr = new File("src/test/resources/examples/t_226963/right_Issue_1.141.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		result.debugInformation();
+		assertEquals(1, actions.size());
+		assertTrue(diff.containsAction(actions, "Update", "Invocation", "addAscendingOrderByColumn" ));
+	}
+
 
 }
