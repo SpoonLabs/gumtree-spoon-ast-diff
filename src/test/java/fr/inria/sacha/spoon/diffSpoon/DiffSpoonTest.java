@@ -1154,4 +1154,19 @@ public class DiffSpoonTest {
 	}
 
 
+	@Test
+	public void test_t_227005() throws Exception{
+		DiffSpoon diff = new DiffSpoon(true);
+		// meld  src/test/resources/examples/t_227005/left_AttributeValue_1.56.java src/test/resources/examples/t_227005/right_AttributeValue_1.57.java
+		File fl = new File("src/test/resources/examples/t_227005/left_AttributeValue_1.56.java");
+		File fr = new File("src/test/resources/examples/t_227005/right_AttributeValue_1.57.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		result.debugInformation();
+		assertEquals(2, actions.size());
+		assertTrue(diff.containsAction(actions, "Insert", "BinaryOperator", "AND"));
+		assertTrue(diff.containsAction(actions,	"Move", "BinaryOperator", "AND"));
+	}
+
 }
