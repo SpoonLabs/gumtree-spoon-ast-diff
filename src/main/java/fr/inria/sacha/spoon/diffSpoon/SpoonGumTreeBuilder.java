@@ -96,7 +96,7 @@ public class SpoonGumTreeBuilder extends CtScanner {
 			if (inv.getType() != null) {
 				label = inv.getType().toString();
 			}
-		} else if (obj instanceof CtNamedElement) {
+		} else if (obj instanceof CtNamedElement && !(obj instanceof CtAnonymousExecutable)) {
 			label = ((CtNamedElement) obj).getSimpleName();
 		} else if (obj instanceof CtLiteral) {
 			label = obj.toString();
