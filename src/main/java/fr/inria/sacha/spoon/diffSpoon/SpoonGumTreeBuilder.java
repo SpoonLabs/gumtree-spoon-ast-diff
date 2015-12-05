@@ -38,6 +38,7 @@ import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtModifiable;
 import spoon.reflect.declaration.CtNamedElement;
 import spoon.reflect.declaration.ModifierKind;
+import spoon.reflect.reference.CtReference;
 import spoon.reflect.visitor.CtScanner;
 
 import com.github.gumtreediff.tree.ITree;
@@ -96,7 +97,7 @@ public class SpoonGumTreeBuilder extends CtScanner {
 			if (inv.getType() != null) {
 				label = inv.getType().toString();
 			}
-		} else if (obj instanceof CtNamedElement && !(obj instanceof CtAnonymousExecutable)) {
+		} else if (obj instanceof CtNamedElement) {
 			label = ((CtNamedElement) obj).getSimpleName();
 		} else if (obj instanceof CtLiteral) {
 			label = obj.toString();
@@ -115,8 +116,6 @@ public class SpoonGumTreeBuilder extends CtScanner {
 			label = bin.getKind().toString();
 		} else if (obj instanceof CtStatement) {
 			label = "";
-		} else if (obj instanceof CtAnonymousExecutable) {
-			label = "";
 		} else if (obj instanceof CtThisAccess) {
 			label = obj.toString();
 		} else if (obj instanceof CtConditional || obj instanceof CtNewArray) {
@@ -125,6 +124,9 @@ public class SpoonGumTreeBuilder extends CtScanner {
 			label = obj.toString();
 		} else if (obj instanceof CtTypeAccess) {
 			label = ((CtTypeAccess)obj).getType().getQualifiedName();
+		} else if (obj instanceof CtReference) {
+			label = ((CtReference)obj).getSimpleName();
+			System.err.println(label);
 		}
 		
 		String type = getTypeName(obj.getClass().getSimpleName());

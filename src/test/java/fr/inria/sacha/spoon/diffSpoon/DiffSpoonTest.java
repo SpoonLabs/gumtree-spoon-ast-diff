@@ -1170,4 +1170,18 @@ public class DiffSpoonTest {
 		assertTrue(result.containsAction("Move", "BinaryOperator", "AND"));
 	}
 
+	@Test
+	public void test_t_227130() throws Exception{
+		DiffSpoon diff = new DiffSpoonImpl();
+		// meld  src/test/resources/examples/t_227130/left_Transaction_1.37.java src/test/resources/examples/t_227130/right_Transaction_1.38.java
+		File fl = new File("src/test/resources/examples/t_227130/left_Transaction_1.37.java");
+		File fr = new File("src/test/resources/examples/t_227130/right_Transaction_1.38.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		result.debugInformation();
+		assertEquals(1, actions.size());
+		assertTrue(result.containsAction( "INS", "Method", "create"));
+	}
+
 }
