@@ -148,7 +148,9 @@ public class CtDiffImpl implements CtDiff {
 		if(parent instanceof CtType) {
 			position += ((CtType)parent).getQualifiedName();
 		}
-		position += ":" + element.getPosition().getLine();
+		if (element.getPosition()!=null) {
+		  position += ":" + element.getPosition().getLine();
+		}
 		if(action instanceof Move) {
 			CtElement elementDest = (CtElement) action.getNode().getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT_DEST);
 			position = " from " + element.getParent(CtClass.class).getQualifiedName()

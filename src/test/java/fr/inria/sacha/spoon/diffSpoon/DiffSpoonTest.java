@@ -103,11 +103,11 @@ public class DiffSpoonTest {
 	
 		CtDiff result = diff.compare(fl,fr);
 		List<Action> actions = result.getRootActions();
-		assertEquals(actions.size(), 2);
+		result.debugInformation();
+		assertEquals(2, actions.size());
 
 		CtElement ancestor = result.commonAncestor();		
 		assertTrue(ancestor instanceof CtClass);
-
 		assertTrue(result.containsAction("INS", "Invocation"));
 		assertTrue(result.containsAction("UPD", "FieldRead"));
 		
@@ -313,8 +313,8 @@ public class DiffSpoonTest {
 		CtDiff result = diff.compare(fl,fr);
 		
 		List<Action> actions = result.getRootActions();
-		System.out.println(result.toString());
-		assertEquals(actions.size(), 1);
+		result.debugInformation();
+		assertEquals(1, actions.size());
 		assertTrue(result.containsAction("UPD", "Invocation", "getTarget"));
 	}
 
@@ -473,8 +473,8 @@ public class DiffSpoonTest {
 		CtDiff result = diff.compare(fl,fr);
 		
 		List<Action> actions = result.getRootActions();
-		System.out.println(result.toString());
-		assertEquals(actions.size(), 1);
+		result.debugInformation();
+		assertEquals(1, actions.size());
 		assertTrue(result.containsAction("Update", "Invocation", "remove"));
 	}
 	

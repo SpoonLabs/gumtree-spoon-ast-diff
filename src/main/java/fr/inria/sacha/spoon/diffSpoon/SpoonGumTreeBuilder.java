@@ -27,16 +27,19 @@ import spoon.reflect.code.CtConditional;
 import spoon.reflect.code.CtConstructorCall;
 import spoon.reflect.code.CtInvocation;
 import spoon.reflect.code.CtLiteral;
+import spoon.reflect.code.CtLocalVariable;
 import spoon.reflect.code.CtNewArray;
 import spoon.reflect.code.CtStatement;
 import spoon.reflect.code.CtThisAccess;
 import spoon.reflect.code.CtTypeAccess;
 import spoon.reflect.code.CtUnaryOperator;
 import spoon.reflect.code.CtVariableAccess;
-import spoon.reflect.declaration.CtAnonymousExecutable;
 import spoon.reflect.declaration.CtElement;
+import spoon.reflect.declaration.CtField;
 import spoon.reflect.declaration.CtModifiable;
 import spoon.reflect.declaration.CtNamedElement;
+import spoon.reflect.declaration.CtParameter;
+import spoon.reflect.declaration.CtTypedElement;
 import spoon.reflect.declaration.ModifierKind;
 import spoon.reflect.reference.CtReference;
 import spoon.reflect.visitor.CtScanner;
@@ -124,10 +127,7 @@ public class SpoonGumTreeBuilder extends CtScanner {
 			label = obj.toString();
 		} else if (obj instanceof CtTypeAccess) {
 			label = ((CtTypeAccess)obj).getType().getQualifiedName();
-		} else if (obj instanceof CtReference) {
-			label = ((CtReference)obj).getSimpleName();
-			System.err.println(label);
-		}
+		} 
 		
 		String type = getTypeName(obj.getClass().getSimpleName());
 		ITree newNode = createNode(label, type);
@@ -136,9 +136,18 @@ public class SpoonGumTreeBuilder extends CtScanner {
 			addModifiers(newNode, (CtModifiable) obj);
 		}
 
+		// for some node add the declared static type 
+		if (obj instanceof CtParameter 
+			|| 	obj instanceof CtField
+			|| 	obj instanceof CtLocalVariable
+				) {
+			addStaticTypeNode(newNode, (CtTypedElement) obj);
+		}
+
 		newNode.setMetadata(SPOON_OBJECT, obj);
 		return newNode;
 	}
+	
 	private void addModifiers(ITree node, CtModifiable obj) {
 		ITree modifiers = createNode("", "Modifiers");
 		for(ModifierKind kind : obj.getModifiers()) {
@@ -147,6 +156,13 @@ public class SpoonGumTreeBuilder extends CtScanner {
 			modifiers.addChild(modifier);			
 		}
 		node.addChild(modifiers);
+	}
+
+	private void addStaticTypeNode(ITree node, CtTypedElement obj) {
+		ITree modifier = createNode("", "StaticType");
+		modifier.setMetadata(SPOON_OBJECT, obj);
+		modifier.setLabel(obj.getType().getQualifiedName());			
+		node.addChild(modifier);
 	}
 
 	/**
@@ -168,12 +184,21 @@ public class SpoonGumTreeBuilder extends CtScanner {
 	}
 
 	private void addNodeToTree(ITree node) {
-		nodes.peek().addChild(node);
+		ITree parent = nodes.peek();
+		if (parent!=null) {// happens when nodes.push(null)
+			parent.addChild(node);
+		}
 		nodes.push(node);
 	}
 	
 	@Override
 	public void enter(CtElement element) {
+		// precondition
+		if (element instanceof CtReference) {
+			nodes.push(null);
+			return;
+		}
+
 		ITree node = createNode(element);
 		addNodeToTree(node);		
 	}
