@@ -1,11 +1,11 @@
 package fr.inria.sacha.spoon.diffSpoon;
 
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.net.URL;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.Test;
 
 /**
  * Test Spoon Diff 
@@ -40,7 +40,7 @@ public class CDiffTest {
 		fr = new File("src/test/resources/examples/test3/CommandLine2.java");
 
 		result = diff.compare(fl,fr);
-		assertEquals("Delete Method at org.apache.commons.cli.CommandLine:161" + newline
+		assertTrue(result.toString().endsWith("Delete Method at org.apache.commons.cli.CommandLine:161" + newline
 				+ "\tpublic java.lang.String[] getOptionValues(java.lang.String opt) {" + newline
 				+ "\t    java.util.List<java.lang.String> values = new java.util.ArrayList<java.lang.String>();" + newline
 				+ "\t    for (org.apache.commons.cli.Option option : options) {" + newline
@@ -49,6 +49,6 @@ public class CDiffTest {
 				+ "\t        } " + newline
 				+ "\t    }" + newline
 				+ "\t    return values.isEmpty() ? null : values.toArray(new java.lang.String[values.size()]);" + newline
-				+ "\t}" + newline, result.toString());
+				+ "\t}" + newline));
 	}
 }
