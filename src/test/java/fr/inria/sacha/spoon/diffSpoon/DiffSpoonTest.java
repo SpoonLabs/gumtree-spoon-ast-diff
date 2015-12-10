@@ -1209,5 +1209,18 @@ public class DiffSpoonTest {
 		assertTrue(result.containsAction("Move", "Invocation"));
 	}
 
+	@Test
+	public void test_t_227811() throws Exception{
+		DiffSpoon diff = new DiffSpoonImpl();
+		// meld  src/test/resources/examples/t_227811/left_RModuleIssueType_1.24.java src/test/resources/examples/t_227811/right_RModuleIssueType_1.25.java
+		File fl = new File("src/test/resources/examples/t_227811/left_RModuleIssueType_1.24.java");
+		File fr = new File("src/test/resources/examples/t_227811/right_RModuleIssueType_1.25.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		result.debugInformation();
+		assertEquals(1, actions.size());
+		assertTrue(result.containsAction("Insert", "Invocation", "#setDisplayDescription(java.lang.String)" ));
+	}
 
 }
