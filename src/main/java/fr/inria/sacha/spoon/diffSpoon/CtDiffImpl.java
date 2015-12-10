@@ -175,6 +175,11 @@ public class CtDiffImpl implements CtDiff {
 	}
 
 	public void debugInformation(){
+		System.err.println(toDebugString());
+	}
+	
+	public String toDebugString() {
+		String result = "";
 		for (Action action : getRootActions()) {
 			ITree node = action.getNode();
 			String label = "\"" + node.getLabel() + "\"";
@@ -186,14 +191,15 @@ public class CtDiffImpl implements CtDiff {
 				nodeType = node.getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT).getClass().getSimpleName();
 				nodeType = nodeType.substring(2, nodeType.length() - 4);
 			}
-			System.out.println(
+			result +=
 					"\"" + action.getClass().getSimpleName()+ "\"," 
 					+ " " +"\"" + nodeType+ "\","
 					+ " " +label					
 					+ " (size: " +node.getDescendants().size()	+")"				
 					+ node.toTreeString()
-					);
-		}		
+					;
+		}	
+		return result;
 	}
 
 	@Override
@@ -256,7 +262,7 @@ public class CtDiffImpl implements CtDiff {
 				}
 			}
 		}
-		return false;
+		throw new AssertionError(actionKind + " " + nodeKind + " " + nodeLabel+"\n"+toDebugString());
 	}
 
 	
