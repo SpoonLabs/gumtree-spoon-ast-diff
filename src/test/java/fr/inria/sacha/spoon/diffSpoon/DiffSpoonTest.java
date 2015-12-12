@@ -1223,4 +1223,18 @@ public class DiffSpoonTest {
 		assertTrue(result.containsAction("Insert", "Invocation", "#setDisplayDescription(java.lang.String)" ));
 	}
 
+	@Test
+	public void test_t_227985() throws Exception{
+		DiffSpoon diff = new DiffSpoonImpl();
+		// meld  src/test/resources/examples/t_227985/left_IssueSearch_1.65.java src/test/resources/examples/t_227985/right_IssueSearch_1.66.java
+		File fl = new File("src/test/resources/examples/t_227985/left_IssueSearch_1.65.java");
+		File fr = new File("src/test/resources/examples/t_227985/right_IssueSearch_1.66.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		result.debugInformation();
+		assertEquals(1, actions.size());
+		assertTrue(result.containsAction("Insert", "Assignment"));
+	}
+
 }
