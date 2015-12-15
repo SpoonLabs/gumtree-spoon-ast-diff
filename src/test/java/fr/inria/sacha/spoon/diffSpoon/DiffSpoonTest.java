@@ -1234,5 +1234,20 @@ public class DiffSpoonTest {
 		assertEquals(1, actions.size());
 		assertTrue(result.containsAction("Insert", "Assignment"));
 	}
+	
+	@Test
+	public void test_t_228064() throws Exception{
+		DiffSpoon diff = new DiffSpoonImpl();
+		// meld  src/test/resources/examples/t_228064/left_ModuleManager_1.21.java src/test/resources/examples/t_228064/right_ModuleManager_1.22.java
+		File fl = new File("src/test/resources/examples/t_228064/left_ModuleManager_1.21.java");
+		File fr = new File("src/test/resources/examples/t_228064/right_ModuleManager_1.22.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		result.debugInformation();
+		assertEquals(1, actions.size());
+		assertTrue(result.containsAction("UPD", "Modifier", "public"));
+	}
+
 
 }
