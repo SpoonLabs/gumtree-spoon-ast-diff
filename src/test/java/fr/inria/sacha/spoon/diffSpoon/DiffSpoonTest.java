@@ -1263,5 +1263,18 @@ public class DiffSpoonTest {
 		assertTrue(result.containsAction("UPD", "Literal", "\"ForgotPassword.vm\""));
 	}
 
+	@Test
+	public void test_t_228643() throws Exception{
+		DiffSpoon diff = new DiffSpoonImpl();
+		// meld  src/test/resources/examples/t_228643/left_ScopePeer_1.3.java src/test/resources/examples/t_228643/right_ScopePeer_1.4.java
+		File fl = new File("src/test/resources/examples/t_228643/left_ScopePeer_1.3.java");
+		File fr = new File("src/test/resources/examples/t_228643/right_ScopePeer_1.4.java");
+		CtDiff result = diff.compare(fl,fr);
+		
+		List<Action> actions = result.getRootActions();
+		result.debugInformation();
+		assertEquals(1, actions.size());
+		assertTrue(result.containsAction("Update", "ConstructorCall", "Criteria#Criteria()"));
+	}
 
 }
