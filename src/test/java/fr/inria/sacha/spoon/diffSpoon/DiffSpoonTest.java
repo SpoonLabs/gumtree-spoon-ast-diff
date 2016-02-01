@@ -1,18 +1,11 @@
 package fr.inria.sacha.spoon.diffSpoon;
 
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.util.List;
-
+import com.github.gumtreediff.actions.model.Action;
+import com.github.gumtreediff.actions.model.Move;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
 import spoon.Launcher;
 import spoon.compiler.SpoonCompiler;
 import spoon.reflect.code.CtBinaryOperator;
@@ -27,10 +20,14 @@ import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtType;
 import spoon.reflect.factory.Factory;
 import spoon.support.compiler.jdt.JDTSnippetCompiler;
-import spoon.support.reflect.declaration.CtTypeImpl;
 
-import com.github.gumtreediff.actions.model.Action;
-import com.github.gumtreediff.actions.model.Move;
+import java.io.File;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test Spoon Diff 
@@ -306,7 +303,7 @@ public class DiffSpoonTest {
 		List<Action> actions = result.getRootActions();
 		result.debugInformation();
 		assertEquals(actions.size(), 1);
-		assertTrue(result.containsAction("Insert", "Invocation", "#addField(null, null)"));
+		assertTrue(result.containsAction("Insert", "Invocation", "#addField(<unknown>, <unknown>)"));
 	}
 
 	@Test
@@ -679,7 +676,7 @@ public class DiffSpoonTest {
 		List<Action> actions = result.getRootActions();
 		result.debugInformation();
 		assertEquals(actions.size(), 1);
-		assertTrue(result.containsAction("Update", "FieldRead", "IEntityMovementType.MOVE_VTOL_RUN"));
+		assertTrue(result.containsAction("Update", "FieldRead", "MOVE_VTOL_RUN"));
 	}
 
 	@Test
@@ -879,7 +876,7 @@ public class DiffSpoonTest {
 		List<Action> actions = result.getRootActions();
 		result.debugInformation();
 		assertEquals(actions.size(), 1);
-		assertTrue(result.containsAction("Update", "FieldRead", "CarolDefaultValues.SERVER_JRMP_PORT"));
+		assertTrue(result.containsAction("Update", "FieldRead", "SERVER_JRMP_PORT"));
 	}
 
 	@Test
@@ -968,9 +965,10 @@ public class DiffSpoonTest {
 		
 		List<Action> actions = result.getRootActions();
 		result.debugInformation();
-		assertEquals(2, actions.size());
+		assertEquals(3, actions.size());
 		assertTrue(result.containsAction("Delete", "Assignment"));
 		assertTrue(result.containsAction("Insert", "Invocation", "org.apache.lucene.index.IndexWriter#setMaxFieldLength(int)" ));
+		assertTrue(result.containsAction("Move", "FieldRead", "writer" ));
 	}
 	
 	@Test
@@ -1026,7 +1024,7 @@ public class DiffSpoonTest {
 		List<Action> actions = result.getRootActions();
 		result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(result.containsAction("Update", "Invocation", "Log#error(java.lang.String, java.lang.Exception)"));
+		assertTrue(result.containsAction("Update", "Invocation", "org.apache.turbine.util.Log#error(java.lang.String, java.lang.Exception)"));
 	}
 	
 	@Test
@@ -1082,7 +1080,7 @@ public class DiffSpoonTest {
 		List<Action> actions = result.getRootActions();
 		result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(result.containsAction("Insert", "Invocation", "Log#debug(java.lang.String)"));
+		assertTrue(result.containsAction("Insert", "Invocation", "org.apache.turbine.Log#debug(java.lang.String)"));
 	}
 	
 	@Test
@@ -1203,7 +1201,7 @@ public class DiffSpoonTest {
 		List<Action> actions = result.getRootActions();
 		result.debugInformation();
 		assertEquals(2, actions.size());
-		assertTrue(result.containsAction("UPD", "Invocation", "Email#sendEmail(org.apache.fulcrum.template.TemplateContext, org.tigris.scarab.om.Module, null, null, java.lang.String, java.lang.String)"));
+		assertTrue(result.containsAction("UPD", "Invocation", "org.tigris.scarab.util.Email#sendEmail(org.apache.fulcrum.template.TemplateContext, org.tigris.scarab.om.Module, <unknown>, <unknown>, java.lang.String, java.lang.String)"));
 		
 		// one parameter is moved to another argument
 		assertTrue(result.containsAction("Move", "Invocation"));
