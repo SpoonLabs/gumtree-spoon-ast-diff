@@ -336,13 +336,11 @@ public class DiffSpoonTest {
 
 		
 		List<Action> actions = result.getRootActions();
-		assertEquals(2, actions.size());
-		assertTrue(result.containsAction("Update", "ConstructorCall", "java.io.FileReader"));
-		assertTrue(result.containsAction("Move", "VariableRead", "file"));
+		assertTrue(result.containsAction("Update", "ConstructorCall", "java.io.FileReader#FileReader(java.io.File)"));
+		assertTrue(result.containsAction("Insert", "ConstructorCall", "java.io.InputStreamReader#InputStreamReader(java.io.InputStream, java.lang.String)"));
 		
 		// additional checks on low-level actions
 		assertTrue(result.containsAction(result.getAllActions(), "Insert", "Literal", "\"UTF-8\""));
-		assertTrue(result.containsAction(result.getAllActions(), "Insert", "ConstructorCall", "java.io.FileInputStream"));
 
 		
 		// the change is in the local variable declaration
@@ -656,13 +654,15 @@ public class DiffSpoonTest {
 		// meld  src/test/resources/examples/t_223454/left_EntityListFile_1.17.java src/test/resources/examples/t_223454/right_EntityListFile_1.18.java
 		File fl = new File("src/test/resources/examples/t_223454/left_EntityListFile_1.17.java");
 		File fr = new File("src/test/resources/examples/t_223454/right_EntityListFile_1.18.java");
-		CtDiff result = diff.compare(fl,fr);
+		CtDiffImpl result = diff.compare(fl,fr);
 		
 		List<Action> actions = result.getRootActions();
 		result.debugInformation();
 		assertEquals(actions.size(), 1);
-		assertTrue(result.containsAction("DEL", "Literal", "\"UTF-8\""));
-		assertEquals(442, result.changedNode().getPosition().getLine());
+		assertTrue(result.containsAction("Update", "ConstructorCall", "java.io.FileInputStream#FileInputStream(java.io.File, java.lang.String)"	));
+		assertTrue(result.containsAction(result.getAllActions(), "DEL", "Literal", "\"UTF-8\""));
+			
+		assertEquals(441, result.changedNode().getPosition().getLine());
 	}
 
 	@Test
