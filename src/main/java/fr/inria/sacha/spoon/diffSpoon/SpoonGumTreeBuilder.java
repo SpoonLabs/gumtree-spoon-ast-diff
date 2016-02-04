@@ -17,10 +17,8 @@
 
 package fr.inria.sacha.spoon.diffSpoon;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
-
+import com.github.gumtreediff.tree.ITree;
+import com.github.gumtreediff.tree.TreeContext;
 import spoon.reflect.code.CtArrayAccess;
 import spoon.reflect.code.CtBinaryOperator;
 import spoon.reflect.code.CtConditional;
@@ -44,8 +42,9 @@ import spoon.reflect.declaration.ModifierKind;
 import spoon.reflect.reference.CtReference;
 import spoon.reflect.visitor.CtScanner;
 
-import com.github.gumtreediff.tree.ITree;
-import com.github.gumtreediff.tree.TreeContext;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
 
 
 /**
@@ -126,7 +125,7 @@ public class SpoonGumTreeBuilder extends CtScanner {
 		} else if (obj instanceof CtArrayAccess) {
 			label = obj.toString();
 		} else if (obj instanceof CtTypeAccess) {
-			label = ((CtTypeAccess)obj).getType().getQualifiedName();
+			label = ((CtTypeAccess)obj).getSignature();
 		} 
 		
 		String type = getTypeName(obj.getClass().getSimpleName());
