@@ -125,7 +125,6 @@
 <!--                                 the reason is that it switches Spoon in noclasspath or not for this particular file -->
                                 <useSystemClassLoader>false</useSystemClassLoader>
                                 <forkCount>1</forkCount>
-                                <argLine>-Dgumtree.match.gt.minh=1</argLine>
                             </configuration>
                         </plugin>
                 </plugins>

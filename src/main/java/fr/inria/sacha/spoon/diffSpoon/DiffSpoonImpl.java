@@ -11,6 +11,7 @@ import java.util.Set;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.junit.Before;
 
 import spoon.compiler.SpoonCompiler;
 import spoon.compiler.SpoonResource;
@@ -47,6 +48,33 @@ public class DiffSpoonImpl implements DiffSpoon {
 	protected Factory factory = null;
 	private SpoonGumTreeBuilder scanner = new SpoonGumTreeBuilder();
 
+	static {
+			// default 0.3
+			// 0.1 one failing much more changes
+			// 0.2 one failing much more changes
+			// 0.3 OK
+			// 0.4 OK
+			// 0.5 
+			// 0.6 OK
+			// 0.7 1 failing
+			// 0.8 2 failing
+			// 0.9 two failing tests with more changes
+			System.setProperty("gumtree.match.bu.sim", "0.3");
+			
+			// default 2 
+			// 0 is really bad for 211903 t_224542 225391 226622
+			// 1 is required for t_225262 and t_213712 to pass
+			System.setProperty("gumtree.match.gt.minh", "1");
+			
+			// default 1000
+			// 1 OK
+			// 10 OK
+			// 100 OK
+			// 2000
+			// 10000 OK
+			//System.getProperty("gumtree.match.bu.size", "1000");
+	}
+	
 	@Override
 	public void setNoClasspath(boolean noClasspath) {
 		factory.getEnvironment().setNoClasspath(noClasspath);

@@ -36,33 +36,6 @@ import static org.junit.Assert.assertTrue;
  */
 public class DiffSpoonTest {
 
-	@Before
-	public void setup() {
-		// default 0.3
-		// 0.1 one failing much more changes
-		// 0.2 one failing much more changes
-		// 0.3 OK
-		// 0.4 OK
-		// 0.5 
-		// 0.6 OK
-		// 0.7 1 failing
-		// 0.8 2 failing
-		// 0.9 two failing tests with more changes
-		// System.setProperty("gumtree.match.bu.sim", "0.3");
-		
-		// default 2 
-		// 0 is really bad for 211903 t_224542 225391 226622
-		// 1 is required for t_225262 and t_213712 to pass
-		System.setProperty("gumtree.match.gt.minh", "1");
-		
-		// default 1000
-		// 1 OK
-		// 10 OK
-		// 100 OK
-		// 2000
-		// 10000 OK
-		//System.getProperty("gumtree.match.bu.size", "1000");
-	}
 	
 	@Test
 	public void testgetCtType() throws Exception {
