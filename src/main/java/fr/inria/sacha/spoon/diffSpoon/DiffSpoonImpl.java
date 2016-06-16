@@ -3,20 +3,24 @@ package fr.inria.sacha.spoon.diffSpoon;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.junit.Before;
+
+import com.github.gumtreediff.actions.ActionGenerator;
+import com.github.gumtreediff.actions.model.Action;
+import com.github.gumtreediff.matchers.CompositeMatchers.ClassicGumtree;
+import com.github.gumtreediff.matchers.MappingStore;
+import com.github.gumtreediff.matchers.Matcher;
+import com.github.gumtreediff.tree.ITree;
+import com.github.gumtreediff.tree.TreeUtils;
 
 import spoon.compiler.SpoonCompiler;
 import spoon.compiler.SpoonResource;
 import spoon.compiler.SpoonResourceHelper;
-import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtType;
 import spoon.reflect.factory.Factory;
@@ -26,15 +30,6 @@ import spoon.support.StandardEnvironment;
 import spoon.support.compiler.VirtualFile;
 import spoon.support.compiler.jdt.JDTBasedSpoonCompiler;
 import spoon.support.compiler.jdt.JDTSnippetCompiler;
-
-import com.github.gumtreediff.actions.ActionGenerator;
-import com.github.gumtreediff.actions.model.Action;
-import com.github.gumtreediff.matchers.CompositeMatchers.ClassicGumtree;
-import com.github.gumtreediff.matchers.Mapping;
-import com.github.gumtreediff.matchers.MappingStore;
-import com.github.gumtreediff.matchers.Matcher;
-import com.github.gumtreediff.tree.ITree;
-import com.github.gumtreediff.tree.TreeUtils;
 
 /**
  * Computes the differences between two CtElements.
@@ -120,33 +115,15 @@ public class DiffSpoonImpl implements DiffSpoon {
 
 	public CtType<?> getCtType(String content) throws Exception {
 
-		SpoonCompiler compiler = new JDTSnippetCompiler(factory, content);// new
-																			// JDTBasedSpoonCompiler(factory);
-		// compiler.addInputSource(new VirtualFile(content,""));
+		//Matias: using the Snippet compiler new JDTSnippetCompiler(factory, content);
+		// only compiles private class and throws an exception.
+		SpoonCompiler compiler = new JDTBasedSpoonCompiler(factory);
+		 compiler.addInputSource(new VirtualFile(content,"/test"));
 		compiler.build();
 		CtType<?> clazz1 = (CtType<?>) factory.Type().getAll().get(0);
 		return clazz1;
 	}
 
-	public CtType<?> getCtType2(String content) throws Exception {
-
-		/*
-		 * factory.Package().getAllRoots().clear();
-		 * factory.Type().getAll().clear();
-		 */
-		SpoonCompiler builder = new JDTSnippetCompiler(factory, content);
-
-		builder.addInputSource(new VirtualFile(content, ""));
-
-		try {
-			builder.build();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		CtType<?> ret = factory.Type().getAll().get(0);
-		return ret;
-	}
 
 	@Override
 	public CtDiffImpl compare(File f1, File f2) throws Exception {
