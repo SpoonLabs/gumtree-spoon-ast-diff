@@ -1,14 +1,14 @@
 package fr.inria.sacha.spoon.diffSpoon;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 import java.io.File;
 
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
- * Test Spoon Diff 
+ * Test Spoon Diff
  * @author  Matias Martinez, matias.martinez@inria.fr
  *
  */
@@ -16,14 +16,14 @@ public class CDiffTest {
 
 	private final String newline = System.getProperty("line.separator");
 
-	
+
 	@Test
 	public void testToString() throws Exception {
 		File fl = new File("src/test/resources/examples/test1/TypeHandler1.java");
 		File fr = new File("src/test/resources/examples/test1/TypeHandler2.java");
 
 		DiffSpoonImpl diff = new DiffSpoonImpl();
-		CtDiffImpl result = diff.compare(fl,fr);
+		CtDiff result = diff.compare(fl,fr);
 		assertEquals("Update FieldRead at org.apache.commons.cli.TypeHandler:80" +newline
 				+ "\t(org.apache.commons.cli.PatternOptionBuilder.DATE_VALUE) to (org.apache.commons.cli.PatternOptionBuilder.CLASS_VALUE)" + newline
 				+ "Insert Invocation at org.apache.commons.cli.TypeHandler:118" + newline
