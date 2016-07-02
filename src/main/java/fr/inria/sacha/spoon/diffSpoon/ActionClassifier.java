@@ -1,13 +1,5 @@
 package fr.inria.sacha.spoon.diffSpoon;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.github.gumtreediff.actions.model.Action;
 import com.github.gumtreediff.actions.model.Delete;
 import com.github.gumtreediff.actions.model.Insert;
@@ -16,50 +8,37 @@ import com.github.gumtreediff.actions.model.Update;
 import com.github.gumtreediff.matchers.Mapping;
 import com.github.gumtreediff.matchers.MappingStore;
 import com.github.gumtreediff.tree.ITree;
-import com.github.gumtreediff.tree.Tree;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Action Classifier
- * 
+ *
  * @author Matias Martinez, matias.martinez@inria.fr
- * 
  */
-public class ActionClassifier {
-
-	public boolean defaultOnlyRoots = true;
-
-	ITree tl = null;
-	ITree tr = null;
-	public Set<Mapping> mappings = null;
-
-
+class ActionClassifier {
 	// /
 	// ROOT CLASSIFIER
 	// /
-	protected Set<ITree> srcUpdTrees = new HashSet<>();
+	private Set<ITree> srcUpdTrees = new HashSet<>();
+	private Set<ITree> dstUpdTrees = new HashSet<>();
+	private Set<ITree> srcMvTrees = new HashSet<>();
+	private Set<ITree> dstMvTrees = new HashSet<>();
+	private Set<ITree> srcDelTrees = new HashSet<>();
+	private Set<ITree> dstAddTrees = new HashSet<>();
+	private Map<ITree, Action> originalActionsSrc = new HashMap<>();
+	private Map<ITree, Action> originalActionsDst = new HashMap<>();
 
-	protected Set<ITree> dstUpdTrees = new HashSet<>();
-
-	protected Set<ITree> srcMvTrees = new HashSet<>();
-
-	protected Set<ITree> dstMvTrees = new HashSet<>();
-
-	protected Set<ITree> srcDelTrees = new HashSet<>();
-
-	protected Set<ITree> dstAddTrees = new HashSet<>();
-
-	protected Map<ITree, Action> originalActionsSrc = new HashMap<>();
-	protected Map<ITree, Action> originalActionsDst = new HashMap<>();
-
-	/**
-	 * @return
-	 * 
-	 */
-	public List<Action> getRootActions(Set<Mapping> rawMappings, List<Action> actions) {
+	List<Action> getRootActions(Set<Mapping> rawMappings, List<Action> actions) {
 		clean();
 		MappingStore mappings = new MappingStore(rawMappings);
-
 		for (Action a : actions) {
-
 			if (a instanceof Delete) {
 				srcDelTrees.add(a.getNode());
 				originalActionsSrc.put(a.getNode(), a);
@@ -71,18 +50,12 @@ public class ActionClassifier {
 				dstUpdTrees.add(mappings.getDst(a.getNode()));
 				ITree dest = mappings.getDst(a.getNode());
 				a.getNode().setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT_DEST, dest.getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT));
-				//dstMvTrees.add(dest);
-				//originalActionsDst.put(dest, a);
-				//New
 				originalActionsSrc.put(a.getNode(), a);
-
-			} else if (a instanceof Move /* || a instanceof Permute*/) {
+			} else if (a instanceof Move) {
 				srcMvTrees.add(a.getNode());
 				ITree dest = mappings.getDst(a.getNode());
 				a.getNode().setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT_DEST, dest.getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT));
 				dstMvTrees.add(dest);
-				//Bugfix? 
-				//originalActionsDst.put(a.getNode(), a);
 				originalActionsDst.put(dest, a);
 			}
 		}
@@ -91,75 +64,41 @@ public class ActionClassifier {
 
 	/**
 	 * This method retrieves ONLY the ROOT actions
-	 * 
+	 *
 	 * @return
 	 */
 	private List<Action> retrieveRootActionsFromTreeNodes() {
-
-		List<Action> rootActions = new ArrayList<Action>();
-
-/*		for (Tree t : dstUpdTrees) {
-			// inc("UPD " + t.getTypeLabel() + " IN " +
-			// t.getParent().getTypeLabel(), summary);
-			Action a = originalActionsDst.get(t);
-			rootActions.add(a);
-		}*/
-		
-		//New: iterates source instead of dest
+		final List<Action> rootActions = new ArrayList<>();
 		for (ITree t : srcUpdTrees) {
-			// inc("UPD " + t.getTypeLabel() + " IN " +
-			// t.getParent().getTypeLabel(), summary);
-			Action a = originalActionsSrc.get(t);
-			rootActions.add(a);
+			rootActions.add(originalActionsSrc.get(t));
 		}
 		for (ITree t : srcDelTrees) {
-			if (!srcDelTrees.contains(t.getParent()) && !srcUpdTrees.contains(t.getParent()) ) {
-				Action a = originalActionsSrc.get(t);
-				rootActions.add(a);
-
+			if (!srcDelTrees.contains(t.getParent()) && !srcUpdTrees.contains(t.getParent())) {
+				rootActions.add(originalActionsSrc.get(t));
 			}
 		}
 		for (ITree t : dstAddTrees) {
-			if (!dstAddTrees.contains(t.getParent()) && !dstUpdTrees.contains(t.getParent())  ) {
-				Action a = originalActionsDst.get(t);
-				rootActions.add(a);
+			if (!dstAddTrees.contains(t.getParent()) && !dstUpdTrees.contains(t.getParent())) {
+				rootActions.add(originalActionsDst.get(t));
 			}
 		}
-		//Due to the change in getRootActions
-	/*	for (Tree t : srcMvTrees) {
-			if (!srcMvTrees.contains(t.getParent())) {
-				Action a = originalActionsSrc.get(t);
-				rootActions.add(a);
-			}
-		}*/
 		for (ITree t : dstMvTrees) {
 			if (!dstMvTrees.contains(t.getParent())) {
-				Action a = originalActionsDst.get(t);
-				rootActions.add(a);
+				rootActions.add(originalActionsDst.get(t));
 			}
 		}
 		rootActions.removeAll(Collections.singleton(null));
 		return rootActions;
 	}
 
-
-	
-	
 	private void clean() {
 		srcUpdTrees.clear();
-
 		dstUpdTrees.clear();
-
 		srcMvTrees.clear();
-
 		dstMvTrees.clear();
-
 		srcDelTrees.clear();
-
 		dstAddTrees.clear();
-
 		originalActionsSrc.clear();
-
 		originalActionsDst.clear();
 	}
 }

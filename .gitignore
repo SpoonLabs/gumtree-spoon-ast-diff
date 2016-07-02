@@ -1,5 +1,14 @@
+# Maven
 target
+
+# Eclipse
 .classpath
 .project
+
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Spoon
 spooned
 .settings
