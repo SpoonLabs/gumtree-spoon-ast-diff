@@ -7,8 +7,6 @@ import com.github.gumtreediff.matchers.MappingStore;
 import com.github.gumtreediff.matchers.Matcher;
 import com.github.gumtreediff.tree.ITree;
 import fr.inria.sacha.spoon.diffSpoon.utils.TreeUtil;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 import spoon.reflect.declaration.CtElement;
 import spoon.reflect.factory.Factory;
 import spoon.reflect.factory.FactoryImpl;
@@ -27,8 +25,6 @@ import static fr.inria.sacha.spoon.diffSpoon.utils.DiffUtil.getCtType;
  * @author Matias Martinez, matias.martinez@inria.fr
  */
 public class DiffSpoonImpl implements DiffSpoon {
-	private static final Logger logger = Logger.getLogger(DiffSpoonImpl.class);
-
 	private Context context = new Context();
 	Factory factory = null;
 
@@ -65,7 +61,6 @@ public class DiffSpoonImpl implements DiffSpoon {
 
 	public DiffSpoonImpl(Factory factory) {
 		this.factory = factory;
-		logger.setLevel(Level.DEBUG);
 		factory.getEnvironment().setNoClasspath(true);
 	}
 
