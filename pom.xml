@@ -133,11 +133,31 @@
     </repository>
   </repositories>
 
+  <licenses>
+    <license>
+      <name>Apache License</name>
+      <url>http://www.apache.org/licenses/</url>
+    </license>
+  </licenses>
+
   <developers>
     <developer>
       <id>matias</id>
       <name>Matias Martinez</name>
       <email>matias.martinez@inria.fr</email>
+    </developer>
+    <developer>
+      <id>gpaligot</id>
+      <name>Gérard Paligot</name>
+      <email>gerard.paligot@gmail.com</email>
+    </developer>
+    <developer>
+      <id>tdurieux</id>
+      <name>Thomas Durieux</name>
+    </developer>
+    <developer>
+      <id>monperrus</id>
+      <name>Martin Monperrus</name>
     </developer>
   </developers>
 
