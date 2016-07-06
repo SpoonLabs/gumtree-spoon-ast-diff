@@ -1,4 +1,4 @@
-package fr.inria.sacha.spoon.diffSpoon;
+package gumtree.spoon.diff;
 
 import com.github.gumtreediff.actions.model.Action;
 import com.github.gumtreediff.actions.model.Delete;
@@ -8,6 +8,7 @@ import com.github.gumtreediff.actions.model.Update;
 import com.github.gumtreediff.matchers.Mapping;
 import com.github.gumtreediff.matchers.MappingStore;
 import com.github.gumtreediff.tree.ITree;
+import gumtree.spoon.builder.SpoonGumTreeBuilder;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -64,8 +65,6 @@ class ActionClassifier {
 
 	/**
 	 * This method retrieves ONLY the ROOT actions
-	 *
-	 * @return
 	 */
 	private List<Action> retrieveRootActionsFromTreeNodes() {
 		final List<Action> rootActions = new ArrayList<>();
