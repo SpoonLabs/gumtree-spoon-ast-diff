@@ -2,6 +2,7 @@ package gumtree.spoon.diff;
 
 import com.github.gumtreediff.actions.ActionGenerator;
 import com.github.gumtreediff.actions.model.Action;
+import com.github.gumtreediff.actions.model.Delete;
 import com.github.gumtreediff.actions.model.Insert;
 import com.github.gumtreediff.actions.model.Move;
 import com.github.gumtreediff.actions.model.Update;
@@ -11,12 +12,18 @@ import com.github.gumtreediff.matchers.Matcher;
 import com.github.gumtreediff.tree.ITree;
 import com.github.gumtreediff.tree.TreeContext;
 import gumtree.spoon.builder.SpoonGumTreeBuilder;
+import gumtree.spoon.diff.operations.DeleteOperation;
+import gumtree.spoon.diff.operations.InsertOperation;
+import gumtree.spoon.diff.operations.MoveOperation;
+import gumtree.spoon.diff.operations.Operation;
+import gumtree.spoon.diff.operations.UpdateOperation;
 import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtPackage;
 import spoon.reflect.declaration.CtType;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -27,11 +34,11 @@ public class DiffImpl implements Diff {
 	/**
 	 * Actions over all tree nodes (CtElements)
 	 */
-	private final List<Action> allActions;
+	private final List<Operation> allOperations;
 	/**
 	 * Actions over the changes roots.
 	 */
-	private final List<Action> rootActions;
+	private final List<Operation> rootOperations;
 	/**
 	 * the mapping of this diff
 	 */
@@ -51,36 +58,54 @@ public class DiffImpl implements Diff {
 		actionGenerator.generate();
 
 		final ActionClassifier actionClassifier = new ActionClassifier();
-		this.allActions = actionGenerator.getActions();
-		this.rootActions = actionClassifier.getRootActions(matcher.getMappingSet(), actionGenerator.getActions());
+		this.allOperations = convertToSpoon(actionGenerator.getActions());
+		this.rootOperations = convertToSpoon(actionClassifier.getRootActions(matcher.getMappingSet(), actionGenerator.getActions()));
 		this._mappingsComp = mappingsComp;
 		this.context = context;
 	}
 
-	@Override
-	public List<Action> getAllActions() {
-		return allActions;
-	}
-
-	@Override
-	public List<Action> getRootActions() {
-		return rootActions;
-	}
-
-	@Override
-	public List<Action> getActionChildren(Action actionParent, List<Action> rootActions) {
-		final List<Action> actions = new ArrayList<>();
-		for (Action action : rootActions) {
-			if (action.getNode().getParent().equals(actionParent)) {
-				actions.add(action);
+	private List<Operation> convertToSpoon(List<Action> actions) {
+		final List<Operation> operations = new ArrayList<>(actions.size());
+		for (Action action : actions) {
+			if (action instanceof Insert) {
+				operations.add(new InsertOperation((Insert) action));
+			} else if (action instanceof Delete) {
+				operations.add(new DeleteOperation((Delete) action));
+			} else if (action instanceof Update) {
+				operations.add(new UpdateOperation((Update) action));
+			} else if (action instanceof Move) {
+				operations.add(new MoveOperation((Move) action));
+			} else {
+				throw new IllegalArgumentException("Please support the new type " + action.getClass());
 			}
 		}
-		return actions;
+		return operations;
+	}
+
+	@Override
+	public List<Operation> getAllOperations() {
+		return Collections.unmodifiableList(allOperations);
+	}
+
+	@Override
+	public List<Operation> getRootOperations() {
+		return Collections.unmodifiableList(rootOperations);
+	}
+
+	@Override
+	public List<Operation> getOperationChildren(Operation actionParent, List<Operation> rootOperations) {
+		final List<Operation> operations = new ArrayList<>();
+		for (Operation operation : rootOperations) {
+			if (operation.getNode().getParent().equals(actionParent)) {
+				operations.add(operation);
+			}
+		}
+		return operations;
 	}
 
 	@Override
 	public CtElement changedNode() {
-		if (rootActions.size() != 1) {
+		if (rootOperations.size() != 1) {
 			throw new IllegalArgumentException("Should have only one root action.");
 		}
 		return commonAncestor();
@@ -89,13 +114,11 @@ public class DiffImpl implements Diff {
 	@Override
 	public CtElement commonAncestor() {
 		final List<CtElement> copy = new ArrayList<>();
-		for (Action a : rootActions) {
-			CtElement el;
-			if (a instanceof Insert) {
+		for (Operation operation : rootOperations) {
+			CtElement el = operation.getNode();
+			if (operation instanceof InsertOperation) {
 				// we take the corresponding node in the source tree
-				el = (CtElement) _mappingsComp.getSrc(a.getNode().getParent()).getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT);
-			} else {
-				el = (CtElement) a.getNode().getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT);
+				el = (CtElement) _mappingsComp.getSrc(operation.getAction().getNode().getParent()).getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT);
 			}
 			copy.add(el);
 		}
@@ -122,10 +145,10 @@ public class DiffImpl implements Diff {
 	}
 
 	@Override
-	public CtElement changedNode(Class<? extends Action> class1) {
-		for (Action a : getRootActions()) {
-			if (class1.isAssignableFrom(a.getClass())) {
-				return (CtElement) a.getNode().getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT);
+	public CtElement changedNode(Class<? extends Operation> operationWanted) {
+		for (Operation operation : rootOperations) {
+			if (operationWanted.isAssignableFrom(operation.getClass())) {
+				return operation.getNode();
 			}
 		}
 		throw new NoSuchElementException();
@@ -148,9 +171,9 @@ public class DiffImpl implements Diff {
 	@Override
 	public boolean containsAction(String actionKind, String nodeKind) {
 		actionKind = workAroundVisibility(actionKind);
-		for (Action action : getRootActions()) {
-			if (action.getClass().getSimpleName().equals(actionKind)) {
-				if (context.getTypeLabel(action.getNode()).equals(nodeKind)) {
+		for (Operation operation : rootOperations) {
+			if (operation.getAction().getClass().getSimpleName().equals(actionKind)) {
+				if (context.getTypeLabel(operation.getAction().getNode()).equals(nodeKind)) {
 					return true;
 				}
 			}
@@ -160,16 +183,16 @@ public class DiffImpl implements Diff {
 
 	@Override
 	public boolean containsAction(String actionKind, String nodeKind, String nodeLabel) {
-		return containsAction(getRootActions(), actionKind, nodeKind, nodeLabel);
+		return containsAction(getRootOperations(), actionKind, nodeKind, nodeLabel);
 	}
 
 	@Override
-	public boolean containsAction(List<Action> actions, String actionKind, String nodeKind, String nodeLabel) {
+	public boolean containsAction(List<Operation> actions, String actionKind, String nodeKind, String nodeLabel) {
 		actionKind = workAroundVisibility(actionKind);
-		for (Action action : actions) {
-			if (action.getClass().getSimpleName().equals(actionKind)) {
-				if (context.getTypeLabel(action.getNode()).equals(nodeKind)) {
-					if (action.getNode().getLabel().equals(nodeLabel)) {
+		for (Operation operation : actions) {
+			if (operation.getAction().getClass().getSimpleName().equals(actionKind)) {
+				if (context.getTypeLabel(operation.getAction().getNode()).equals(nodeKind)) {
+					if (operation.getAction().getNode().getLabel().equals(nodeLabel)) {
 						return true;
 					}
 				}
@@ -185,35 +208,35 @@ public class DiffImpl implements Diff {
 
 	private String toDebugString() {
 		String result = "";
-		for (Action action : getRootActions()) {
-			ITree node = action.getNode();
+		for (Operation operation : rootOperations) {
+			ITree node = operation.getAction().getNode();
+			final CtElement nodeElement = operation.getNode();
 			String label = "\"" + node.getLabel() + "\"";
-			if (action instanceof Update) {
-				label += " to \"" + ((Update) action).getValue() + "\"";
+			if (operation instanceof UpdateOperation) {
+				label += " to \"" + ((Update) operation.getAction()).getValue() + "\"";
 			}
 			String nodeType = "CtfakenodeImpl";
-			if (node.getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT) != null) {
-				nodeType = node.getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT).getClass().getSimpleName();
+			if (nodeElement != null) {
+				nodeType = nodeElement.getClass().getSimpleName();
 				nodeType = nodeType.substring(2, nodeType.length() - 4);
 			}
-			result += "\"" + action.getClass().getSimpleName() + "\"," + " " + "\"" + nodeType + "\"," + " " + label + " (size: " + node.getDescendants().size() + ")" + node.toTreeString();
+			result += "\"" + operation.getAction().getClass().getSimpleName() + "\", \"" + nodeType + "\", " + label + " (size: " + node.getDescendants().size() + ")" + node.toTreeString();
 		}
 		return result;
 	}
 
 	@Override
 	public String toString() {
-		if (getRootActions().size() == 0) {
+		if (rootOperations.size() == 0) {
 			return "no AST change";
 		}
-		StringBuilder stringBuilder = new StringBuilder();
-		CtElement ctElement = commonAncestor();
-		for (Action action : getRootActions()) {
-			stringBuilder.append(toStringAction(action));
+		final StringBuilder stringBuilder = new StringBuilder();
+		final CtElement ctElement = commonAncestor();
+		for (Operation operation : rootOperations) {
+			stringBuilder.append(toStringAction(operation.getAction()));
 
 			// if all actions are applied on the same node print only the first action
-			CtElement element = (CtElement) action.getNode().getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT);
-			if (element.equals(ctElement) && action instanceof Update) {
+			if (operation.getNode().equals(ctElement) && operation instanceof UpdateOperation) {
 				break;
 			}
 		}
