@@ -39,34 +39,35 @@ class ActionClassifier {
 	List<Action> getRootActions(Set<Mapping> rawMappings, List<Action> actions) {
 		clean();
 		MappingStore mappings = new MappingStore(rawMappings);
-		for (Action a : actions) {
-			if (a instanceof Delete) {
-				srcDelTrees.add(a.getNode());
-				originalActionsSrc.put(a.getNode(), a);
-			} else if (a instanceof Insert) {
-				dstAddTrees.add(a.getNode());
-				originalActionsDst.put(a.getNode(), a);
-			} else if (a instanceof Update) {
-				srcUpdTrees.add(a.getNode());
-				dstUpdTrees.add(mappings.getDst(a.getNode()));
-				ITree dest = mappings.getDst(a.getNode());
-				a.getNode().setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT_DEST, dest.getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT));
-				originalActionsSrc.put(a.getNode(), a);
-			} else if (a instanceof Move) {
-				srcMvTrees.add(a.getNode());
-				ITree dest = mappings.getDst(a.getNode());
-				a.getNode().setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT_DEST, dest.getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT));
+		for (Action action : actions) {
+			final ITree original = action.getNode();
+			if (action instanceof Delete) {
+				srcDelTrees.add(original);
+				originalActionsSrc.put(original, action);
+			} else if (action instanceof Insert) {
+				dstAddTrees.add(original);
+				originalActionsDst.put(original, action);
+			} else if (action instanceof Update) {
+				ITree dest = mappings.getDst(original);
+				original.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT_DEST, dest.getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT));
+				srcUpdTrees.add(original);
+				dstUpdTrees.add(dest);
+				originalActionsSrc.put(original, action);
+			} else if (action instanceof Move) {
+				ITree dest = mappings.getDst(original);
+				original.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT_DEST, dest.getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT));
+				srcMvTrees.add(original);
 				dstMvTrees.add(dest);
-				originalActionsDst.put(dest, a);
+				originalActionsDst.put(dest, action);
 			}
 		}
-		return retrieveRootActionsFromTreeNodes();
+		return getRootActions();
 	}
 
 	/**
 	 * This method retrieves ONLY the ROOT actions
 	 */
-	private List<Action> retrieveRootActionsFromTreeNodes() {
+	private List<Action> getRootActions() {
 		final List<Action> rootActions = new ArrayList<>();
 		for (ITree t : srcUpdTrees) {
 			rootActions.add(originalActionsSrc.get(t));

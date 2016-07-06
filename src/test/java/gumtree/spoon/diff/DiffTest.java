@@ -1,8 +1,7 @@
 package gumtree.spoon.diff;
 
-import com.github.gumtreediff.actions.model.Action;
 import gumtree.spoon.AstComparator;
-import gumtree.spoon.diff.Diff;
+import gumtree.spoon.diff.operations.Operation;
 import org.junit.Test;
 
 import java.io.File;
@@ -65,11 +64,12 @@ public class DiffTest {
 		File fr = new File("src/test/resources/examples/roots/test8/right_QuickNotepad_1.14.java");
 		Diff result = diff.compare(fl,fr);
 
-		List<Action> actionsRoot = result.getRootActions();
+		List<Operation> actionsRoot = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(1, actionsRoot.size());
 		assertTrue(result.containsAction( "Insert", "If"));
 	}
+
 	/**
 	 * changes an element and adds a new child to it
 	 * @throws Exception
@@ -81,7 +81,7 @@ public class DiffTest {
 		File fr = new File("src/test/resources/examples/roots/test9/right_QuickNotepad_1.14.java");
 		Diff result = diff.compare(fl,fr);
 
-		List<Action> actionsRoot = result.getRootActions();
+		List<Operation> actionsRoot = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(2, actionsRoot.size());
 
@@ -100,7 +100,7 @@ public class DiffTest {
 		File fr = new File("src/test/resources/examples/roots/test10/right_QuickNotepad_1.14.java");
 		Diff result = diff.compare(fl,fr);
 
-		List<Action> actionsRoot = result.getRootActions();
+		List<Operation> actionsRoot = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(2, actionsRoot.size());
 
@@ -119,7 +119,7 @@ public class DiffTest {
 		File fr = new File("src/test/resources/examples/roots/test11/right_QuickNotepad_1.14.java");
 		Diff result = diff.compare(fl,fr);
 
-		List<Action> actionsRoot = result.getRootActions();
+		List<Operation> actionsRoot = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(2, actionsRoot.size());
 
@@ -138,7 +138,7 @@ public class DiffTest {
 		File fr = new File("src/test/resources/examples/roots/test12/right_QuickNotepad_1.14.java");
 		Diff result = diff.compare(fl,fr);
 
-		List<Action> actionsRoot = result.getRootActions();
+		List<Operation> actionsRoot = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(2, actionsRoot.size());
 

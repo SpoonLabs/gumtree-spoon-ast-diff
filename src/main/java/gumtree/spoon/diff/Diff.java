@@ -1,6 +1,6 @@
 package gumtree.spoon.diff;
 
-import com.github.gumtreediff.actions.model.Action;
+import gumtree.spoon.diff.operations.Operation;
 import spoon.reflect.declaration.CtElement;
 
 import java.util.List;
@@ -13,17 +13,17 @@ public interface Diff {
 	/**
 	 * lists all actions (move,insert, deletes)
 	 */
-	List<Action> getAllActions();
+	List<Operation> getAllOperations();
 
 	/**
 	 * lists all actions such that the parent is not involved in the diff
 	 */
-	List<Action> getRootActions();
+	List<Operation> getRootOperations();
 
 	/**
 	 * lists all actions sub the given parent action.
 	 */
-	List<Action> getActionChildren(Action actionParent, List<Action> rootActions);
+	List<Operation> getOperationChildren(Operation actionParent, List<Operation> rootActions);
 
 	/**
 	 * returns the changed node if there is a single one
@@ -33,7 +33,7 @@ public interface Diff {
 	/**
 	 * returns the first changed node of a given gumtree Action class
 	 */
-	CtElement changedNode(Class<? extends Action> class1);
+	CtElement changedNode(Class<? extends Operation> class1);
 
 	/**
 	 * returns the common ancestor of all changes
@@ -53,7 +53,7 @@ public interface Diff {
 	/**
 	 * low level if you want to test on all actions and not only root actions
 	 */
-	boolean containsAction(List<Action> actions, String actionKind, String nodeKind, String nodeLabel);
+	boolean containsAction(List<Operation> actions, String actionKind, String nodeKind, String nodeLabel);
 
 	/**
 	 * outputs debug information to System.out
