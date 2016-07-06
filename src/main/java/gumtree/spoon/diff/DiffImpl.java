@@ -1,11 +1,16 @@
-package fr.inria.sacha.spoon.diffSpoon;
+package gumtree.spoon.diff;
 
+import com.github.gumtreediff.actions.ActionGenerator;
 import com.github.gumtreediff.actions.model.Action;
 import com.github.gumtreediff.actions.model.Insert;
 import com.github.gumtreediff.actions.model.Move;
 import com.github.gumtreediff.actions.model.Update;
+import com.github.gumtreediff.matchers.CompositeMatchers;
 import com.github.gumtreediff.matchers.MappingStore;
+import com.github.gumtreediff.matchers.Matcher;
 import com.github.gumtreediff.tree.ITree;
+import com.github.gumtreediff.tree.TreeContext;
+import gumtree.spoon.builder.SpoonGumTreeBuilder;
 import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtPackage;
@@ -18,7 +23,7 @@ import java.util.NoSuchElementException;
 /**
  * @author Matias Martinez, matias.martinez@inria.fr
  */
-public class CtDiffImpl implements CtDiff {
+public class DiffImpl implements Diff {
 	/**
 	 * Actions over all tree nodes (CtElements)
 	 */
@@ -30,16 +35,24 @@ public class CtDiffImpl implements CtDiff {
 	/**
 	 * the mapping of this diff
 	 */
-	private MappingStore _mappingsComp = null;
+	private final MappingStore _mappingsComp;
 	/**
 	 * Context of the spoon diff.
 	 */
-	private Context context;
+	private final TreeContext context;
 
-	public CtDiffImpl(List<Action> allActions, List<Action> rootActions, MappingStore mappingsComp, Context context) {
-		super();
-		this.allActions = allActions;
-		this.rootActions = rootActions;
+	public DiffImpl(TreeContext context, ITree rootSpoonLeft, ITree rootSpoonRight) {
+		final MappingStore mappingsComp = new MappingStore();
+
+		final Matcher matcher = new CompositeMatchers.ClassicGumtree(rootSpoonLeft, rootSpoonRight, mappingsComp);
+		matcher.match();
+
+		final ActionGenerator actionGenerator = new ActionGenerator(rootSpoonLeft, rootSpoonRight, matcher.getMappings());
+		actionGenerator.generate();
+
+		final ActionClassifier actionClassifier = new ActionClassifier();
+		this.allActions = actionGenerator.getActions();
+		this.rootActions = actionClassifier.getRootActions(matcher.getMappingSet(), actionGenerator.getActions());
 		this._mappingsComp = mappingsComp;
 		this.context = context;
 	}
@@ -52,6 +65,17 @@ public class CtDiffImpl implements CtDiff {
 	@Override
 	public List<Action> getRootActions() {
 		return rootActions;
+	}
+
+	@Override
+	public List<Action> getActionChildren(Action actionParent, List<Action> rootActions) {
+		final List<Action> actions = new ArrayList<>();
+		for (Action action : rootActions) {
+			if (action.getNode().getParent().equals(actionParent)) {
+				actions.add(action);
+			}
+		}
+		return actions;
 	}
 
 	@Override
@@ -126,7 +150,7 @@ public class CtDiffImpl implements CtDiff {
 		actionKind = workAroundVisibility(actionKind);
 		for (Action action : getRootActions()) {
 			if (action.getClass().getSimpleName().equals(actionKind)) {
-				if (context.nodeIsKindOf(action.getNode(), nodeKind)) {
+				if (context.getTypeLabel(action.getNode()).equals(nodeKind)) {
 					return true;
 				}
 			}
@@ -144,7 +168,7 @@ public class CtDiffImpl implements CtDiff {
 		actionKind = workAroundVisibility(actionKind);
 		for (Action action : actions) {
 			if (action.getClass().getSimpleName().equals(actionKind)) {
-				if (context.nodeIsKindOf(action.getNode(), nodeKind)) {
+				if (context.getTypeLabel(action.getNode()).equals(nodeKind)) {
 					if (action.getNode().getLabel().equals(nodeLabel)) {
 						return true;
 					}

@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/SpoonLabs/gumtree-spoon-ast-diff.svg?branch=master)](https://travis-ci.org/SpoonLabs/gumtree-spoon-ast-diff)
+
 gumtree-spoon-ast-diff
 ======================
 
@@ -13,10 +15,11 @@ Launch tests:
     mvn compile
     mvn test
 
-[![Build Status](https://travis-ci.org/SpoonLabs/gumtree-spoon-ast-diff.svg?branch=master)](https://travis-ci.org/SpoonLabs/gumtree-spoon-ast-diff)
-
 The main class is used this way:
-fr.inria.sacha.spoon.diffSpoon.DiffSpoon <file_1> <file_2>
+
+```bash
+gumtree.spoon.AstComparator <file_1> <file_2>
+```
 
 **Testing AST differencing **
 
@@ -24,7 +27,7 @@ gumtree-spoon-ast-diff is heavily tested. The testing of AST tree differencing i
 
 There are cases where the oracle is pretty clear, for instance for the deletion of a node.
 
-```
+```java
 // there is only one deletion at line 442
 assertEquals(actions.size(), 1);
 assertTrue(diff.containsAction(actions, "DEL", "Literal", "\"UTF-8\""));
@@ -33,7 +36,8 @@ assertEquals(442, result.changedNode().getPosition().getLine());
 ```
 
 or for the addition of a single node
-```
+
+```java
 assertEquals(actions.size(), 1);
 assertTrue(diff.containsAction(actions, "Insert", "Invocation", "append"));
 
@@ -41,7 +45,7 @@ assertTrue(diff.containsAction(actions, "Insert", "Invocation", "append"));
 
 However, with the presence of moves, the answer is less clear. For instance, an insert+delete instead of a move is correct, although not optimal. However, in this case, there are still definitive oracles: for instance, you are sure that the change happened within a certain node
 
-```
+```java
 // the change happened in System.out.println() at line 334
 CtElement ancestor = result.commonAncestor();		
 assertTrue(ancestor instanceof CtInvocation);

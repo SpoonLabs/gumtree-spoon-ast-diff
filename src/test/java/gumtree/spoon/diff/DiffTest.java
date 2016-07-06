@@ -1,6 +1,8 @@
-package fr.inria.sacha.spoon.diffSpoon;
+package gumtree.spoon.diff;
 
 import com.github.gumtreediff.actions.model.Action;
+import gumtree.spoon.AstComparator;
+import gumtree.spoon.diff.Diff;
 import org.junit.Test;
 
 import java.io.File;
@@ -8,12 +10,49 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
 /**
- * Test the action classifier, which creates the RootAction list from CtDiff.
- *
+ * Test Spoon Diff
+ * @author  Matias Martinez, matias.martinez@inria.fr
  *
  */
-public class ActionClassifierTest {
+public class DiffTest {
+	private final String newline = System.getProperty("line.separator");
+
+	@Test
+	public void testToString() throws Exception {
+		File fl = new File("src/test/resources/examples/test1/TypeHandler1.java");
+		File fr = new File("src/test/resources/examples/test1/TypeHandler2.java");
+
+		AstComparator diff = new AstComparator();
+		Diff result = diff.compare(fl,fr);
+		assertEquals("Update FieldRead at org.apache.commons.cli.TypeHandler:80" +newline
+				+ "\t(org.apache.commons.cli.PatternOptionBuilder.DATE_VALUE) to (org.apache.commons.cli.PatternOptionBuilder.CLASS_VALUE)" + newline
+				+ "Insert Invocation at org.apache.commons.cli.TypeHandler:118" + newline
+				+ "\tjava.lang.System.out.println(\"Hola\")" + newline, result.toString());
+
+		fl = new File("src/test/resources/examples/test2/CommandLine1.java");
+		fr = new File("src/test/resources/examples/test2/CommandLine2.java");
+
+		result = diff.compare(fl,fr);
+		assertEquals("Update Literal at org.apache.commons.cli.CommandLine:275" + newline
+				+ "\t1 to 1000000" + newline, result.toString());
+
+		fl = new File("src/test/resources/examples/test3/CommandLine1.java");
+		fr = new File("src/test/resources/examples/test3/CommandLine2.java");
+
+		result = diff.compare(fl,fr);
+		assertTrue(result.toString().endsWith("Delete Method at org.apache.commons.cli.CommandLine:161" + newline
+				+ "\tpublic java.lang.String[] getOptionValues(java.lang.String opt) {" + newline
+				+ "\t    java.util.List<java.lang.String> values = new java.util.ArrayList<java.lang.String>();" + newline
+				+ "\t    for (org.apache.commons.cli.Option option : options) {" + newline
+				+ "\t        if ((opt.equals(option.getOpt())) || (opt.equals(option.getLongOpt()))) {" + newline
+				+ "\t            values.addAll(option.getValuesList());" + newline
+				+ "\t        } " + newline
+				+ "\t    }" + newline
+				+ "\t    return values.isEmpty() ? null : values.toArray(new java.lang.String[values.size()]);" + newline
+				+ "\t}" + newline));
+	}
 
 	/**
 	 * Add new element + child
@@ -21,10 +60,10 @@ public class ActionClassifierTest {
 	 */
 	@Test
 	public void test_actionClassifier_1() throws Exception{
-		DiffSpoonImpl diff = new DiffSpoonImpl();
+		AstComparator diff = new AstComparator();
 		File fl = new File("src/test/resources/examples/roots/test8/left_QuickNotepad_1.13.java");
 		File fr = new File("src/test/resources/examples/roots/test8/right_QuickNotepad_1.14.java");
-		CtDiff result = diff.compare(fl,fr);
+		Diff result = diff.compare(fl,fr);
 
 		List<Action> actionsRoot = result.getRootActions();
 		result.debugInformation();
@@ -37,10 +76,10 @@ public class ActionClassifierTest {
 	 */
 	@Test
 	public void test_actionClassifier_2() throws Exception{
-		DiffSpoonImpl diff = new DiffSpoonImpl();
+		AstComparator diff = new AstComparator();
 		File fl = new File("src/test/resources/examples/roots/test9/left_QuickNotepad_1.13.java");
 		File fr = new File("src/test/resources/examples/roots/test9/right_QuickNotepad_1.14.java");
-		CtDiff result = diff.compare(fl,fr);
+		Diff result = diff.compare(fl,fr);
 
 		List<Action> actionsRoot = result.getRootActions();
 		result.debugInformation();
@@ -56,10 +95,10 @@ public class ActionClassifierTest {
 	 */
 	@Test
 	public void test_actionClassifier_3() throws Exception{
-		DiffSpoonImpl diff = new DiffSpoonImpl();
+		AstComparator diff = new AstComparator();
 		File fl = new File("src/test/resources/examples/roots/test10/left_QuickNotepad_1.13.java");
 		File fr = new File("src/test/resources/examples/roots/test10/right_QuickNotepad_1.14.java");
-		CtDiff result = diff.compare(fl,fr);
+		Diff result = diff.compare(fl,fr);
 
 		List<Action> actionsRoot = result.getRootActions();
 		result.debugInformation();
@@ -75,10 +114,10 @@ public class ActionClassifierTest {
 	 */
 	@Test
 	public void test_actionClassifier_4() throws Exception{
-		DiffSpoonImpl diff = new DiffSpoonImpl();
+		AstComparator diff = new AstComparator();
 		File fl = new File("src/test/resources/examples/roots/test11/left_QuickNotepad_1.13.java");
 		File fr = new File("src/test/resources/examples/roots/test11/right_QuickNotepad_1.14.java");
-		CtDiff result = diff.compare(fl,fr);
+		Diff result = diff.compare(fl,fr);
 
 		List<Action> actionsRoot = result.getRootActions();
 		result.debugInformation();
@@ -94,10 +133,10 @@ public class ActionClassifierTest {
 	 */
 	@Test
 	public void test_actionClassifier_5() throws Exception{
-		DiffSpoonImpl diff = new DiffSpoonImpl();
+		AstComparator diff = new AstComparator();
 		File fl = new File("src/test/resources/examples/roots/test12/left_QuickNotepad_1.13.java");
 		File fr = new File("src/test/resources/examples/roots/test12/right_QuickNotepad_1.14.java");
-		CtDiff result = diff.compare(fl,fr);
+		Diff result = diff.compare(fl,fr);
 
 		List<Action> actionsRoot = result.getRootActions();
 		result.debugInformation();

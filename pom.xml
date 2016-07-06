@@ -93,7 +93,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>fr.inria.sacha.spoon.diffSpoon.DiffSpoon</mainClass>
+              <mainClass>gumtree.spoon.AstComparator</mainClass>
             </manifest>
           </archive>
           <descriptorRefs>
