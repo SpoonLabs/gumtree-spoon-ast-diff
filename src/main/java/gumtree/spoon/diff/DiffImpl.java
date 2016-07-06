@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author Matias Martinez, matias.martinez@inria.fr
@@ -65,21 +67,19 @@ public class DiffImpl implements Diff {
 	}
 
 	private List<Operation> convertToSpoon(List<Action> actions) {
-		final List<Operation> operations = new ArrayList<>(actions.size());
-		for (Action action : actions) {
+		return actions.stream().map(action -> {
 			if (action instanceof Insert) {
-				operations.add(new InsertOperation((Insert) action));
+				return new InsertOperation((Insert) action);
 			} else if (action instanceof Delete) {
-				operations.add(new DeleteOperation((Delete) action));
+				return new DeleteOperation((Delete) action);
 			} else if (action instanceof Update) {
-				operations.add(new UpdateOperation((Update) action));
+				return new UpdateOperation((Update) action);
 			} else if (action instanceof Move) {
-				operations.add(new MoveOperation((Move) action));
+				return new MoveOperation((Move) action);
 			} else {
 				throw new IllegalArgumentException("Please support the new type " + action.getClass());
 			}
-		}
-		return operations;
+		}).collect(Collectors.toList());
 	}
 
 	@Override
@@ -94,13 +94,9 @@ public class DiffImpl implements Diff {
 
 	@Override
 	public List<Operation> getOperationChildren(Operation actionParent, List<Operation> rootOperations) {
-		final List<Operation> operations = new ArrayList<>();
-		for (Operation operation : rootOperations) {
-			if (operation.getNode().getParent().equals(actionParent)) {
-				operations.add(operation);
-			}
-		}
-		return operations;
+		return rootOperations.stream() //
+				.filter(operation -> operation.getNode().getParent().equals(actionParent)) //
+				.collect(Collectors.toList());
 	}
 
 	@Override
@@ -146,10 +142,11 @@ public class DiffImpl implements Diff {
 
 	@Override
 	public CtElement changedNode(Class<? extends Operation> operationWanted) {
-		for (Operation operation : rootOperations) {
-			if (operationWanted.isAssignableFrom(operation.getClass())) {
-				return operation.getNode();
-			}
+		final Optional<Operation> firstNode = rootOperations.stream() //
+				.filter(operation -> operationWanted.isAssignableFrom(operation.getClass())) //
+				.findFirst();
+		if (firstNode.isPresent()) {
+			return firstNode.get().getNode();
 		}
 		throw new NoSuchElementException();
 	}
@@ -170,15 +167,10 @@ public class DiffImpl implements Diff {
 
 	@Override
 	public boolean containsAction(String actionKind, String nodeKind) {
-		actionKind = workAroundVisibility(actionKind);
-		for (Operation operation : rootOperations) {
-			if (operation.getAction().getClass().getSimpleName().equals(actionKind)) {
-				if (context.getTypeLabel(operation.getAction().getNode()).equals(nodeKind)) {
-					return true;
-				}
-			}
-		}
-		return false;
+		final String actionKindExpected = workAroundVisibility(actionKind);
+		return rootOperations.stream() //
+				.anyMatch(operation -> operation.getAction().getClass().getSimpleName().equals(actionKindExpected) //
+						&& context.getTypeLabel(operation.getAction().getNode()).equals(nodeKind));
 	}
 
 	@Override
@@ -188,17 +180,10 @@ public class DiffImpl implements Diff {
 
 	@Override
 	public boolean containsAction(List<Operation> actions, String actionKind, String nodeKind, String nodeLabel) {
-		actionKind = workAroundVisibility(actionKind);
-		for (Operation operation : actions) {
-			if (operation.getAction().getClass().getSimpleName().equals(actionKind)) {
-				if (context.getTypeLabel(operation.getAction().getNode()).equals(nodeKind)) {
-					if (operation.getAction().getNode().getLabel().equals(nodeLabel)) {
-						return true;
-					}
-				}
-			}
-		}
-		throw new AssertionError(actionKind + " " + nodeKind + " " + nodeLabel + "\n" + toDebugString());
+		final String actionKindExpected = workAroundVisibility(actionKind);
+		return actions.stream().anyMatch(operation -> operation.getAction().getClass().getSimpleName().equals(actionKindExpected) //
+				&& context.getTypeLabel(operation.getAction().getNode()).equals(nodeKind) //
+				&& operation.getAction().getNode().getLabel().equals(nodeLabel));
 	}
 
 	@Override

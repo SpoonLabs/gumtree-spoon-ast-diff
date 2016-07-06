@@ -10,13 +10,13 @@ import com.github.gumtreediff.matchers.MappingStore;
 import com.github.gumtreediff.tree.ITree;
 import gumtree.spoon.builder.SpoonGumTreeBuilder;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Action Classifier
@@ -68,25 +68,19 @@ class ActionClassifier {
 	 * This method retrieves ONLY the ROOT actions
 	 */
 	private List<Action> getRootActions() {
-		final List<Action> rootActions = new ArrayList<>();
-		for (ITree t : srcUpdTrees) {
-			rootActions.add(originalActionsSrc.get(t));
-		}
-		for (ITree t : srcDelTrees) {
-			if (!srcDelTrees.contains(t.getParent()) && !srcUpdTrees.contains(t.getParent())) {
-				rootActions.add(originalActionsSrc.get(t));
-			}
-		}
-		for (ITree t : dstAddTrees) {
-			if (!dstAddTrees.contains(t.getParent()) && !dstUpdTrees.contains(t.getParent())) {
-				rootActions.add(originalActionsDst.get(t));
-			}
-		}
-		for (ITree t : dstMvTrees) {
-			if (!dstMvTrees.contains(t.getParent())) {
-				rootActions.add(originalActionsDst.get(t));
-			}
-		}
+		final List<Action> rootActions = srcUpdTrees.stream().map(t -> originalActionsSrc.get(t)).collect(Collectors.toList());
+		rootActions.addAll(srcDelTrees.stream() //
+				.filter(t -> !srcDelTrees.contains(t.getParent()) && !srcUpdTrees.contains(t.getParent())) //
+				.map(t -> originalActionsSrc.get(t)) //
+				.collect(Collectors.toList()));
+		rootActions.addAll(dstAddTrees.stream() //
+				.filter(t -> !dstAddTrees.contains(t.getParent()) && !dstUpdTrees.contains(t.getParent())) //
+				.map(t -> originalActionsDst.get(t)) //
+				.collect(Collectors.toList()));
+		rootActions.addAll(dstMvTrees.stream() //
+				.filter(t -> !dstMvTrees.contains(t.getParent())) //
+				.map(t -> originalActionsDst.get(t)) //
+				.collect(Collectors.toList()));
 		rootActions.removeAll(Collections.singleton(null));
 		return rootActions;
 	}
