@@ -16,6 +16,7 @@ import gumtree.spoon.diff.operations.DeleteOperation;
 import gumtree.spoon.diff.operations.InsertOperation;
 import gumtree.spoon.diff.operations.MoveOperation;
 import gumtree.spoon.diff.operations.Operation;
+import gumtree.spoon.diff.operations.OperationKind;
 import gumtree.spoon.diff.operations.UpdateOperation;
 import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtElement;
@@ -93,9 +94,9 @@ public class DiffImpl implements Diff {
 	}
 
 	@Override
-	public List<Operation> getOperationChildren(Operation actionParent, List<Operation> rootOperations) {
+	public List<Operation> getOperationChildren(Operation operationParent, List<Operation> rootOperations) {
 		return rootOperations.stream() //
-				.filter(operation -> operation.getNode().getParent().equals(actionParent)) //
+				.filter(operation -> operation.getNode().getParent().equals(operationParent)) //
 				.collect(Collectors.toList());
 	}
 
@@ -151,37 +152,21 @@ public class DiffImpl implements Diff {
 		throw new NoSuchElementException();
 	}
 
-	// Action.getName is private
-	private String workAroundVisibility(String actionKind) {
-		if ("INS".equals(actionKind)) {
-			actionKind = "Insert";
-		}
-		if ("DEL".equals(actionKind)) {
-			actionKind = "Delete";
-		}
-		if ("UPD".equals(actionKind)) {
-			actionKind = "Update";
-		}
-		return actionKind;
-	}
-
 	@Override
-	public boolean containsAction(String actionKind, String nodeKind) {
-		final String actionKindExpected = workAroundVisibility(actionKind);
+	public boolean containsOperation(OperationKind kind, String nodeKind) {
 		return rootOperations.stream() //
-				.anyMatch(operation -> operation.getAction().getClass().getSimpleName().equals(actionKindExpected) //
+				.anyMatch(operation -> operation.getAction().getClass().getSimpleName().equals(kind.name()) //
 						&& context.getTypeLabel(operation.getAction().getNode()).equals(nodeKind));
 	}
 
 	@Override
-	public boolean containsAction(String actionKind, String nodeKind, String nodeLabel) {
-		return containsAction(getRootOperations(), actionKind, nodeKind, nodeLabel);
+	public boolean containsOperation(OperationKind kind, String nodeKind, String nodeLabel) {
+		return containsOperations(getRootOperations(), kind, nodeKind, nodeLabel);
 	}
 
 	@Override
-	public boolean containsAction(List<Operation> actions, String actionKind, String nodeKind, String nodeLabel) {
-		final String actionKindExpected = workAroundVisibility(actionKind);
-		return actions.stream().anyMatch(operation -> operation.getAction().getClass().getSimpleName().equals(actionKindExpected) //
+	public boolean containsOperations(List<Operation> operations, OperationKind kind, String nodeKind, String nodeLabel) {
+		return operations.stream().anyMatch(operation -> operation.getAction().getClass().getSimpleName().equals(kind.name()) //
 				&& context.getTypeLabel(operation.getAction().getNode()).equals(nodeKind) //
 				&& operation.getAction().getNode().getLabel().equals(nodeLabel));
 	}

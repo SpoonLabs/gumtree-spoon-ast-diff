@@ -1,6 +1,7 @@
 package gumtree.spoon.diff;
 
 import gumtree.spoon.diff.operations.Operation;
+import gumtree.spoon.diff.operations.OperationKind;
 import spoon.reflect.declaration.CtElement;
 
 import java.util.List;
@@ -11,19 +12,19 @@ import java.util.List;
 public interface Diff {
 
 	/**
-	 * lists all actions (move,insert, deletes)
+	 * lists all operations (move,insert, deletes)
 	 */
 	List<Operation> getAllOperations();
 
 	/**
-	 * lists all actions such that the parent is not involved in the diff
+	 * lists all operations such that the parent is not involved in the diff
 	 */
 	List<Operation> getRootOperations();
 
 	/**
-	 * lists all actions sub the given parent action.
+	 * lists all operations sub the given parent operation.
 	 */
-	List<Operation> getOperationChildren(Operation actionParent, List<Operation> rootActions);
+	List<Operation> getOperationChildren(Operation operationParent, List<Operation> rootOperations);
 
 	/**
 	 * returns the changed node if there is a single one
@@ -31,9 +32,9 @@ public interface Diff {
 	CtElement changedNode();
 
 	/**
-	 * returns the first changed node of a given gumtree Action class
+	 * returns the first changed node of a given gumtree Operation class
 	 */
-	CtElement changedNode(Class<? extends Operation> class1);
+	CtElement changedNode(Class<? extends Operation> operationWanted);
 
 	/**
 	 * returns the common ancestor of all changes
@@ -41,19 +42,19 @@ public interface Diff {
 	CtElement commonAncestor();
 
 	/**
-	 * returns true if the diff contains a certain action
+	 * returns true if the diff contains a certain operation
 	 */
-	boolean containsAction(String actionKind, String nodeKind);
+	boolean containsOperation(OperationKind kind, String nodeKind);
 
 	/**
-	 * returns true if the diff contains a certain action wheer the initial node is labeled with nodeLabel
+	 * returns true if the diff contains a certain operation where the initial node is labeled with nodeLabel
 	 */
-	boolean containsAction(String actionKind, String nodeKind, String nodeLabel);
+	boolean containsOperation(OperationKind kind, String nodeKind, String nodeLabel);
 
 	/**
-	 * low level if you want to test on all actions and not only root actions
+	 * low level if you want to test on all operations and not only root operations
 	 */
-	boolean containsAction(List<Operation> actions, String actionKind, String nodeKind, String nodeLabel);
+	boolean containsOperations(List<Operation> operations, OperationKind kind, String nodeKind, String nodeLabel);
 
 	/**
 	 * outputs debug information to System.out

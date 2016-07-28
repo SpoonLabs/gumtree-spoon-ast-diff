@@ -21,7 +21,7 @@ The main class is used this way:
 gumtree.spoon.AstComparator <file_1> <file_2>
 ```
 
-**Testing AST differencing **
+**Testing AST differencing**
 
 gumtree-spoon-ast-diff is heavily tested. The testing of AST tree differencing is quite interesting.
 
@@ -29,8 +29,8 @@ There are cases where the oracle is pretty clear, for instance for the deletion 
 
 ```java
 // there is only one deletion at line 442
-assertEquals(actions.size(), 1);
-assertTrue(diff.containsAction(actions, "DEL", "Literal", "\"UTF-8\""));
+assertEquals(operations.size(), 1);
+assertTrue(diff.containsOperation(operations, OperationKind.Delete, "Literal", "\"UTF-8\""));
 assertEquals(442, result.changedNode().getPosition().getLine());
 
 ```
@@ -38,8 +38,8 @@ assertEquals(442, result.changedNode().getPosition().getLine());
 or for the addition of a single node
 
 ```java
-assertEquals(actions.size(), 1);
-assertTrue(diff.containsAction(actions, "Insert", "Invocation", "append"));
+assertEquals(operations.size(), 1);
+assertTrue(diff.containsOperation(operations, OperationKind.Insert, "Invocation", "append"));
 
 ```
 
@@ -47,7 +47,7 @@ However, with the presence of moves, the answer is less clear. For instance, an 
 
 ```java
 // the change happened in System.out.println() at line 334
-CtElement ancestor = result.commonAncestor();		
+CtElement ancestor = result.commonAncestor();
 assertTrue(ancestor instanceof CtInvocation);
 assertEquals("println", ((CtInvocation)ancestor).getExecutable().getSimpleName());
 assertEquals(344,ancestor.getPosition().getLine());
