@@ -45,7 +45,7 @@ class TreeScanner extends CtScanner {
 
 	void addNodeToTree(ITree node) {
 		ITree parent = nodes.peek();
-		if (parent != null) {// happens when nodes.push(null)
+		if (parent != null) { // happens when nodes.push(null)
 			parent.addChild(node);
 		}
 		nodes.push(node);

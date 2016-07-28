@@ -8,7 +8,7 @@ abstract class AdditionOperation<T extends Addition> extends Operation<T> {
 	private final CtElement parent;
 	private final int position;
 
-	public AdditionOperation(T action) {
+	AdditionOperation(T action) {
 		super(action);
 		position = action.getPosition();
 		parent = (CtElement) action.getParent().getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT);
