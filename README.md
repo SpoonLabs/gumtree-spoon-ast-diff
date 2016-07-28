@@ -7,7 +7,7 @@ Computes the AST difference between two Spoon abstract syntax trees using the Gu
 
 If you use this, please cite:
 
-[Fine-grained and Accurate Source Code Differencing](http://hal.archives-ouvertes.fr/hal-01054552) (Jean-Rémy Falleri, Floréal Morandat, Xavier Blanc, Matias Martinez, Martin Monperrus), In Proceedings of the International Conference on Automated Software Engineering, 2014.
+[Fine-grained and Accurate Source Code Differencing][paper] (Jean-Rémy Falleri, Floréal Morandat, Xavier Blanc, Matias Martinez, Martin Monperrus), In Proceedings of the International Conference on Automated Software Engineering, 2014.
 
 Usage
 -----
@@ -62,7 +62,7 @@ To conclude, for testing AST differencing, there is not always a unique and comp
 Download
 --------
 
-Download [the latest JAR](https://search.maven.org/remote_content?g=fr.inria.gforge.spoon.labs&a=gumtree-spoon-ast-diff&v=LATEST) or grab via Maven:
+Download [the latest JAR][jar] or grab via Maven:
 
 ```xml
 <dependency>
@@ -78,6 +78,7 @@ or Gradle:
 compile 'fr.inria.gforge.spoon.labs:gumtree-spoon-ast-diff:1.0.0'
 ```
 
+Snapshots of the development version are available in [Sonatype's `snapshots` repository][snap].
 
 License
 -------
@@ -95,3 +96,8 @@ License
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
+
+
+ [paper]: http://hal.archives-ouvertes.fr/hal-01054552
+ [jar]: https://search.maven.org/remote_content?g=fr.inria.gforge.spoon.labs&a=gumtree-spoon-ast-diff&v=LATEST
+ [snap]: https://oss.sonatype.org/content/repositories/snapshots/
