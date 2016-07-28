@@ -7,8 +7,8 @@ after_success:
 
 env:
   global:
-    - secure: "TCEw9aCQ4hV12n4+xsLlydGWzhu9IwsLUrIdHdOAsSOhksTwT9bQdKfK4qIq/eupTVN8qfx32/IQdgtMCRM22Agy7OKoYgTErxnjUWZTCuxci+t47/X8Hf4cRcayE5xRLm5LGELiKhrgwO3sFIkTgi3sxyd29PaftS41UB9C2r0="
-    - secure: "ZbpTLRbsqO1gX6yH6A826xA4DzoZOz8BjMYPQWanrgqBXBXn6Aq/zaxikA0uT8cpJl37OuJyis7RgQPlyRcECsudvi5occaQIrL5T2GbLoZRGOMk07eu/UadVH9kpa0UPZtnEVH/rP+aN+SgAQBwcLXj/n91r64B6Z1uRSnei8k="
+    - secure: "D7RJ/1uml+QZqwxGAQljp2fM/VeCpVXpnS9r++lryGdXaL73kFM9SBCYc/c8Y/7k8CoLqsoEvl7Vujg1FwXpILsx7o7+q3TW9Es8CyTONYDsRn3i7I5ZtUbJgLK3ujOhbBqOIlsMSr5cNWbY+QaCa00uHLbs4JqFx38IYBdUF8c="
+    - secure: "Vlejh5F2ntvxjnDcRJprXh/Mux5q3ofDAwH8exSX4vbwvveaI0mzH8xQDWfT3a4wJEA3XEavW+3PNOFt+aPK+HNIZE2fUzQe1r+VpwH1E/QptZc/TlYO9CjaCFgj+Rs/bQXQNBd8CJVGELMhN5CpuV3eiLTVDZn8N/ZMAPLkRbE="
 
 notifications:
   email: false
