@@ -3,6 +3,7 @@ package gumtree.spoon;
 import gumtree.spoon.diff.Diff;
 import gumtree.spoon.diff.operations.MoveOperation;
 import gumtree.spoon.diff.operations.Operation;
+import gumtree.spoon.diff.operations.OperationKind;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -76,11 +77,11 @@ public class AstComparatorTest {
 
 		CtElement ancestor = result.commonAncestor();
 		assertTrue(ancestor instanceof CtClass);
-		assertTrue(result.containsAction("INS", "Invocation"));
-		assertTrue(result.containsAction("UPD", "FieldRead"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "Invocation"));
+		assertTrue(result.containsOperation(OperationKind.Update, "FieldRead"));
 
-		assertFalse(result.containsAction("DEL", "Invocation"));
-		assertFalse(result.containsAction("UPD", "Invocation"));
+		assertFalse(result.containsOperation(OperationKind.Delete, "Invocation"));
+		assertFalse(result.containsOperation(OperationKind.Update, "Invocation"));
 	}
 
 	@Test
@@ -92,7 +93,7 @@ public class AstComparatorTest {
 		Diff result = diff.compare(fl,fr);
 		List<Operation> actions = result.getRootOperations();
 		assertEquals(actions.size(), 1);
-		assertTrue(result.containsAction("UPD", "Literal"/*"PAR-Literal"*/));
+		assertTrue(result.containsOperation(OperationKind.Update, "Literal"/*"PAR-Literal"*/));
 	}
 
 	@Test
@@ -108,7 +109,7 @@ public class AstComparatorTest {
 		// while it is not visible in the AST, this is indeed a change in the behavior
 		// it means that the AST diff in this case also captures something deeper
 		// assertEquals(1, actions.size());
-		assertTrue(result.containsAction("DEL", "Method"));
+		assertTrue(result.containsOperation(OperationKind.Delete, "Method"));
 	}
 
 
@@ -121,7 +122,7 @@ public class AstComparatorTest {
 		Diff result = diff.compare(fl,fr);
 		List<Operation> actions = result.getRootOperations();
 		assertEquals(actions.size(), 1);
-		assertTrue(result.containsAction("INS", "Method","resolveOptionNew"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "Method","resolveOptionNew"));
 	}
 
 	@Test
@@ -204,7 +205,7 @@ public class AstComparatorTest {
 		Diff result = diff.compare(fl,fr);
 		List<Operation> actions = result.getRootOperations();
 		assertEquals(actions.size(), 1);
-		assertTrue(result.containsAction("UPD", "BinaryOperator","AND"));
+		assertTrue(result.containsOperation(OperationKind.Update, "BinaryOperator","AND"));
 	}
 
 	@Test
@@ -215,7 +216,7 @@ public class AstComparatorTest {
 		Diff result = diff.compare(fl,fr);
 		List<Operation> actions = result.getRootOperations();
 		assertEquals(actions.size(), 1);
-		assertTrue(result.containsAction("DEL", "Parameter","i"));
+		assertTrue(result.containsOperation(OperationKind.Delete, "Parameter","i"));
 	}
 
 	@Test
@@ -228,8 +229,8 @@ public class AstComparatorTest {
 
 		List<Operation> actions = result.getRootOperations();
 		assertEquals(actions.size(), 2);
-		assertTrue(result.containsAction("DEL", "Invocation", "QuickNotepadTextArea#addKeyListener(QuickNotepad$KeyHandler)"));
-		assertTrue(result.containsAction("DEL", "Class","KeyHandler"));
+		assertTrue(result.containsOperation(OperationKind.Delete, "Invocation", "QuickNotepadTextArea#addKeyListener(QuickNotepad$KeyHandler)"));
+		assertTrue(result.containsOperation(OperationKind.Delete, "Class","KeyHandler"));
 
 		CtElement ancestor = result.commonAncestor();
 		assertTrue(ancestor instanceof CtClass);
@@ -246,7 +247,7 @@ public class AstComparatorTest {
 		Diff result = diff.compare(fl,fr);
 
 		result.debugInformation();
-		assertTrue(result.containsAction("INS", "Method", "getObjectPort"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "Method", "getObjectPort"));
 		// commented for the same reason as exampleRemoveMethod
 		// assertEquals(1, actions.size());
 
@@ -263,7 +264,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(actions.size(), 1);
-		assertTrue(result.containsAction("Insert", "Field", "_assocEndRoleIcon"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "Field", "_assocEndRoleIcon"));
 	}
 
 	@Test
@@ -280,8 +281,8 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(actions.size(), 2);
-		assertTrue(result.containsAction("Insert", "BinaryOperator", "OR"));
-		assertTrue(result.containsAction("Move", "BinaryOperator", "AND"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "BinaryOperator", "OR"));
+		assertTrue(result.containsOperation(OperationKind.Move, "BinaryOperator", "AND"));
 
 
 	}
@@ -297,7 +298,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(actions.size(), 1);
-		assertTrue(result.containsAction("Insert", "Invocation", "#addField(<unknown>, <unknown>)"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "Invocation", "#addField(<unknown>, <unknown>)"));
 	}
 
 	@Test
@@ -311,7 +312,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(result.containsAction("UPD", "Invocation", "#getTarget()"));
+		assertTrue(result.containsOperation(OperationKind.Update, "Invocation", "#getTarget()"));
 	}
 
 	@Test
@@ -330,11 +331,11 @@ public class AstComparatorTest {
 
 
 		List<Operation> actions = result.getRootOperations();
-		assertTrue(result.containsAction("Update", "ConstructorCall", "java.io.FileReader#FileReader(java.io.File)"));
-		assertTrue(result.containsAction("Insert", "ConstructorCall", "java.io.InputStreamReader#InputStreamReader(java.io.InputStream, java.lang.String)"));
+		assertTrue(result.containsOperation(OperationKind.Update, "ConstructorCall", "java.io.FileReader#FileReader(java.io.File)"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "ConstructorCall", "java.io.InputStreamReader#InputStreamReader(java.io.InputStream, java.lang.String)"));
 
 		// additional checks on low-level actions
-		assertTrue(result.containsAction(result.getAllOperations(), "Insert", "Literal", "\"UTF-8\""));
+		assertTrue(result.containsOperations(result.getAllOperations(), OperationKind.Insert, "Literal", "\"UTF-8\""));
 
 
 		// the change is in the local variable declaration
@@ -354,7 +355,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(actions.size(), 1);
-		assertTrue(result.containsAction("Insert", "Method", "setEnumerationLiterals"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "Method", "setEnumerationLiterals"));
 	}
 
 	@Test
@@ -372,7 +373,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(actions.size(), 2);
-		assertTrue(result.containsAction("Update", "Literal", "\" \""));
+		assertTrue(result.containsOperation(OperationKind.Update, "Literal", "\" \""));
 
 		// the change is in a throw
 		CtElement elem = actions.get(0).getNode();
@@ -392,7 +393,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(actions.size(), 1);
-		assertTrue(result.containsAction("DEL", "Invocation", "java.awt.Container#setFocusTraversalPolicyProvider(boolean)"));
+		assertTrue(result.containsOperation(OperationKind.Delete, "Invocation", "java.awt.Container#setFocusTraversalPolicyProvider(boolean)"));
 	}
 
 	@Test
@@ -405,7 +406,7 @@ public class AstComparatorTest {
 
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
-		assertTrue(result.containsAction("Insert", "Conditional"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "Conditional"));
 
 		// TODO the delete literal "." found could also be a move to the new conditional, so we don't specify this
 		// this is the case if gumtree.match.gt.minh" = "0" (but bad for other tests)
@@ -422,7 +423,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(actions.size(), 1);
-		assertTrue(result.containsAction("DEL", "Break"));
+		assertTrue(result.containsOperation(OperationKind.Delete, "Break"));
 	}
 
 	@Test
@@ -436,7 +437,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(actions.size(), 1);
-		assertTrue(result.containsAction("Update", "BinaryOperator", "GT"));
+		assertTrue(result.containsOperation(OperationKind.Update, "BinaryOperator", "GT"));
 
 		CtElement elem = actions.get(0).getNode();
 		assertNotNull(elem);
@@ -455,7 +456,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(actions.size(), 1);
-		assertTrue(result.containsAction("Delete", "Invocation", "java.io.PrintStream#println(char[])"));
+		assertTrue(result.containsOperation(OperationKind.Delete, "Invocation", "java.io.PrintStream#println(char[])"));
 	}
 
 	@Test
@@ -469,7 +470,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(result.containsAction("Update", "Invocation", "java.util.Vector#remove(int)"));
+		assertTrue(result.containsOperation(OperationKind.Update, "Invocation", "java.util.Vector#remove(int)"));
 	}
 
 	@Test
@@ -483,7 +484,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(actions.size(), 1);
-		assertTrue(result.containsAction("Update", "Invocation", "java.util.Vector#removeElement(java.lang.Object)"));
+		assertTrue(result.containsOperation(OperationKind.Update, "Invocation", "java.util.Vector#removeElement(java.lang.Object)"));
 	}
 
 	@Test
@@ -497,7 +498,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(actions.size(), 1);
-		assertTrue(result.containsAction("Update", "Invocation", "java.util.Vector#add(E)"));
+		assertTrue(result.containsOperation(OperationKind.Update, "Invocation", "java.util.Vector#add(E)"));
 	}
 
 	@Test
@@ -511,7 +512,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(actions.size(), 1);
-		assertTrue(result.containsAction("Insert", "Literal", "null"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "Literal", "null"));
 
 		CtElement elem = actions.get(0).getNode();
 		assertNotNull(elem);
@@ -530,7 +531,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(actions.size(), 1);
-		assertTrue(result.containsAction("Update", "Literal", "\"By holding down CTL and dragging.\""));
+		assertTrue(result.containsOperation(OperationKind.Update, "Literal", "\"By holding down CTL and dragging.\""));
 	}
 
 	@Test
@@ -550,9 +551,9 @@ public class AstComparatorTest {
 		assertEquals(3, actions.size());
 		assertEquals(229,ancestor.getPosition().getLine());
 
-		assertTrue(result.containsAction("Update", "Invocation", "#equals(java.lang.String)"));
-		assertTrue(result.containsAction("Insert", "BinaryOperator", "NE"));
-		assertTrue(result.containsAction("Move", "Invocation", "#equals(java.lang.String)"));
+		assertTrue(result.containsOperation(OperationKind.Update, "Invocation", "#equals(java.lang.String)"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "BinaryOperator", "NE"));
+		assertTrue(result.containsOperation(OperationKind.Move, "Invocation", "#equals(java.lang.String)"));
 
 		// updated the if condition
 		CtElement elem = actions.get(0).getNode();
@@ -572,7 +573,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(actions.size(), 1);
-		assertTrue(result.containsAction("Insert", "Invocation", "#append(java.lang.String)"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "Invocation", "#append(java.lang.String)"));
 	}
 
 	@Test
@@ -589,10 +590,10 @@ public class AstComparatorTest {
 
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
-		assertTrue(result.containsAction("Insert", "BinaryOperator", "AND"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "BinaryOperator", "AND"));
 
 		// TODO there is a move that is not detected but should be
-		// assertTrue(result.containsAction("Move", VariableRead", "Settings.keepServerlog"));
+		// assertTrue(result.containsOperation(OperationKind.Move, VariableRead", "Settings.keepServerlog"));
 		// this is the case if gumtree.match.gt.minh" = "0" (but bad for other tests)
 	}
 
@@ -607,7 +608,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(actions.size(), 1);
-		assertTrue(result.containsAction("Update", "Field", "GAME_NEW_ATTACK"));
+		assertTrue(result.containsOperation(OperationKind.Update, "Field", "GAME_NEW_ATTACK"));
 	}
 
 	@Test
@@ -624,8 +625,8 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(actions.size(), 2);
-		assertTrue(result.containsAction("Update", "Literal", "\" \""));
-		assertTrue(result.containsAction("Update", "Literal","\"        \\n\""));
+		assertTrue(result.containsOperation(OperationKind.Update, "Literal", "\" \""));
+		assertTrue(result.containsOperation(OperationKind.Update, "Literal","\"        \\n\""));
 	}
 
 	@Test
@@ -639,7 +640,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(actions.size(), 1);
-		assertTrue(result.containsAction("Insert", "Invocation", "megamek.client.bot.CEntity#refresh()"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "Invocation", "megamek.client.bot.CEntity#refresh()"));
 	}
 
 	@Test
@@ -654,10 +655,10 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(actions.size(), 1);
-		assertTrue(result.containsAction("Update", "ConstructorCall",
+		assertTrue(result.containsOperation(OperationKind.Update, "ConstructorCall",
 				"java.io.FileInputStream#FileInputStream(java.io.File, java.lang.String)"
 				));
-		assertTrue(result.containsAction(result.getAllOperations(), "DEL", "Literal", "\"UTF-8\""));
+		assertTrue(result.containsOperations(result.getAllOperations(), OperationKind.Delete, "Literal", "\"UTF-8\""));
 
 		assertEquals(441, result.changedNode().getPosition().getLine());
 	}
@@ -673,7 +674,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(actions.size(), 1);
-		assertTrue(result.containsAction("Update", "FieldRead", "MOVE_VTOL_RUN"));
+		assertTrue(result.containsOperation(OperationKind.Update, "FieldRead", "MOVE_VTOL_RUN"));
 	}
 
 	@Test
@@ -690,8 +691,8 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(actions.size(), 2);
-		assertTrue(result.containsAction("Insert", "BinaryOperator", "AND"));
-		assertTrue(result.containsAction("Move", "BinaryOperator", "AND"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "BinaryOperator", "AND"));
+		assertTrue(result.containsOperation(OperationKind.Move, "BinaryOperator", "AND"));
 	}
 
 	@Test
@@ -711,11 +712,11 @@ public class AstComparatorTest {
 
 		List<Operation> actions = result.getRootOperations();
 		assertEquals(3, actions.size());
-		assertTrue(result.containsAction("Delete", "Invocation", "java.lang.String#format(java.lang.String, java.lang.Object[])"));
-		assertTrue(result.containsAction("Insert", "BinaryOperator", "PLUS"));
+		assertTrue(result.containsOperation(OperationKind.Delete, "Invocation", "java.lang.String#format(java.lang.String, java.lang.Object[])"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "BinaryOperator", "PLUS"));
 
 		// the move can be either getEntity or getShortName
-		assertTrue(result.containsAction("Move", "Invocation"));
+		assertTrue(result.containsOperation(OperationKind.Move, "Invocation"));
 		assertEquals(344, result.changedNode(MoveOperation.class).getPosition().getLine());
 
 	}
@@ -732,8 +733,8 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(actions.size(), 2);
-		assertTrue(result.containsAction("Insert", "If"));
-		assertTrue(result.containsAction("Move", "Invocation", "org.apache.lucene.index.SegmentTermEnum#growBuffer(int)"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "If"));
+		assertTrue(result.containsOperation(OperationKind.Move, "Invocation", "org.apache.lucene.index.SegmentTermEnum#growBuffer(int)"));
 	}
 
 	@Test
@@ -747,8 +748,8 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(actions.size(), 2);
-		assertTrue(result.containsAction("Insert", "BinaryOperator", "OR"));
-		assertTrue(result.containsAction("Move", "Invocation", "SegmentReader#hasDeletions()"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "BinaryOperator", "OR"));
+		assertTrue(result.containsOperation(OperationKind.Move, "Invocation", "SegmentReader#hasDeletions()"));
 	}
 
 	@Test
@@ -762,7 +763,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(actions.size(), 1);
-		assertTrue(result.containsAction("Update", "Invocation", "#delete(int)" ));
+		assertTrue(result.containsOperation(OperationKind.Update, "Invocation", "#delete(int)" ));
 	}
 
 	@Test
@@ -777,7 +778,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(actions.size(), 1);
-		assertTrue(result.containsAction("Insert", "Method", "testClear"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "Method", "testClear"));
 	}
 
 	@Test
@@ -791,7 +792,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(actions.size(), 1);
-		assertTrue(result.containsAction("Insert", "Assignment"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "Assignment"));
 
 		// the change is in the block that starts at line110
 		assertEquals(110, result.changedNode().getPosition().getLine());
@@ -811,7 +812,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(actions.size(), 1);
-		assertTrue(result.containsAction("UPD", "Literal", "\"Increment must be positive: \""));
+		assertTrue(result.containsOperation(OperationKind.Update, "Literal", "\"Increment must be positive: \""));
 	}
 
 	@Test
@@ -825,8 +826,8 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(2, actions.size());
-		assertTrue(result.containsAction("UPD", "Literal", "' '"));
-		assertTrue(result.containsAction("UPD", "Invocation", "java.lang.StringBuffer#insert(int, char)"));
+		assertTrue(result.containsOperation(OperationKind.Update, "Literal", "' '"));
+		assertTrue(result.containsOperation(OperationKind.Update, "Invocation", "java.lang.StringBuffer#insert(int, char)"));
 	}
 
 	@Test
@@ -840,7 +841,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(actions.size(), 1);
-		assertTrue(result.containsAction("Update", "Modifier", "protected"));
+		assertTrue(result.containsOperation(OperationKind.Update, "Modifier", "protected"));
 
 		// TODO regression in Spoon on line numbers
 		// assertEquals(324, result.changedNode().getPosition().getLine());
@@ -858,7 +859,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(result.containsAction("Insert", "VariableRead", "COMMIT_LOCK_TIMEOUT"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "VariableRead", "COMMIT_LOCK_TIMEOUT"));
 		// the change is in a constructor call
 		assertTrue(result.changedNode() instanceof CtConstructorCall);
 	}
@@ -874,7 +875,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(actions.size(), 1);
-		assertTrue(result.containsAction("Update", "FieldRead", "SERVER_JRMP_PORT"));
+		assertTrue(result.containsOperation(OperationKind.Update, "FieldRead", "SERVER_JRMP_PORT"));
 	}
 
 	@Test
@@ -888,7 +889,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(result.containsAction("Update", "BinaryOperator", "GT"));
+		assertTrue(result.containsOperation(OperationKind.Update, "BinaryOperator", "GT"));
 	}
 
 	@Test
@@ -903,9 +904,9 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(3, actions.size());
-		assertTrue(result.containsAction("Insert", "Field", "serialVersionUID"));
-		assertTrue(result.containsAction("Insert", "Block"));
-		assertTrue(result.containsAction("Move", "Invocation", "java.util.Vector#add(E)" ));
+		assertTrue(result.containsOperation(OperationKind.Insert, "Field", "serialVersionUID"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "Block"));
+		assertTrue(result.containsOperation(OperationKind.Move, "Invocation", "java.util.Vector#add(E)" ));
 
 	}
 
@@ -920,7 +921,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(result.containsAction("DEL", "LocalVariable", "buffer"));
+		assertTrue(result.containsOperation(OperationKind.Delete, "LocalVariable", "buffer"));
 	}
 
 	@Test
@@ -934,7 +935,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(result.containsAction("Update", "BinaryOperator", "BITOR"));
+		assertTrue(result.containsOperation(OperationKind.Update, "BinaryOperator", "BITOR"));
 	}
 
 
@@ -949,8 +950,8 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(2, actions.size());
-		assertTrue(result.containsAction("Insert", "Block"));
-		assertTrue(result.containsAction("Move", "Assignment" ));
+		assertTrue(result.containsOperation(OperationKind.Insert, "Block"));
+		assertTrue(result.containsOperation(OperationKind.Move, "Assignment" ));
 	}
 
 	@Test
@@ -964,9 +965,9 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(3, actions.size());
-		assertTrue(result.containsAction("Delete", "Assignment"));
-		assertTrue(result.containsAction("Insert", "Invocation", "org.apache.lucene.index.IndexWriter#setMaxFieldLength(int)" ));
-		assertTrue(result.containsAction("Move", "FieldRead", "writer" ));
+		assertTrue(result.containsOperation(OperationKind.Delete, "Assignment"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "Invocation", "org.apache.lucene.index.IndexWriter#setMaxFieldLength(int)" ));
+		assertTrue(result.containsOperation(OperationKind.Move, "FieldRead", "writer" ));
 	}
 
 	@Test
@@ -980,7 +981,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(result.containsAction("Update", "Invocation", "java.lang.Throwable#getMessage()"));
+		assertTrue(result.containsOperation(OperationKind.Update, "Invocation", "java.lang.Throwable#getMessage()"));
 	}
 
 	@Test
@@ -994,7 +995,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(result.containsAction("Update", "BinaryOperator", "EQ"));
+		assertTrue(result.containsOperation(OperationKind.Update, "BinaryOperator", "EQ"));
 	}
 
 	@Test
@@ -1008,7 +1009,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(result.containsAction("Insert", "Method", "getAttributes" ));
+		assertTrue(result.containsOperation(OperationKind.Insert, "Method", "getAttributes" ));
 	}
 
 	@Test
@@ -1022,7 +1023,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(result.containsAction("Update", "Invocation", "org.apache.turbine.util.Log#error(java.lang.String, java.lang.Exception)"));
+		assertTrue(result.containsOperation(OperationKind.Update, "Invocation", "org.apache.turbine.util.Log#error(java.lang.String, java.lang.Exception)"));
 	}
 
 	@Test
@@ -1036,7 +1037,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(result.containsAction("Insert", "Method", "delete"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "Method", "delete"));
 	}
 
 	@Test
@@ -1050,7 +1051,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(result.containsAction("Insert", "Method", "getIssueByUniqueId"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "Method", "getIssueByUniqueId"));
 	}
 
 	@Test
@@ -1064,7 +1065,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(result.containsAction("Update", "TypeAccess", "DBImport.STATE_DB_INSERTION"));
+		assertTrue(result.containsOperation(OperationKind.Update, "TypeAccess", "DBImport.STATE_DB_INSERTION"));
 	}
 
 	@Test
@@ -1078,7 +1079,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(result.containsAction("Insert", "Invocation", "org.apache.turbine.Log#debug(java.lang.String)"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "Invocation", "org.apache.turbine.Log#debug(java.lang.String)"));
 	}
 
 	@Test
@@ -1093,10 +1094,10 @@ public class AstComparatorTest {
 		result.debugInformation();
 		assertEquals(1, actions.size());
 		// root actions
-		assertTrue(result.containsAction("Update", "Invocation", "java.lang.String#lastIndexOf(java.lang.String)"));
+		assertTrue(result.containsOperation(OperationKind.Update, "Invocation", "java.lang.String#lastIndexOf(java.lang.String)"));
 		// low level actions
-		assertTrue(result.containsAction(result.getAllOperations(), "DEL", "FieldRead", "separator"));
-		assertTrue(result.containsAction(result.getAllOperations(), "Insert", "Literal", "'/'" ));
+		assertTrue(result.containsOperations(result.getAllOperations(), OperationKind.Delete, "FieldRead", "separator"));
+		assertTrue(result.containsOperations(result.getAllOperations(), OperationKind.Insert, "Literal", "'/'" ));
 	}
 
 	@Test
@@ -1111,7 +1112,7 @@ public class AstComparatorTest {
 		result.debugInformation();
 
 		// no assert on number of actions because a move migt be detected (TODO?)
-		assertTrue(result.containsAction("Insert", "BinaryOperator", "AND"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "BinaryOperator", "AND"));
 	}
 
 	@Test
@@ -1125,7 +1126,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(result.containsAction("DEL", "Invocation", "java.io.PrintStream#println(java.lang.String)"));
+		assertTrue(result.containsOperation(OperationKind.Delete, "Invocation", "java.io.PrintStream#println(java.lang.String)"));
 	}
 
 
@@ -1140,7 +1141,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(result.containsAction("Update", "Modifier", "public"));
+		assertTrue(result.containsOperation(OperationKind.Update, "Modifier", "public"));
 	}
 
 
@@ -1155,7 +1156,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(result.containsAction("Update", "Invocation", "#addAscendingOrderByColumn()" ));
+		assertTrue(result.containsOperation(OperationKind.Update, "Invocation", "#addAscendingOrderByColumn()" ));
 	}
 
 
@@ -1170,8 +1171,8 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(2, actions.size());
-		assertTrue(result.containsAction("Insert", "BinaryOperator", "AND"));
-		assertTrue(result.containsAction("Move", "BinaryOperator", "AND"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "BinaryOperator", "AND"));
+		assertTrue(result.containsOperation(OperationKind.Move, "BinaryOperator", "AND"));
 	}
 
 	@Test
@@ -1185,7 +1186,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(result.containsAction( "INS", "Method", "create"));
+		assertTrue(result.containsOperation( OperationKind.Insert, "Method", "create"));
 	}
 
 	@Test
@@ -1199,10 +1200,10 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(2, actions.size());
-		assertTrue(result.containsAction("UPD", "Invocation", "org.tigris.scarab.util.Email#sendEmail(org.apache.fulcrum.template.TemplateContext, org.tigris.scarab.om.Module, <unknown>, <unknown>, java.lang.String, java.lang.String)"));
+		assertTrue(result.containsOperation(OperationKind.Update, "Invocation", "org.tigris.scarab.util.Email#sendEmail(org.apache.fulcrum.template.TemplateContext, org.tigris.scarab.om.Module, <unknown>, <unknown>, java.lang.String, java.lang.String)"));
 
 		// one parameter is moved to another argument
-		assertTrue(result.containsAction("Move", "Invocation"));
+		assertTrue(result.containsOperation(OperationKind.Move, "Invocation"));
 	}
 
 	@Test
@@ -1216,7 +1217,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(result.containsAction("Insert", "Invocation", "#setDisplayDescription(java.lang.String)" ));
+		assertTrue(result.containsOperation(OperationKind.Insert, "Invocation", "#setDisplayDescription(java.lang.String)" ));
 	}
 
 	@Test
@@ -1230,7 +1231,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(result.containsAction("Insert", "Assignment"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "Assignment"));
 	}
 
 	@Test
@@ -1244,7 +1245,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(result.containsAction("UPD", "Modifier", "public"));
+		assertTrue(result.containsOperation(OperationKind.Update, "Modifier", "public"));
 	}
 
 	@Test
@@ -1258,7 +1259,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(result.containsAction("UPD", "Literal", "\"ForgotPassword.vm\""));
+		assertTrue(result.containsOperation(OperationKind.Update, "Literal", "\"ForgotPassword.vm\""));
 	}
 
 	@Test
@@ -1272,7 +1273,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(result.containsAction("Update", "ConstructorCall", "Criteria#Criteria()"));
+		assertTrue(result.containsOperation(OperationKind.Update, "ConstructorCall", "Criteria#Criteria()"));
 	}
 
 }

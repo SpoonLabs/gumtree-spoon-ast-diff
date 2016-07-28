@@ -2,6 +2,7 @@ package gumtree.spoon.diff;
 
 import gumtree.spoon.AstComparator;
 import gumtree.spoon.diff.operations.Operation;
+import gumtree.spoon.diff.operations.OperationKind;
 import org.junit.Test;
 
 import java.io.File;
@@ -67,7 +68,7 @@ public class DiffTest {
 		List<Operation> actionsRoot = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(1, actionsRoot.size());
-		assertTrue(result.containsAction( "Insert", "If"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "If"));
 	}
 
 	/**
@@ -85,8 +86,8 @@ public class DiffTest {
 		result.debugInformation();
 		assertEquals(2, actionsRoot.size());
 
-		assertTrue(result.containsAction("Update", "BinaryOperator"));
-		assertTrue(result.containsAction("Insert", "Return"));
+		assertTrue(result.containsOperation(OperationKind.Update, "BinaryOperator"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "Return"));
 	}
 
 	/**
@@ -104,8 +105,8 @@ public class DiffTest {
 		result.debugInformation();
 		assertEquals(2, actionsRoot.size());
 
-		assertTrue(result.containsAction("Delete", "If"));
-		assertTrue(result.containsAction("Move", "Invocation"));
+		assertTrue(result.containsOperation(OperationKind.Delete, "If"));
+		assertTrue(result.containsOperation(OperationKind.Move, "Invocation"));
 	}
 
 	/**
@@ -123,8 +124,8 @@ public class DiffTest {
 		result.debugInformation();
 		assertEquals(2, actionsRoot.size());
 
-		assertTrue(result.containsAction("Delete", "If"));
-		assertTrue(result.containsAction("Move", "Invocation"));
+		assertTrue(result.containsOperation(OperationKind.Delete, "If"));
+		assertTrue(result.containsOperation(OperationKind.Move, "Invocation"));
 	}
 
 	/**
@@ -142,7 +143,7 @@ public class DiffTest {
 		result.debugInformation();
 		assertEquals(2, actionsRoot.size());
 
-		assertTrue(result.containsAction("Insert", "If"));
-		assertTrue(result.containsAction("Move", "Invocation"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "If"));
+		assertTrue(result.containsOperation(OperationKind.Move, "Invocation"));
 	}
 }
