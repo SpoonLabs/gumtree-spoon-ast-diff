@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/SpoonLabs/gumtree-spoon-ast-diff.svg?branch=master)](https://travis-ci.org/SpoonLabs/gumtree-spoon-ast-diff)
 
-gumtree-spoon-ast-diff
+Gumtree Spoon AST Diff
 ======================
 
 Computes the AST difference between two Spoon abstract syntax trees using the Gumtree algorithm.
@@ -9,11 +9,8 @@ If you use this, please cite:
 
 [Fine-grained and Accurate Source Code Differencing](http://hal.archives-ouvertes.fr/hal-01054552) (Jean-Rémy Falleri, Floréal Morandat, Xavier Blanc, Matias Martinez, Martin Monperrus), In Proceedings of the International Conference on Automated Software Engineering, 2014.
 
-
-Launch tests:
-
-    mvn compile
-    mvn test
+Usage
+-----
 
 The main class is used this way:
 
@@ -21,7 +18,8 @@ The main class is used this way:
 gumtree.spoon.AstComparator <file_1> <file_2>
 ```
 
-**Testing AST differencing**
+Testing AST differencing
+------------------------
 
 gumtree-spoon-ast-diff is heavily tested. The testing of AST tree differencing is quite interesting.
 
@@ -60,6 +58,25 @@ To conclude, for testing AST differencing, there is not always a unique and comp
 * the presence of certain changes
 * the location of the change (node type and content)
 * the location of the change (line number)
+
+Download
+--------
+
+Download [the latest JAR](https://search.maven.org/remote_content?g=fr.inria.gforge.spoon.labs&a=gumtree-spoon-ast-diff&v=LATEST) or grab via Maven:
+
+```xml
+<dependency>
+    <groupId>fr.inria.gforge.spoon.labs</groupId>
+    <artifactId>gumtree-spoon-ast-diff</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+
+or Gradle:
+
+```groovy
+compile 'fr.inria.gforge.spoon.labs:gumtree-spoon-ast-diff:1.0.0'
+```
 
 
 License
