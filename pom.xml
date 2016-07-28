@@ -18,7 +18,7 @@
     <java.test.version>1.8</java.test.version>
 
     <!-- Dependencies -->
-    <spoon.version>5.3.0-SNAPSHOT</spoon.version>
+    <spoon.version>5.2.0</spoon.version>
     <gumtree.version>2.0.0</gumtree.version>
     <cli.version>1.2</cli.version>
     <log.version>1.2.15</log.version>
@@ -127,9 +127,9 @@
 
   <repositories>
     <repository>
-      <id>gforge.inria.fr-snapshot</id>
-      <name>Maven Repository for Spoon Snapshot</name>
-      <url>http://spoon.gforge.inria.fr/repositories/snapshots</url>
+      <id>gforge.inria.fr-release</id>
+      <name>Maven Repository for Spoon Release</name>
+      <url>http://spoon.gforge.inria.fr/repositories/releases/</url>
     </repository>
   </repositories>
 
