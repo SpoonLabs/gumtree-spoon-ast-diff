@@ -1,18 +1,13 @@
 language: java
-
 jdk: oraclejdk8
-
 after_success:
-  - .buildscript/deploy_snapshot.sh
-
+- .buildscript/deploy_snapshot.sh
 env:
   global:
-    - secure: "D7RJ/1uml+QZqwxGAQljp2fM/VeCpVXpnS9r++lryGdXaL73kFM9SBCYc/c8Y/7k8CoLqsoEvl7Vujg1FwXpILsx7o7+q3TW9Es8CyTONYDsRn3i7I5ZtUbJgLK3ujOhbBqOIlsMSr5cNWbY+QaCa00uHLbs4JqFx38IYBdUF8c="
-    - secure: "Vlejh5F2ntvxjnDcRJprXh/Mux5q3ofDAwH8exSX4vbwvveaI0mzH8xQDWfT3a4wJEA3XEavW+3PNOFt+aPK+HNIZE2fUzQe1r+VpwH1E/QptZc/TlYO9CjaCFgj+Rs/bQXQNBd8CJVGELMhN5CpuV3eiLTVDZn8N/ZMAPLkRbE="
-
+  - secure: cadS2RXzt+whdZk04koNiuAWH88z7MRIBqTxuIRvsyn9hGd0k3zWI97wdNAP+jewBRov9an5sOyUAIEQfuybuh41atBUrlvC54eT4DfAEtMj/8T5sP4+GsW6ybMoxSa+t6bFWkvIz+VJjVUYSqlwqF+MjAJnYYGGUKCXjCS9EEs=
+  - secure: LmSb0lkvLHeytOda/UCosJZ0TCwcdkkiXp7i8jLz8/BCS6/d3daNTfm4DvFpEHWh0D+NeLjBqp6Y+GXVOfGixyRyrO2H1OJgDFfjZOE7WNXWBEu121u+3c7dic0G5jBUOJNibLnzmmP8EqKvsfael799nfK2RR8qdLLEF3zF7Xc=
 notifications:
   email: false
-
 cache:
   directories:
-    - $HOME/.m2
+  - $HOME/.m2
