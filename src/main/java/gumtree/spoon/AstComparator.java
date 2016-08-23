@@ -43,12 +43,12 @@ public class AstComparator {
 		System.setProperty("gumtree.match.gt.minh", "1");
 
 		// default 1000
-		// 1 OK
-		// 10 OK
+		// 0 fails
+		// 1 fails
+		// 10 fails
 		// 100 OK
-		// 2000
-		// 10000 OK
-		//System.getProperty("gumtree.match.bu.size", "1000");
+		// 1000 OK
+		System.setProperty("gumtree.match.bu.size", "1000");
 	}
 
 	public AstComparator() {
