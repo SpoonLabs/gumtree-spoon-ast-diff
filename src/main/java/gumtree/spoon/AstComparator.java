@@ -87,6 +87,11 @@ public class AstComparator {
 		compiler.getFactory().getEnvironment().setLevel("OFF");
 		compiler.addInputSource(SpoonResourceHelper.createResource(file));
 		compiler.build();
+
+		if (factory.Type().getAll().size() == 0) {
+			return null;
+		}
+
 		return factory.Type().getAll().get(0);
 	}
 
