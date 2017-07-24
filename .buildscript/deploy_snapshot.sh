@@ -6,7 +6,7 @@
 
 SLUG="SpoonLabs/gumtree-spoon-ast-diff"
 JDK="oraclejdk8"
-BRANCH="master"
+BRANCH="deploy"
 
 set -e
 
