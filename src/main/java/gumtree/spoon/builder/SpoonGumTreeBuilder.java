@@ -40,7 +40,6 @@ public class SpoonGumTreeBuilder {
 		root.refresh();
 		TreeUtils.postOrderNumbering(root);
 		TreeUtils.computeHeight(root);
-
 		return root;
 	}
 

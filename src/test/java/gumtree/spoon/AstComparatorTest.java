@@ -29,6 +29,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 
+import static gumtree.spoon.builder.TreeScanner.NOTYPE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -247,7 +248,21 @@ public class AstComparatorTest {
 
 		List<Operation> actions = result.getRootOperations();
 		assertEquals(1, actions.size());
-		assertTrue(actions.toString(), result.containsOperation(OperationKind.Update, "CatchVariable", "java.lang.Throwable"));
+		assertTrue(actions.toString(), result.containsOperation(OperationKind.Update, "VARIABLE_TYPE", "java.lang.Throwable"));
+	}
+
+	@Test
+	public void test9() throws Exception{
+		// contract: we detect local variable changes too
+		AstComparator diff = new AstComparator();
+		File fl = new File("src/test/resources/examples/test9/left.java");
+		File fr = new File("src/test/resources/examples/test9/right.java");
+		Diff result = diff.compare(fl,fr);
+
+		List<Operation> actions = result.getRootOperations();
+		result.debugInformation();
+		assertEquals(1, actions.size());
+		assertTrue(actions.toString(), result.containsOperation(OperationKind.Update, "VARIABLE_TYPE", "boolean"));
 	}
 
 	@Test

@@ -1,8 +1,8 @@
 package gumtree.spoon.builder;
 
+import com.github.gumtreediff.tree.ITree;
 import spoon.reflect.code.CtArrayAccess;
 import spoon.reflect.code.CtBinaryOperator;
-import spoon.reflect.code.CtCatchVariable;
 import spoon.reflect.code.CtConstructorCall;
 import spoon.reflect.code.CtExpression;
 import spoon.reflect.code.CtInvocation;
@@ -11,9 +11,14 @@ import spoon.reflect.code.CtThisAccess;
 import spoon.reflect.code.CtTypeAccess;
 import spoon.reflect.code.CtUnaryOperator;
 import spoon.reflect.code.CtVariableAccess;
+import spoon.reflect.declaration.CtModifiable;
 import spoon.reflect.declaration.CtNamedElement;
+import spoon.reflect.declaration.CtVariable;
+import spoon.reflect.declaration.ModifierKind;
 import spoon.reflect.visitor.CtInheritanceScanner;
 
+/** responsible to add additional nodes
+ * only overrides scan* to add new nodes */
 class NodeCreator extends CtInheritanceScanner {
 	private final TreeScanner builder;
 
@@ -22,63 +27,19 @@ class NodeCreator extends CtInheritanceScanner {
 	}
 
 	@Override
-	public void scanCtNamedElement(CtNamedElement e) {
-		builder.addNodeToTree(builder.createNode(e, e.getSimpleName()));
-	}
-
-	@Override
-	public <T, E extends CtExpression<?>> void scanCtArrayAccess(CtArrayAccess<T, E> arrayAccess) {
-		builder.addNodeToTree(builder.createNode(arrayAccess, arrayAccess.toString()));
-	}
-
-	@Override
-	public <T> void scanCtVariableAccess(CtVariableAccess<T> variableAccess) {
-		if (variableAccess.getVariable() != null) {
-			builder.addNodeToTree(builder.createNode(variableAccess, variableAccess.getVariable().getSimpleName()));
+	public void scanCtModifiable(CtModifiable m) {
+		ITree modifiers = builder.createNode("Modifiers", "");
+		for (ModifierKind kind : m.getModifiers()) {
+			ITree modifier = builder.createNode("Modifier", kind.toString());
+			modifier.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, m);
+			modifiers.addChild(modifier);
 		}
+		builder.addSiblingNode(modifiers);
+
 	}
 
 	@Override
-	public <T> void visitCtInvocation(CtInvocation<T> invocation) {
-		if (invocation.getExecutable() != null) {
-			builder.addNodeToTree(builder.createNode(invocation, invocation.getExecutable().getSignature()));
-		}
-	}
-
-	@Override
-	public <T> void visitCtConstructorCall(CtConstructorCall<T> ctConstructorCall) {
-		if (ctConstructorCall.getExecutable() != null) {
-			builder.addNodeToTree(builder.createNode(ctConstructorCall, ctConstructorCall.getExecutable().getSignature()));
-		}
-	}
-
-	@Override
-	public <T> void visitCtCatchVariable(CtCatchVariable<T> e) {
-		builder.addNodeToTree(builder.createNode(e, e.getType().getQualifiedName()));
-	}
-
-	@Override
-	public <T> void visitCtLiteral(CtLiteral<T> literal) {
-		builder.addNodeToTree(builder.createNode(literal, literal.toString()));
-	}
-
-	@Override
-	public <T> void visitCtBinaryOperator(CtBinaryOperator<T> operator) {
-		builder.addNodeToTree(builder.createNode(operator, operator.getKind().toString()));
-	}
-
-	@Override
-	public <T> void visitCtUnaryOperator(CtUnaryOperator<T> operator) {
-		builder.addNodeToTree(builder.createNode(operator, operator.getKind().toString()));
-	}
-
-	@Override
-	public <T> void visitCtThisAccess(CtThisAccess<T> thisAccess) {
-		builder.addNodeToTree(builder.createNode(thisAccess, thisAccess.toString()));
-	}
-
-	@Override
-	public <T> void visitCtTypeAccess(CtTypeAccess<T> typeAccess) {
-		builder.addNodeToTree(builder.createNode(typeAccess, typeAccess.getAccessedType().getQualifiedName()));
+	public <T> void scanCtVariable(CtVariable<T> e) {
+		builder.addSiblingNode(builder.createNode("VARIABLE_TYPE", e.getType().getQualifiedName()));
 	}
 }

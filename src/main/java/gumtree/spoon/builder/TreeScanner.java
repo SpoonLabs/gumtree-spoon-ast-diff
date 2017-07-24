@@ -6,15 +6,18 @@ import spoon.reflect.code.CtLocalVariable;
 import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtField;
 import spoon.reflect.declaration.CtModifiable;
+import spoon.reflect.declaration.CtNamedElement;
 import spoon.reflect.declaration.CtParameter;
 import spoon.reflect.declaration.CtTypedElement;
 import spoon.reflect.declaration.ModifierKind;
 import spoon.reflect.reference.CtReference;
 import spoon.reflect.visitor.CtScanner;
 
+import java.awt.*;
 import java.util.Stack;
 
-class TreeScanner extends CtScanner {
+public class TreeScanner extends CtScanner {
+	public static final String NOTYPE = "<notype>";
 	private final TreeContext treeContext;
 	private final Stack<ITree> nodes = new Stack<>();
 
@@ -30,10 +33,17 @@ class TreeScanner extends CtScanner {
 			return;
 		}
 
-		int size = nodes.size();
+		LabelFinder lf = new LabelFinder();
+		lf.scan(element);
+		pushNodeToTree(createNode(element, lf.label));
+
+		int depthBefore = nodes.size();
+
 		new NodeCreator(this).scan(element);
-		if (size == nodes.size()) {
-			addNodeToTree(createNode(element, ""));
+
+		if (nodes.size() != depthBefore ) {
+			// contract: this should never happen
+			throw new RuntimeException("too many nodes pushed");
 		}
 	}
 
@@ -43,7 +53,7 @@ class TreeScanner extends CtScanner {
 		super.exit(element);
 	}
 
-	void addNodeToTree(ITree node) {
+	private void pushNodeToTree(ITree node) {
 		ITree parent = nodes.peek();
 		if (parent != null) { // happens when nodes.push(null)
 			parent.addChild(node);
@@ -51,18 +61,20 @@ class TreeScanner extends CtScanner {
 		nodes.push(node);
 	}
 
-	ITree createNode(CtElement element, String label) {
-		ITree newNode = createNode(getTypeName(element.getClass().getSimpleName()), label);
+	void addSiblingNode(ITree node) {
+		ITree parent = nodes.peek();
+		if (parent != null) { // happens when nodes.push(null)
+			parent.addChild(node);
+		}
+	}
 
-		if (element instanceof CtModifiable) {
-			addModifiers((CtModifiable) element, newNode);
+	private ITree createNode(CtElement element, String label) {
+		String nodeTypeName = NOTYPE;
+		if (element != null) {
+			nodeTypeName = getTypeName(element.getClass().getSimpleName());
 		}
 
-		// for some node add the declared static type
-		if (element instanceof CtParameter || element instanceof CtField || element instanceof CtLocalVariable) {
-			addStaticTypeNode((CtTypedElement) element, newNode);
-		}
-
+		ITree newNode = createNode(nodeTypeName, label);
 		newNode.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, element);
 		return newNode;
 	}
@@ -72,24 +84,7 @@ class TreeScanner extends CtScanner {
 		return simpleName.substring(2, simpleName.length() - 4);
 	}
 
-	private void addStaticTypeNode(CtTypedElement obj, ITree node) {
-		ITree modifier = createNode("StaticType", "");
-		modifier.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, obj);
-		modifier.setLabel(obj.getType().getQualifiedName());
-		node.addChild(modifier);
-	}
-
-	private void addModifiers(CtModifiable obj, ITree node) {
-		ITree modifiers = createNode("Modifiers", "");
-		for (ModifierKind kind : obj.getModifiers()) {
-			ITree modifier = createNode("Modifier", kind.toString());
-			modifier.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, obj);
-			modifiers.addChild(modifier);
-		}
-		node.addChild(modifiers);
-	}
-
-	private ITree createNode(String typeClass, String label) {
+	public ITree createNode(String typeClass, String label) {
 		return treeContext.createTree(typeClass.hashCode(), label, typeClass);
 	}
 }
