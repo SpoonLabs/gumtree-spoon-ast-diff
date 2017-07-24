@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Deploy a jar, source jar, and javadoc jar to Sonatype's snapshot repo.
+# Deploy a jar, source jar, and javadoc jar to Sonatype Maven Central repo.
 #
 # Inspired from https://github.com/square/retrofit/blob/fccedbeb4d5181c926fff450cdf5c5116ef0eeaa/.buildscript/deploy_snapshot.sh
 
