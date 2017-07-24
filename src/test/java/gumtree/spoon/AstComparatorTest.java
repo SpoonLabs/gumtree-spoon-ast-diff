@@ -758,7 +758,7 @@ public class AstComparatorTest {
 		result.debugInformation();
 		assertEquals(actions.size(), 2);
 		assertTrue(result.containsOperation(OperationKind.Insert, "BinaryOperator", "OR"));
-		assertTrue(result.containsOperation(OperationKind.Move, "Invocation", "SegmentReader#hasDeletions()"));
+		assertTrue(result.containsOperation(OperationKind.Move, "Invocation", "org.apache.lucene.index.SegmentReader#hasDeletions()"));
 	}
 
 	@Test
