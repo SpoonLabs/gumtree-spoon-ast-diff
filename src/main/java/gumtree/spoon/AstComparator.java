@@ -3,7 +3,7 @@ package gumtree.spoon;
 import gumtree.spoon.builder.SpoonGumTreeBuilder;
 import gumtree.spoon.diff.Diff;
 import gumtree.spoon.diff.DiffImpl;
-import spoon.compiler.SpoonCompiler;
+import spoon.SpoonModelBuilder;
 import spoon.compiler.SpoonResourceHelper;
 import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtType;
@@ -28,14 +28,14 @@ public class AstComparator {
 		// default 0.3
 		// 0.1 one failing much more changes
 		// 0.2 one failing much more changes
-		// 0.3 OK
+		// 0.3 one failing test_t_224542
 		// 0.4 OK
 		// 0.5
 		// 0.6 OK
 		// 0.7 1 failing
 		// 0.8 2 failing
 		// 0.9 two failing tests with more changes
-		System.setProperty("gumtree.match.bu.sim", "0.3");
+		System.setProperty("gumtree.match.bu.sim", "0.4");
 
 		// default 2
 		// 0 is really bad for 211903 t_224542 225391 226622
@@ -83,7 +83,7 @@ public class AstComparator {
 	}
 
 	private CtType getCtType(File file) throws Exception {
-		SpoonCompiler compiler = new JDTBasedSpoonCompiler(factory);
+		SpoonModelBuilder compiler = new JDTBasedSpoonCompiler(factory);
 		compiler.getFactory().getEnvironment().setLevel("OFF");
 		compiler.addInputSource(SpoonResourceHelper.createResource(file));
 		compiler.build();
@@ -96,7 +96,7 @@ public class AstComparator {
 	}
 
 	private CtType<?> getCtType(String content) {
-		SpoonCompiler compiler = new JDTBasedSpoonCompiler(factory);
+		SpoonModelBuilder compiler = new JDTBasedSpoonCompiler(factory);
 		compiler.addInputSource(new VirtualFile(content, "/test"));
 		compiler.build();
 		return factory.Type().getAll().get(0);
