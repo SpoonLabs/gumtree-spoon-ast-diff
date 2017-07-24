@@ -216,7 +216,7 @@ public class AstComparatorTest {
 		File fr = new File("src/test/resources/examples/test6/B.java");
 		Diff result = diff.compare(fl,fr);
 		List<Operation> actions = result.getRootOperations();
-		assertEquals(actions.size(), 1);
+		assertEquals(1, actions.size());
 		assertTrue(result.containsOperation(OperationKind.Delete, "Parameter","i"));
 	}
 
@@ -229,7 +229,7 @@ public class AstComparatorTest {
 		Diff result = diff.compare(fl,fr);
 
 		List<Operation> actions = result.getRootOperations();
-		assertEquals(actions.size(), 2);
+		assertEquals(2, actions.size());
 		assertTrue(result.containsOperation(OperationKind.Delete, "Invocation", "QuickNotepadTextArea#addKeyListener(QuickNotepad$KeyHandler)"));
 		assertTrue(result.containsOperation(OperationKind.Delete, "Class","KeyHandler"));
 
@@ -237,6 +237,18 @@ public class AstComparatorTest {
 		assertTrue(ancestor instanceof CtClass);
 		assertEquals("QuickNotepad", ((CtClass)ancestor).getSimpleName());
 
+	}
+
+	@Test
+	public void test8() throws Exception{
+		AstComparator diff = new AstComparator();
+		File fl = new File("src/test/resources/examples/test8/left.java");
+		File fr = new File("src/test/resources/examples/test8/right.java");
+		Diff result = diff.compare(fl,fr);
+
+		List<Operation> actions = result.getRootOperations();
+		assertEquals(1, actions.size());
+		assertTrue(actions.toString(), result.containsOperation(OperationKind.Update, "CatchVariable", "java.lang.Throwable"));
 	}
 
 	@Test

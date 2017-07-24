@@ -20,4 +20,10 @@ public abstract class Operation<T extends Action> {
 	public T getAction() {
 		return action;
 	}
+
+	@Override
+	public String toString() {
+		return action.toString();
+	}
+
 }

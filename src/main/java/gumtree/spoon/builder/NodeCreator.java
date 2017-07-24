@@ -2,6 +2,7 @@ package gumtree.spoon.builder;
 
 import spoon.reflect.code.CtArrayAccess;
 import spoon.reflect.code.CtBinaryOperator;
+import spoon.reflect.code.CtCatchVariable;
 import spoon.reflect.code.CtConstructorCall;
 import spoon.reflect.code.CtExpression;
 import spoon.reflect.code.CtInvocation;
@@ -46,9 +47,14 @@ class NodeCreator extends CtInheritanceScanner {
 
 	@Override
 	public <T> void visitCtConstructorCall(CtConstructorCall<T> ctConstructorCall) {
-		if (ctConstructorCall.getType() != null) {
+		if (ctConstructorCall.getExecutable() != null) {
 			builder.addNodeToTree(builder.createNode(ctConstructorCall, ctConstructorCall.getExecutable().getSignature()));
 		}
+	}
+
+	@Override
+	public <T> void visitCtCatchVariable(CtCatchVariable<T> e) {
+		builder.addNodeToTree(builder.createNode(e, e.getType().getQualifiedName()));
 	}
 
 	@Override
@@ -73,6 +79,6 @@ class NodeCreator extends CtInheritanceScanner {
 
 	@Override
 	public <T> void visitCtTypeAccess(CtTypeAccess<T> typeAccess) {
-		builder.addNodeToTree(builder.createNode(typeAccess, typeAccess.getSignature()));
+		builder.addNodeToTree(builder.createNode(typeAccess, typeAccess.getAccessedType().getQualifiedName()));
 	}
 }

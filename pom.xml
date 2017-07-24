@@ -24,7 +24,6 @@
     <java.test.version>1.8</java.test.version>
 
     <!-- Dependencies -->
-    <spoon.version>5.2.0</spoon.version>
     <gumtree.version>2.0.0</gumtree.version>
     <cli.version>1.2</cli.version>
     <log.version>1.2.15</log.version>
@@ -37,7 +36,7 @@
     <dependency>
       <groupId>fr.inria.gforge.spoon</groupId>
       <artifactId>spoon-core</artifactId>
-      <version>${spoon.version}</version>
+      <version>5.2.0</version>
     </dependency>
     <dependency>
       <groupId>com.github.gumtreediff</groupId>
@@ -127,25 +126,6 @@
           <useSystemClassLoader>false</useSystemClassLoader>
           <forkCount>1</forkCount>
         </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>2.17</version>
-        <configuration>
-          <failsOnError>true</failsOnError>
-          <configLocation>checkstyle.xml</configLocation>
-          <consoleOutput>true</consoleOutput>
-        </configuration>
-        <executions>
-          <execution>
-            <phase>verify</phase>
-            <goals>
-              <goal>checkstyle</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
 
       <plugin>

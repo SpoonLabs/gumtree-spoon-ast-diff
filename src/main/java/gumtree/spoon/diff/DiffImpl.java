@@ -167,8 +167,9 @@ public class DiffImpl implements Diff {
 	@Override
 	public boolean containsOperations(List<Operation> operations, OperationKind kind, String nodeKind, String nodeLabel) {
 		return operations.stream().anyMatch(operation -> operation.getAction().getClass().getSimpleName().equals(kind.name()) //
-				&& context.getTypeLabel(operation.getAction().getNode()).equals(nodeKind) //
-				&& operation.getAction().getNode().getLabel().equals(nodeLabel));
+				&& context.getTypeLabel(operation.getAction().getNode()).equals(nodeKind)
+				&& operation.getAction().getNode().getLabel().equals(nodeLabel)
+		);
 	}
 
 	@Override
