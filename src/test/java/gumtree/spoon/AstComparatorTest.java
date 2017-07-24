@@ -911,10 +911,11 @@ public class AstComparatorTest {
 
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
-		assertEquals(3, actions.size());
+		assertEquals(1, actions.size());
 		assertTrue(result.containsOperation(OperationKind.Insert, "Field", "serialVersionUID"));
-		assertTrue(result.containsOperation(OperationKind.Insert, "Block"));
-		assertTrue(result.containsOperation(OperationKind.Move, "Invocation", "java.util.Vector#add(E)" ));
+		// in Spoon 5.4 implicit blocks are made explicit
+		// so we don't detect them anymore
+		//assertTrue(result.containsOperation(OperationKind.Insert, "Block"));
 
 	}
 
@@ -957,9 +958,11 @@ public class AstComparatorTest {
 
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
-		assertEquals(2, actions.size());
-		assertTrue(result.containsOperation(OperationKind.Insert, "Block"));
-		assertTrue(result.containsOperation(OperationKind.Move, "Assignment" ));
+		assertEquals(1, actions.size());
+		assertTrue(result.containsOperation(OperationKind.Insert, "Break" ));
+
+		// in Spoon 5.4 implicit blocks are made explicit
+		// assertTrue(result.containsOperation(OperationKind.Insert, "Block"));
 	}
 
 	@Test

@@ -42,16 +42,17 @@ public class DiffTest {
 		fr = new File("src/test/resources/examples/test3/CommandLine2.java");
 
 		result = diff.compare(fl,fr);
-		assertTrue(result.toString().endsWith("Delete Method at org.apache.commons.cli.CommandLine:161" + newline
+		String deleteStr = "Delete Method at org.apache.commons.cli.CommandLine:161" + newline
 				+ "\tpublic java.lang.String[] getOptionValues(java.lang.String opt) {" + newline
 				+ "\t    java.util.List<java.lang.String> values = new java.util.ArrayList<java.lang.String>();" + newline
 				+ "\t    for (org.apache.commons.cli.Option option : options) {" + newline
 				+ "\t        if ((opt.equals(option.getOpt())) || (opt.equals(option.getLongOpt()))) {" + newline
 				+ "\t            values.addAll(option.getValuesList());" + newline
-				+ "\t        } " + newline
+				+ "\t        }" + newline
 				+ "\t    }" + newline
 				+ "\t    return values.isEmpty() ? null : values.toArray(new java.lang.String[values.size()]);" + newline
-				+ "\t}" + newline));
+				+ "\t}" + newline;
+		assertTrue(result.toString(), result.toString().endsWith(deleteStr));
 	}
 
 	/**
