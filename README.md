@@ -62,23 +62,15 @@ To conclude, for testing AST differencing, there is not always a unique and comp
 Download
 --------
 
-Download [the latest JAR][jar] or grab via Maven:
+Build your own version (`mvn install`) or download [the latest stable JAR][jar] on [Maven](https://search.maven.org/#search%7Cga%7C1%7Ca%3A%22gumtree-spoon-ast-diff%22).
 
-```xml
-<dependency>
-    <groupId>fr.inria.gforge.spoon.labs</groupId>
-    <artifactId>gumtree-spoon-ast-diff</artifactId>
-    <version>1.0.0</version>
-</dependency>
-```
+Deploy
+------
 
-or Gradle:
+To deploy a new version on Maven Central:
 
-```groovy
-compile 'fr.inria.gforge.spoon.labs:gumtree-spoon-ast-diff:1.0.0'
-```
-
-Snapshots of the development version are available in [Sonatype's `snapshots` repository][snap].
+* Update version number
+* Push to branch "deploy"
 
 License
 -------
@@ -100,4 +92,3 @@ License
 
  [paper]: http://hal.archives-ouvertes.fr/hal-01054552
  [jar]: https://search.maven.org/remote_content?g=fr.inria.gforge.spoon.labs&a=gumtree-spoon-ast-diff&v=LATEST
- [snap]: https://oss.sonatype.org/content/repositories/snapshots/
