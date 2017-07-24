@@ -1286,7 +1286,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(result.containsOperation(OperationKind.Update, "ConstructorCall", "Criteria#Criteria()"));
+		assertTrue(result.containsOperation(OperationKind.Update, "ConstructorCall", "org.apache.torque.util.Criteria#Criteria()"));
 	}
 
 }
