@@ -11,15 +11,17 @@ BRANCH="deploy"
 set -e
 
 if [ "$TRAVIS_REPO_SLUG" != "$SLUG" ]; then
-  echo "Skipping snapshot deployment: wrong repository. Expected '$SLUG' but was '$TRAVIS_REPO_SLUG'."
+  echo "Skipping deployment: wrong repository. Expected '$SLUG' but was '$TRAVIS_REPO_SLUG'."
 elif [ "$TRAVIS_JDK_VERSION" != "$JDK" ]; then
-  echo "Skipping snapshot deployment: wrong JDK. Expected '$JDK' but was '$TRAVIS_JDK_VERSION'."
+  echo "Skipping deployment: wrong JDK. Expected '$JDK' but was '$TRAVIS_JDK_VERSION'."
 elif [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
-  echo "Skipping snapshot deployment: was pull request."
+  echo "Skipping deployment: was pull request."
 elif [ "$TRAVIS_BRANCH" != "$BRANCH" ]; then
-  echo "Skipping snapshot deployment: wrong branch. Expected '$BRANCH' but was '$TRAVIS_BRANCH'."
+  echo "Skipping deployment: wrong branch. Expected '$BRANCH' but was '$TRAVIS_BRANCH'."
 else
-  echo "Deploying snapshot..."
-  mvn clean source:jar javadoc:jar deploy --settings .buildscript/settings.xml -Dmaven.test.skip=true
-  echo "Snapshot deployed!"
+  echo "Deploying ..."
+  echo "if version ends with -SNAPSHOT goes to Sonatype Snapshot else goes to main release"
+  echo "so a release is only one commit"
+  mvn -Prelease deploy --settings .buildscript/settings.xml -Dmaven.test.skip=true
+  echo "Well deployed!"
 fi

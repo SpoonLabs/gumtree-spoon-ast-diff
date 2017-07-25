@@ -69,12 +69,12 @@ Deploy
 
 To deploy a new version on Maven Central:
 
-* On localhost:
+* Deploy from localhost:
   * Update version number
   * `mvn -Prelease verify deploy:deploy`
   * Commit and push
-* On Travis:
-  * Update version number, it must end with "-SNAPSHOT" because Travis is only set up for deploying snapshots
+* Deploy from Travis directly:
+  * Update version number (if it ends with "-SNAPSHOT" it is pushed as Snapshot otherwise as release)
   * Commit and push to branch "deploy" (only this branch deploys to Maven Central)
 
 License
