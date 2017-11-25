@@ -67,7 +67,7 @@ public class DiffTest {
 		Diff result = diff.compare(fl,fr);
 
 		List<Operation> actionsRoot = result.getRootOperations();
-		result.debugInformation();
+		//result.debugInformation();
 		assertEquals(1, actionsRoot.size());
 		assertTrue(result.containsOperation(OperationKind.Insert, "If"));
 	}
@@ -84,7 +84,7 @@ public class DiffTest {
 		Diff result = diff.compare(fl,fr);
 
 		List<Operation> actionsRoot = result.getRootOperations();
-		result.debugInformation();
+		//result.debugInformation();
 		assertEquals(2, actionsRoot.size());
 
 		assertTrue(result.containsOperation(OperationKind.Update, "BinaryOperator"));
@@ -103,7 +103,7 @@ public class DiffTest {
 		Diff result = diff.compare(fl,fr);
 
 		List<Operation> actionsRoot = result.getRootOperations();
-		result.debugInformation();
+		//result.debugInformation();
 		assertEquals(2, actionsRoot.size());
 
 		assertTrue(result.containsOperation(OperationKind.Delete, "If"));
@@ -122,7 +122,7 @@ public class DiffTest {
 		Diff result = diff.compare(fl,fr);
 
 		List<Operation> actionsRoot = result.getRootOperations();
-		result.debugInformation();
+		//result.debugInformation();
 		assertEquals(2, actionsRoot.size());
 
 		assertTrue(result.containsOperation(OperationKind.Delete, "If"));
@@ -141,7 +141,7 @@ public class DiffTest {
 		Diff result = diff.compare(fl,fr);
 
 		List<Operation> actionsRoot = result.getRootOperations();
-		result.debugInformation();
+		//result.debugInformation();
 		assertEquals(2, actionsRoot.size());
 
 		assertTrue(result.containsOperation(OperationKind.Insert, "If"));

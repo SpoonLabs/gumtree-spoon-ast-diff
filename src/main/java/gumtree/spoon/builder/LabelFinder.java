@@ -11,7 +11,9 @@ import spoon.reflect.code.CtTypeAccess;
 import spoon.reflect.code.CtUnaryOperator;
 import spoon.reflect.code.CtVariableAccess;
 import spoon.reflect.declaration.CtNamedElement;
+import spoon.reflect.declaration.CtType;
 import spoon.reflect.declaration.CtVariable;
+import spoon.reflect.reference.CtTypeReference;
 import spoon.reflect.visitor.CtInheritanceScanner;
 import spoon.reflect.visitor.CtScanner;
 
@@ -32,7 +34,8 @@ class LabelFinder extends CtInheritanceScanner {
 	@Override
 	public <T> void visitCtInvocation(CtInvocation<T> invocation) {
 		if (invocation.getExecutable() != null) {
-			label = invocation.getExecutable().getSignature();
+			CtTypeReference decl = invocation.getExecutable().getDeclaringType();
+			label = (decl!=null?decl.getQualifiedName():"")+"#"+invocation.getExecutable().getSignature();
 		}
 	}
 

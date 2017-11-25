@@ -186,10 +186,9 @@ public class DiffImpl implements Diff {
 			if (operation instanceof UpdateOperation) {
 				label += " to \"" + ((Update) operation.getAction()).getValue() + "\"";
 			}
-			String nodeType = "CtfakenodeImpl";
+			String nodeType = context.getTypeLabel(node.getType());
 			if (nodeElement != null) {
-				nodeType = nodeElement.getClass().getSimpleName();
-				nodeType = nodeType.substring(2, nodeType.length() - 4);
+				nodeType += "(" + nodeElement.getClass().getSimpleName()+")";
 			}
 			result += "\"" + operation.getAction().getClass().getSimpleName() + "\", \"" + nodeType + "\", " + label + " (size: " + node.getDescendants().size() + ")" + node.toTreeString();
 		}
