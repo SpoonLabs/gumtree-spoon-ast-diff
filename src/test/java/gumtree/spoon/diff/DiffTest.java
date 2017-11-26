@@ -79,6 +79,7 @@ public class DiffTest {
 	@Test
 	public void test_actionClassifier_2() throws Exception{
 		AstComparator diff = new AstComparator();
+		// meld src/test/resources/examples/roots/test9/left_QuickNotepad_1.13.java src/test/resources/examples/roots/test9/right_QuickNotepad_1.14.java
 		File fl = new File("src/test/resources/examples/roots/test9/left_QuickNotepad_1.13.java");
 		File fr = new File("src/test/resources/examples/roots/test9/right_QuickNotepad_1.14.java");
 		Diff result = diff.compare(fl,fr);
@@ -86,9 +87,11 @@ public class DiffTest {
 		List<Operation> actionsRoot = result.getRootOperations();
 		//result.debugInformation();
 		assertEquals(2, actionsRoot.size());
-
+		assertEquals("(testArea) != null", actionsRoot.get(0).getSrcNode().toString());
+		assertEquals("(testArea) == null", actionsRoot.get(0).getDstNode().toString());
 		assertTrue(result.containsOperation(OperationKind.Update, "BinaryOperator"));
 		assertTrue(result.containsOperation(OperationKind.Insert, "Return"));
+		assertEquals(null, actionsRoot.get(1).getDstNode());
 	}
 
 	/**

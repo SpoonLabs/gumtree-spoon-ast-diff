@@ -13,6 +13,8 @@ public abstract class Operation<T extends Action> {
 		this.node = (CtElement) action.getNode().getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT);
 	}
 
+	/** use {@link #getSrcNode()} or {@link #getDstNode()} instead. */
+	@Deprecated
 	public CtElement getNode() {
 		return node;
 	}
@@ -24,6 +26,16 @@ public abstract class Operation<T extends Action> {
 	@Override
 	public String toString() {
 		return action.toString();
+	}
+
+	/** returns the changed (inserded/deleted/updated) element */
+	public CtElement getSrcNode() {
+		return node;
+	}
+
+	/** returns the new version of the node (only for update) */
+	public CtElement getDstNode() {
+		return null;
 	}
 
 }
