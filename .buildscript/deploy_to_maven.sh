@@ -20,6 +20,9 @@ elif [ "$TRAVIS_BRANCH" != "$BRANCH" ]; then
   echo "Skipping deployment: wrong branch. Expected '$BRANCH' but was '$TRAVIS_BRANCH'."
 else
   echo "Deploying ..."
+  # made with "travis encrypt-file codesigning.asc -r SpoonLabs/gumtree-spoon-ast-diff --add"
+  openssl aes-256-cbc -K $encrypted_9809c3ea697e_key -iv $encrypted_9809c3ea697e_iv -in .buildscript/codesigning.asc.enc -out codesigning.asc -d
+  gpg --fast-import codesigning.asc
   echo "if version ends with -SNAPSHOT goes to Sonatype Snapshot else goes to main release"
   echo "so a release is only one commit"
   mvn -Prelease deploy --settings .buildscript/settings.xml -Dmaven.test.skip=true
