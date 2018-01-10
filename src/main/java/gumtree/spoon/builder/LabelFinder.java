@@ -10,7 +10,6 @@ import spoon.reflect.code.CtContinue;
 import spoon.reflect.code.CtIf;
 import spoon.reflect.code.CtInvocation;
 import spoon.reflect.code.CtLiteral;
-import spoon.reflect.code.CtLocalVariable;
 import spoon.reflect.code.CtOperatorAssignment;
 import spoon.reflect.code.CtReturn;
 import spoon.reflect.code.CtSuperAccess;
@@ -95,11 +94,6 @@ class LabelFinder extends CtInheritanceScanner {
 	@Override
 	public <T, A extends T> void visitCtOperatorAssignment(CtOperatorAssignment<T, A> e) {
 		label = e.getLabel();
-	}
-
-	@Override
-	public <T> void visitCtLocalVariable(CtLocalVariable<T> e) {
-		label = "=";
 	}
 
 	@Override
