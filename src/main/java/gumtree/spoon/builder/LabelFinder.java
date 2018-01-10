@@ -1,21 +1,26 @@
 package gumtree.spoon.builder;
 
-import spoon.reflect.code.CtArrayAccess;
+import spoon.reflect.code.CtAssert;
+import spoon.reflect.code.CtAssignment;
 import spoon.reflect.code.CtBinaryOperator;
+import spoon.reflect.code.CtBlock;
+import spoon.reflect.code.CtBreak;
 import spoon.reflect.code.CtConstructorCall;
-import spoon.reflect.code.CtExpression;
+import spoon.reflect.code.CtContinue;
+import spoon.reflect.code.CtIf;
 import spoon.reflect.code.CtInvocation;
 import spoon.reflect.code.CtLiteral;
+import spoon.reflect.code.CtOperatorAssignment;
+import spoon.reflect.code.CtReturn;
+import spoon.reflect.code.CtSuperAccess;
 import spoon.reflect.code.CtThisAccess;
 import spoon.reflect.code.CtTypeAccess;
 import spoon.reflect.code.CtUnaryOperator;
 import spoon.reflect.code.CtVariableAccess;
+import spoon.reflect.code.CtWhile;
 import spoon.reflect.declaration.CtNamedElement;
-import spoon.reflect.declaration.CtType;
-import spoon.reflect.declaration.CtVariable;
 import spoon.reflect.reference.CtTypeReference;
 import spoon.reflect.visitor.CtInheritanceScanner;
-import spoon.reflect.visitor.CtScanner;
 
 class LabelFinder extends CtInheritanceScanner {
 	public String label = "";
@@ -52,6 +57,51 @@ class LabelFinder extends CtInheritanceScanner {
 	}
 
 	@Override
+	public void visitCtIf(CtIf e) {
+		label = "if";
+	}
+
+	@Override
+	public void visitCtWhile(CtWhile e) {
+		label = "while";
+	}
+
+	@Override
+	public void visitCtBreak(CtBreak e) {
+		label = "break";
+	}
+
+	@Override
+	public void visitCtContinue(CtContinue e) {
+		label = "break";
+	}
+
+	@Override
+	public <R> void visitCtReturn(CtReturn<R> e) {
+		label = "return";
+	}
+
+	@Override
+	public <T> void visitCtAssert(CtAssert<T> e) {
+		label = "assert";
+	}
+
+	@Override
+	public <T, A extends T> void visitCtAssignment(CtAssignment<T, A> e) {
+		label = "=";
+	}
+
+	@Override
+	public <T, A extends T> void visitCtOperatorAssignment(CtOperatorAssignment<T, A> e) {
+		label = e.getLabel();
+	}
+
+	@Override
+	public <R> void visitCtBlock(CtBlock<R> e) {
+		label = "{";
+	}
+
+	@Override
 	public <T> void visitCtBinaryOperator(CtBinaryOperator<T> operator) {
 		label = operator.getKind().toString();
 	}
@@ -64,6 +114,11 @@ class LabelFinder extends CtInheritanceScanner {
 	@Override
 	public <T> void visitCtThisAccess(CtThisAccess<T> thisAccess) {
 		label =  thisAccess.toString();
+	}
+
+	@Override
+	public <T> void visitCtSuperAccess(CtSuperAccess<T> f) {
+		label =  f.toString();
 	}
 
 	@Override
