@@ -60,9 +60,9 @@ public class DiffImpl implements Diff {
 		final ActionGenerator actionGenerator = new ActionGenerator(rootSpoonLeft, rootSpoonRight, matcher.getMappings());
 		actionGenerator.generate();
 
-		final ActionClassifier actionClassifier = new ActionClassifier();
+
 		this.allOperations = convertToSpoon(actionGenerator.getActions());
-		this.rootOperations = convertToSpoon(actionClassifier.getRootActions(matcher.getMappingSet(), actionGenerator.getActions()));
+		this.rootOperations = convertToSpoon(new ActionClassifier(matcher.getMappingSet(), actionGenerator.getActions()).getRootActions());
 		this._mappingsComp = mappingsComp;
 		this.context = context;
 	}
