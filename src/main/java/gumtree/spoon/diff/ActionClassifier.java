@@ -80,7 +80,7 @@ class ActionClassifier {
 				.collect(Collectors.toList()));
 
 		rootActions.addAll(dstMvTrees.stream() //
-				.filter(t -> !dstMvTrees.contains(t.getParent()) && !dstAddTrees.contains(t.getParent())) //
+				.filter(t -> !dstMvTrees.contains(t.getParent())) //
 				.map(t -> originalActionsDst.get(t)) //
 				.collect(Collectors.toList()));
 
