@@ -94,51 +94,60 @@ public class ActionGenerator {
         newMappings.link(srcFakeRoot, dstFakeRoot);
 
         List<ITree> bfsDst = TreeUtils.breadthFirst(origDst);
-        for (ITree x: bfsDst) {
-            ITree w = null;
-            ITree y = x.getParent();
-            ITree z = newMappings.getSrc(y);
+        for (ITree destNode: bfsDst) {
+            ITree y = destNode.getParent();
+            ITree sourceNode = newMappings.getSrc(destNode);
+            ITree sourceNodeParent = newMappings.getSrc(y);
 
-            if (!newMappings.hasDst(x)) {
-                int k = findPos(x);
+            if (!newMappings.hasDst(destNode)) {
+                ITree w = null;
+                int k = findPos(destNode);
                 // Insertion case : insert new node.
                 w = new AbstractTree.FakeTree();
                 w.setId(newId());
                 // In order to use the real nodes from the second tree, we
                 // furnish x instead of w and fake that x has the newly
                 // generated ID.
-                Action ins = new Insert(x, origSrcTrees.get(z.getId()), k);
+                Action ins = new Insert(destNode, origSrcTrees.get(sourceNodeParent.getId()), k);
                 actions.add(ins);
                 //System.out.println(ins);
-                origSrcTrees.put(w.getId(), x);
-                newMappings.link(w, x);
-                z.getChildren().add(k, w);
-                w.setParent(z);
+                origSrcTrees.put(w.getId(), destNode);
+                newMappings.link(w, destNode);
+                sourceNodeParent.getChildren().add(k, w);
+                w.setParent(sourceNodeParent);
             } else {
-                w = newMappings.getSrc(x);
-                if (!x.equals(origDst)) { // TODO => x != origDst // Case of the root
-                    ITree v = w.getParent();
-                    if (!w.getLabel().equals(x.getLabel())) {
-                        actions.add(new Update(origSrcTrees.get(w.getId()), x.getLabel()));
-                        w.setLabel(x.getLabel());
+                // there is a mapping
+                ITree correspondingSrcNode = null;
+                correspondingSrcNode = newMappings.getSrc(destNode);
+                if (!destNode.equals(origDst)) { // TODO => x != origDst // Case of the root
+                    ITree destNodeParent = correspondingSrcNode.getParent();
+                    if (!correspondingSrcNode.getLabel().equals(destNode.getLabel())) {
+                        actions.add(new Update(origSrcTrees.get(correspondingSrcNode.getId()), destNode.getLabel()));
+                        correspondingSrcNode.setLabel(destNode.getLabel());
                     }
-                    if (!z.equals(v)) {
-                        int k = findPos(x);
+                    if (sourceNode.equals(destNode) // a move must be the same node
+
+                            // and in a different parent
+                            // there are two ways to go to the corresponding parent
+                            // parent->mapping ou mapping->parent
+                            && newMappings.getSrc(destNode).getParent() != newMappings.getSrc(destNode.getParent())
+                            ) {
+                        int k = findPos(destNode);
                         Action mv = null;
-                        // mv = new Move(origSrcTrees.get(w.getId()), origSrcTrees.get(z.getId()), k);
-                        // actions.add(mv);
+                        mv = new Move(origSrcTrees.get(correspondingSrcNode.getId()), origSrcTrees.get(sourceNodeParent.getId()), k);
+                        actions.add(mv);
                         //System.out.println(mv);
-                        int oldk = w.positionInParent();
-                        z.getChildren().add(k, w);
-                        w.getParent().getChildren().remove(oldk);
-                        w.setParent(z);
+                        int oldk = correspondingSrcNode.positionInParent();
+                        sourceNodeParent.getChildren().add(k, correspondingSrcNode);
+                        correspondingSrcNode.getParent().getChildren().remove(oldk);
+                        correspondingSrcNode.setParent(sourceNodeParent);
                     }
                 }
             }
 
             //FIXME not sure why :D
-            srcInOrder.add(w);
-            dstInOrder.add(x);
+            //srcInOrder.add(w);
+            // dstInOrder.add(sourceNode);
             //alignChildren(w, x);
         }
 
