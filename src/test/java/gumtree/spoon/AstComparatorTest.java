@@ -1303,4 +1303,19 @@ public class AstComparatorTest {
 		assertTrue(result.containsOperation(OperationKind.Update, "ConstructorCall", "org.apache.torque.util.Criteria()"));
 	}
 
+	@Test
+	public void test_issue31() throws Exception{
+		// https://github.com/SpoonLabs/gumtree-spoon-ast-diff/issues/31;
+		AstComparator diff = new AstComparator();
+		// meld  src/test/resources/examples/issue31/original.java src/test/resources/examples/issue31/patched.java
+		File fl = new File("src/test/resources/examples/issue31/original.java");
+		File fr = new File("src/test/resources/examples/issue31/patched.java");
+		Diff result = diff.compare(fl,fr);
+
+		List<Operation> actions = result.getRootOperations();
+		result.debugInformation();
+		assertTrue(actions.size() >= 1);
+		assertTrue(result.containsOperation(OperationKind.Delete, "If", "if"));
+	}
+
 }
