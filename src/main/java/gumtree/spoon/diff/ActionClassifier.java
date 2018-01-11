@@ -36,7 +36,7 @@ class ActionClassifier {
 	private Map<ITree, Action> originalActionsSrc = new HashMap<>();
 	private Map<ITree, Action> originalActionsDst = new HashMap<>();
 
-	List<Action> getRootActions(Set<Mapping> rawMappings, List<Action> actions) {
+	public ActionClassifier(Set<Mapping> rawMappings, List<Action> actions) {
 		clean();
 		MappingStore mappings = new MappingStore(rawMappings);
 		for (Action action : actions) {
@@ -61,26 +61,29 @@ class ActionClassifier {
 				originalActionsDst.put(dest, action);
 			}
 		}
-		return getRootActions();
 	}
 
 	/**
 	 * This method retrieves ONLY the ROOT actions
 	 */
-	private List<Action> getRootActions() {
+	public List<Action> getRootActions() {
 		final List<Action> rootActions = srcUpdTrees.stream().map(t -> originalActionsSrc.get(t)).collect(Collectors.toList());
+
 		rootActions.addAll(srcDelTrees.stream() //
 				.filter(t -> !srcDelTrees.contains(t.getParent()) && !srcUpdTrees.contains(t.getParent())) //
 				.map(t -> originalActionsSrc.get(t)) //
 				.collect(Collectors.toList()));
+
 		rootActions.addAll(dstAddTrees.stream() //
 				.filter(t -> !dstAddTrees.contains(t.getParent()) && !dstUpdTrees.contains(t.getParent())) //
 				.map(t -> originalActionsDst.get(t)) //
 				.collect(Collectors.toList()));
+
 		rootActions.addAll(dstMvTrees.stream() //
-				.filter(t -> !dstMvTrees.contains(t.getParent())) //
+				.filter(t -> !dstMvTrees.contains(t.getParent()) && !dstAddTrees.contains(t.getParent())) //
 				.map(t -> originalActionsDst.get(t)) //
 				.collect(Collectors.toList()));
+
 		rootActions.removeAll(Collections.singleton(null));
 		return rootActions;
 	}
