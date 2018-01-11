@@ -35,6 +35,7 @@ public class AstComparator {
 		// 0.7 1 failing
 		// 0.8 2 failing
 		// 0.9 two failing tests with more changes
+		// see GreedyBottomUpMatcher.java in Gumtree
 		System.setProperty("gumtree.match.bu.sim", "0.4");
 
 		// default 2
@@ -48,7 +49,8 @@ public class AstComparator {
 		// 10 fails
 		// 100 OK
 		// 1000 OK
-		System.setProperty("gumtree.match.bu.size", "1000");
+		// see AbstractBottomUpMatcher#SIZE_THRESHOD in Gumtree
+		System.setProperty("gt.bum.szt", "1000");
 	}
 
 	public AstComparator() {
