@@ -1306,21 +1306,24 @@ public class AstComparatorTest {
 	@Test
 	public void test_issue31() throws Exception{
 		// https://github.com/SpoonLabs/gumtree-spoon-ast-diff/issues/31;
+		// the cause of this bug is the value of gumtree.match.bu.sim
+		// with 0.4 (the previous value), the block of the whole method (starting line 408) was not mapped, and this created a lot of spurious moves
+		// with 0.6 (the new default value), the block of the whole method is mapped, and the diff becomes perfect
 		AstComparator diff = new AstComparator();
 		// meld  src/test/resources/examples/issue31/original.java src/test/resources/examples/issue31/patched.java
 		File fl = new File("src/test/resources/examples/issue31/original.java");
 		File fr = new File("src/test/resources/examples/issue31/patched.java");
 		Diff result = diff.compare(fl,fr);
 
-		List<Operation> actions = result.getRootOperations();
+		List<Operation> rootActions = result.getRootOperations();
 		//result.debugInformation();
 		System.out.println("root: "+result.getRootOperations().size());
 		for(Operation o: result.getRootOperations()) {
 			System.out.println(o.getClass().getSimpleName()+ " " + o.getSrcNode().getClass().getSimpleName()+ " " + o.getSrcNode().getPosition().getLine());
 		}
 		System.out.println("all: "+result.getAllOperations().size());
-		assertTrue(result.getAllOperations().size() >= 1);
-		//assertTrue(result.containsOperation(OperationKind.Delete, "If", "if"));
+		assertEquals(2, rootActions.size());
+		assertTrue(result.containsOperation(OperationKind.Delete, "If", "if"));
 	}
 
 }
