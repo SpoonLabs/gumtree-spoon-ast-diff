@@ -1313,7 +1313,12 @@ public class AstComparatorTest {
 		Diff result = diff.compare(fl,fr);
 
 		List<Operation> actions = result.getRootOperations();
-		result.debugInformation();
+		//result.debugInformation();
+		System.out.println("root: "+result.getRootOperations().size());
+		for(Operation o: result.getRootOperations()) {
+			System.out.println(o.getClass()+ " " + o.getSrcNode().getPosition());
+		}
+		System.out.println("all: "+result.getAllOperations().size());
 		assertTrue(actions.size() >= 1);
 		assertTrue(result.containsOperation(OperationKind.Delete, "If", "if"));
 	}
