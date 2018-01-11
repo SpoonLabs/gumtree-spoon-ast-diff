@@ -1307,8 +1307,8 @@ public class AstComparatorTest {
 	public void test_issue31() throws Exception{
 		// https://github.com/SpoonLabs/gumtree-spoon-ast-diff/issues/31;
 		// the cause of this bug is the value of gumtree.match.bu.sim set in AstComparator
-		// with 0.4 (the previous value), the block of the whole method (starting line 408) was not mapped, and this created a lot of spurious moves
-		// with 0.6 (the new default value), the block of the whole method is mapped, and the diff becomes perfect
+		// with gumtree.match.bu.sim=0.4 (the previous value), the block of the whole method (starting line 408) was not mapped, and this created a lot of spurious moves
+		// with gumtree.match.bu.sim=0.6 (the new default value in the commit to fix the bug), the block of the whole method is mapped, and the diff becomes perfect
 		AstComparator diff = new AstComparator();
 		// meld  src/test/resources/examples/issue31/original.java src/test/resources/examples/issue31/patched.java
 		File fl = new File("src/test/resources/examples/issue31/original.java");
