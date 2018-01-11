@@ -1315,8 +1315,8 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		//result.debugInformation();
 		System.out.println("root: "+result.getRootOperations().size());
-		for(Operation o: result.getRootOperations()) {
-			System.out.println(o.getClass()+ " " + o.getSrcNode().getPosition());
+		for(Operation o: result.getAllOperations()) {
+			System.out.println(o.getClass().getSimpleName()+ " " + o.getSrcNode().getClass().getSimpleName()+ " " + o.getSrcNode().getPosition());
 		}
 		System.out.println("all: "+result.getAllOperations().size());
 		assertTrue(actions.size() >= 1);
