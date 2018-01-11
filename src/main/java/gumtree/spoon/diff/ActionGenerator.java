@@ -125,7 +125,9 @@ public class ActionGenerator {
                         actions.add(new Update(origSrcTrees.get(correspondingSrcNode.getId()), destNode.getLabel()));
                         correspondingSrcNode.setLabel(destNode.getLabel());
                     }
-                    if (sourceNode.equals(destNode) // a move must be the same node
+                    if (true
+
+                            //&& sourceNode.equals(destNode) // a move must be the same node
 
                             // and in a different parent
                             // there are two ways to go to the corresponding parent
@@ -153,7 +155,7 @@ public class ActionGenerator {
 
         for (ITree w : tmpSrc.postOrder()) {
             if (!newMappings.hasSrc(w)) {
-                actions.add(new Delete(origSrcTrees.get(w.getId())));
+                //actions.add(new Delete(origSrcTrees.get(w.getId())));
                 //w.getParent().getChildren().remove(w);
             }
         }
