@@ -1324,6 +1324,7 @@ public class AstComparatorTest {
 		System.out.println("all: "+result.getAllOperations().size());
 		assertEquals(2, rootActions.size());
 		assertTrue(result.containsOperation(OperationKind.Delete, "If", "if"));
+		assertTrue(result.containsOperation(OperationKind.Move, "If")); // the else if moved one level up
 	}
 
 }
