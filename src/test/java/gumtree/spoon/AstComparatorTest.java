@@ -866,9 +866,8 @@ public class AstComparatorTest {
 
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
-		assertEquals(2, actions.size());
-		assertTrue(result.containsOperation(OperationKind.Delete, "Modifier", "protected"));
-		assertTrue(result.containsOperation(OperationKind.Insert, "Modifier", "public"));
+		assertEquals(1, actions.size());
+		assertTrue(result.containsOperation(OperationKind.Update, "Modifier", "protected"));
 	}
 
 	@Test
