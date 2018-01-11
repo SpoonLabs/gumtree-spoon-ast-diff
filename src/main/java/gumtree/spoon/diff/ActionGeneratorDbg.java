@@ -34,7 +34,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ActionGenerator {
+public class ActionGeneratorDbg {
 
     private ITree src;
 
@@ -58,7 +58,7 @@ public class ActionGenerator {
 
     private TIntObjectMap<ITree> cpySrcTrees;
 
-    public ActionGenerator(ITree src, ITree dst, MappingStore mappings) {
+    public ActionGeneratorDbg(ITree src, ITree dst, MappingStore mappings) {
         this.src = src;
         this.tmpSrc = this.src.deepCopy();
         this.dst = dst;
@@ -95,9 +95,8 @@ public class ActionGenerator {
 
         List<ITree> bfsDst = TreeUtils.breadthFirst(dst);
         for (ITree destNode: bfsDst) {
-            ITree y = destNode.getParent();
             ITree sourceNode = newMappings.getSrc(destNode);
-            ITree sourceNodeParent = newMappings.getSrc(y);
+            ITree sourceNodeParent = newMappings.getSrc(destNode.getParent());
 
             if (!newMappings.hasDst(destNode)) {
                 ITree w = null;
@@ -127,12 +126,12 @@ public class ActionGenerator {
                     }
                     if (true
                             //&& sourceNode.equals(destNode) // a move must be the same node
-                            && sourceNodeParent.equals(destNodeParent)
+                            //&& sourceNodeParent.equals(destNodeParent) // original condition
 
                             // and in a different parent
                             // there are two ways to go to the corresponding parent
                             // parent->mapping ou mapping->parent
-                            // && newMappings.getSrc(destNode).getParent() != newMappings.getSrc(destNode.getParent())
+                            && newMappings.getSrc(destNode).getParent() != newMappings.getSrc(destNode.getParent())
                             ) {
                         int k = findPos(destNode);
                         Action mv = null;
