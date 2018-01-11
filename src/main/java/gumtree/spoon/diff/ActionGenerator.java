@@ -36,11 +36,11 @@ import java.util.Set;
 
 public class ActionGenerator {
 
-    private ITree origSrc;
+    private ITree src;
 
-    private ITree newSrc;
+    private ITree tmpSrc;
 
-    private ITree origDst;
+    private ITree dst;
 
     private MappingStore origMappings;
 
@@ -59,15 +59,15 @@ public class ActionGenerator {
     private TIntObjectMap<ITree> cpySrcTrees;
 
     public ActionGenerator(ITree src, ITree dst, MappingStore mappings) {
-        this.origSrc = src;
-        this.newSrc = this.origSrc.deepCopy();
-        this.origDst = dst;
+        this.src = src;
+        this.tmpSrc = this.src.deepCopy();
+        this.dst = dst;
 
         origSrcTrees = new TIntObjectHashMap<>();
-        for (ITree t: origSrc.getTrees())
+        for (ITree t: this.src.getTrees())
             origSrcTrees.put(t.getId(), t);
         cpySrcTrees = new TIntObjectHashMap<>();
-        for (ITree t: newSrc.getTrees())
+        for (ITree t: tmpSrc.getTrees())
             cpySrcTrees.put(t.getId(), t);
 
         origMappings = new MappingStore();
@@ -81,19 +81,19 @@ public class ActionGenerator {
     }
 
     public List<Action> generate() {
-        ITree srcFakeRoot = new AbstractTree.FakeTree(newSrc);
-        ITree dstFakeRoot = new AbstractTree.FakeTree(origDst);
-        newSrc.setParent(srcFakeRoot);
-        origDst.setParent(dstFakeRoot);
+        ITree srcFakeRoot = new AbstractTree.FakeTree(tmpSrc);
+        ITree dstFakeRoot = new AbstractTree.FakeTree(dst);
+        tmpSrc.setParent(srcFakeRoot);
+        dst.setParent(dstFakeRoot);
 
         actions = new ArrayList<>();
         dstInOrder = new HashSet<>();
         srcInOrder = new HashSet<>();
 
-        lastId = newSrc.getSize() + 1;
+        lastId = tmpSrc.getSize() + 1;
         newMappings.link(srcFakeRoot, dstFakeRoot);
 
-        List<ITree> bfsDst = TreeUtils.breadthFirst(origDst);
+        List<ITree> bfsDst = TreeUtils.breadthFirst(dst);
         for (ITree destNode: bfsDst) {
             ITree y = destNode.getParent();
             ITree sourceNode = newMappings.getSrc(destNode);
@@ -119,7 +119,7 @@ public class ActionGenerator {
                 // there is a mapping
                 ITree correspondingSrcNode = null;
                 correspondingSrcNode = newMappings.getSrc(destNode);
-                if (!destNode.equals(origDst)) { // TODO => x != origDst // Case of the root
+                if (!destNode.equals(dst)) { // TODO => x != dst // Case of the root
                     ITree destNodeParent = correspondingSrcNode.getParent();
                     if (!correspondingSrcNode.getLabel().equals(destNode.getLabel())) {
                         actions.add(new Update(origSrcTrees.get(correspondingSrcNode.getId()), destNode.getLabel()));
@@ -151,7 +151,7 @@ public class ActionGenerator {
             //alignChildren(w, x);
         }
 
-        for (ITree w : newSrc.postOrder()) {
+        for (ITree w : tmpSrc.postOrder()) {
             if (!newMappings.hasSrc(w)) {
                 actions.add(new Delete(origSrcTrees.get(w.getId())));
                 //w.getParent().getChildren().remove(w);
