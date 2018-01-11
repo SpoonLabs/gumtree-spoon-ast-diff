@@ -26,11 +26,12 @@ public class AstComparator {
 
 	static {
 		// default 0.3
+		// it seems that default value is really bad
 		// 0.1 one failing much more changes
 		// 0.2 one failing much more changes
 		// 0.3 one failing test_t_224542
-		// 0.4 fail for issue31
-		// 0.5 fail for issue31
+		// 0.4 fails for issue31
+		// 0.5 fails for issue31
 		// 0.6 OK
 		// 0.7 1 failing
 		// 0.8 2 failing
