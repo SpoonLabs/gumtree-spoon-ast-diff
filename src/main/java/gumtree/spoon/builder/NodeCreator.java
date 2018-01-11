@@ -1,6 +1,7 @@
 package gumtree.spoon.builder;
 
 import com.github.gumtreediff.tree.ITree;
+import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.declaration.CtModifiable;
 import spoon.reflect.declaration.CtVariable;
 import spoon.reflect.declaration.ModifierKind;
@@ -33,5 +34,12 @@ class NodeCreator extends CtInheritanceScanner {
 		ITree variableType = builder.createNode("VARIABLE_TYPE", e.getType().getQualifiedName());
 		variableType.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, e.getType());
 		builder.addSiblingNode(variableType);
+	}
+
+	@Override
+	public <T> void visitCtMethod(CtMethod<T> e) {
+		ITree returnType = builder.createNode("RETURN_TYPE", e.getType().getQualifiedName());
+		returnType.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, e.getType());
+		builder.addSiblingNode(returnType);
 	}
 }
