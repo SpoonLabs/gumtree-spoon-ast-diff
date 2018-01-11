@@ -38,6 +38,7 @@ class NodeCreator extends CtInheritanceScanner {
 
 	@Override
 	public <T> void visitCtMethod(CtMethod<T> e) {
+		// add the return type of the method
 		ITree returnType = builder.createNode("RETURN_TYPE", e.getType().getQualifiedName());
 		returnType.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, e.getType());
 		builder.addSiblingNode(returnType);
