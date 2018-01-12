@@ -62,6 +62,14 @@ public class DiffImpl implements Diff {
 		this.rootOperations = convertToSpoon(new ActionClassifier(matcher.getMappingSet(), actionGenerator.getActions()).getRootActions());
 		this._mappingsComp = mappingsComp;
 		this.context = context;
+
+		for (int i = 0; i < this.getAllOperations().size(); i++) {
+			Operation operation = this.getAllOperations().get(i);
+			if (operation instanceof MoveOperation) {
+				operation.getSrcNode().putMetadata("isMoved", true);
+				operation.getDstNode().putMetadata("isMoved", true);
+			}
+		}
 	}
 
 	private List<Operation> convertToSpoon(List<Action> actions) {
@@ -199,14 +207,6 @@ public class DiffImpl implements Diff {
 		}
 		final StringBuilder stringBuilder = new StringBuilder();
 		final CtElement ctElement = commonAncestor();
-
-		for (int i = 0; i < this.getAllOperations().size(); i++) {
-			Operation operation = this.getAllOperations().get(i);
-			if (operation instanceof MoveOperation) {
-				operation.getSrcNode().putMetadata("isMoved", true);
-				operation.getDstNode().putMetadata("isMoved", true);
-			}
-		}
 
 		for (Operation operation : rootOperations) {
 			stringBuilder.append(operation.toString());
