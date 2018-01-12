@@ -18,10 +18,7 @@ import gumtree.spoon.diff.operations.MoveOperation;
 import gumtree.spoon.diff.operations.Operation;
 import gumtree.spoon.diff.operations.OperationKind;
 import gumtree.spoon.diff.operations.UpdateOperation;
-import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtElement;
-import spoon.reflect.declaration.CtPackage;
-import spoon.reflect.declaration.CtType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -202,58 +199,22 @@ public class DiffImpl implements Diff {
 		}
 		final StringBuilder stringBuilder = new StringBuilder();
 		final CtElement ctElement = commonAncestor();
-		for (Operation operation : rootOperations) {
-			stringBuilder.append(toStringAction(operation.getAction()));
 
-			// if all actions are applied on the same node print only the first action
-			if (operation.getNode().equals(ctElement) && operation instanceof UpdateOperation) {
-				break;
+		for (int i = 0; i < this.getAllOperations().size(); i++) {
+			Operation operation = this.getAllOperations().get(i);
+			if (operation instanceof MoveOperation) {
+				operation.getSrcNode().putMetadata("isMoved", true);
+				operation.getDstNode().putMetadata("isMoved", true);
 			}
 		}
-		return stringBuilder.toString();
-	}
 
-	private String toStringAction(Action action) {
-		String newline = System.getProperty("line.separator");
-		StringBuilder stringBuilder = new StringBuilder();
+		for (Operation operation : rootOperations) {
+			stringBuilder.append(operation.toString());
 
-		CtElement element = (CtElement) action.getNode().getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT);
-		// action name
-		stringBuilder.append(action.getClass().getSimpleName());
-
-		// node type
-		String nodeType = element.getClass().getSimpleName();
-		nodeType = nodeType.substring(2, nodeType.length() - 4);
-		stringBuilder.append(" ").append(nodeType);
-
-		// action position
-		CtElement parent = element;
-		while (parent.getParent() != null && !(parent.getParent() instanceof CtPackage)) {
-			parent = parent.getParent();
-		}
-		String position = " at ";
-		if (parent instanceof CtType) {
-			position += ((CtType) parent).getQualifiedName();
-		}
-		if (element.getPosition() != null) {
-			position += ":" + element.getPosition().getLine();
-		}
-		if (action instanceof Move) {
-			CtElement elementDest = (CtElement) action.getNode().getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT_DEST);
-			position = " from " + element.getParent(CtClass.class).getQualifiedName() + ":" + element.getPosition().getLine();
-			position += " to " + elementDest.getParent(CtClass.class).getQualifiedName() + ":" + elementDest.getPosition().getLine();
-		}
-		stringBuilder.append(position).append(newline);
-
-		// code change
-		String label = element.toString();
-		if (action instanceof Update) {
-			CtElement elementDest = (CtElement) action.getNode().getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT_DEST);
-			label += " to " + elementDest.toString();
-		}
-		String[] split = label.split(newline);
-		for (String s : split) {
-			stringBuilder.append("\t").append(s).append(newline);
+			// if all actions are applied on the same node print only the first action
+			if (operation.getSrcNode().equals(ctElement) && operation instanceof UpdateOperation) {
+				break;
+			}
 		}
 		return stringBuilder.toString();
 	}
