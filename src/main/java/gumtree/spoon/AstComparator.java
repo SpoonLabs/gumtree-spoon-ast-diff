@@ -26,17 +26,18 @@ public class AstComparator {
 
 	static {
 		// default 0.3
+		// it seems that default value is really bad
 		// 0.1 one failing much more changes
 		// 0.2 one failing much more changes
 		// 0.3 one failing test_t_224542
-		// 0.4 OK
-		// 0.5
+		// 0.4 fails for issue31
+		// 0.5 fails for issue31
 		// 0.6 OK
 		// 0.7 1 failing
 		// 0.8 2 failing
 		// 0.9 two failing tests with more changes
 		// see GreedyBottomUpMatcher.java in Gumtree
-		System.setProperty("gumtree.match.bu.sim", "0.4");
+		System.setProperty("gumtree.match.bu.sim", "0.6");
 
 		// default 2
 		// 0 is really bad for 211903 t_224542 225391 226622
@@ -50,7 +51,8 @@ public class AstComparator {
 		// 100 OK
 		// 1000 OK
 		// see AbstractBottomUpMatcher#SIZE_THRESHOD in Gumtree
-		System.setProperty("gt.bum.szt", "1000");
+		//System.setProperty("gumtree.match.bu.size","10");
+		//System.setProperty("gt.bum.szt", "1000");
 	}
 
 	public AstComparator() {

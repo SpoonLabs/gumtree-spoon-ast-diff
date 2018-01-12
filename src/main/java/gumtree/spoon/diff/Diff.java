@@ -12,7 +12,8 @@ import java.util.List;
 public interface Diff {
 
 	/**
-	 * lists all operations (move,insert, deletes)
+	 * lists all operations (move,insert, deletes).
+	 * Low-level operation, we recommend using {@link #getRootOperations()}
 	 */
 	List<Operation> getAllOperations();
 
