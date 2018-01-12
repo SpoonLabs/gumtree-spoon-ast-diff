@@ -29,7 +29,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 
-import static gumtree.spoon.builder.TreeScanner.NOTYPE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -1325,6 +1324,19 @@ public class AstComparatorTest {
 		assertEquals(2, rootActions.size());
 		assertTrue(result.containsOperation(OperationKind.Delete, "If", "if"));
 		assertTrue(result.containsOperation(OperationKind.Move, "If")); // the else if moved one level up
+	}
+
+	public void test_chart18() throws Exception{
+		AstComparator diff = new AstComparator();
+		File fl = new File("src/test/resources/examples/chart18/DefaultKeyedValues2D.java");
+		File fr = new File("src/test/resources/examples/chart18/new_DefaultKeyedValues2D.java");
+		Diff result = diff.compare(fl,fr);
+
+		List<Operation> actions = result.getRootOperations();
+		result.debugInformation();
+		assertEquals(5, actions.size());
+		assertTrue(result.containsOperation(OperationKind.Insert, "LocalVariable", "index"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "If", "if"));
 	}
 
 }
