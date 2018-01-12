@@ -2,18 +2,11 @@ package gumtree.spoon.builder;
 
 import com.github.gumtreediff.tree.ITree;
 import com.github.gumtreediff.tree.TreeContext;
-import spoon.reflect.code.CtLocalVariable;
+import spoon.reflect.code.CtStatementList;
 import spoon.reflect.declaration.CtElement;
-import spoon.reflect.declaration.CtField;
-import spoon.reflect.declaration.CtModifiable;
-import spoon.reflect.declaration.CtNamedElement;
-import spoon.reflect.declaration.CtParameter;
-import spoon.reflect.declaration.CtTypedElement;
-import spoon.reflect.declaration.ModifierKind;
 import spoon.reflect.reference.CtReference;
 import spoon.reflect.visitor.CtScanner;
 
-import java.awt.*;
 import java.util.Stack;
 
 public class TreeScanner extends CtScanner {
@@ -28,8 +21,8 @@ public class TreeScanner extends CtScanner {
 
 	@Override
 	public void enter(CtElement element) {
-		if (element instanceof CtReference) {
-			nodes.push(null);
+		if (isToIgnore(element)) {
+			super.enter(element);
 			return;
 		}
 
@@ -47,9 +40,20 @@ public class TreeScanner extends CtScanner {
 		}
 	}
 
+	/**
+	 * Ignore some element from the AST
+	 * @param element
+	 * @return
+	 */
+	private boolean isToIgnore(CtElement element) {
+		return element.isImplicit() || element instanceof CtReference || element instanceof CtStatementList;
+	}
+
 	@Override
 	public void exit(CtElement element) {
-		nodes.pop();
+		if (!isToIgnore(element)) {
+			nodes.pop();
+		}
 		super.exit(element);
 	}
 
