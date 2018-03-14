@@ -59,7 +59,7 @@ public class DiffImpl implements Diff {
 
 
 		this.allOperations = convertToSpoon(actionGenerator.getActions());
-		this.rootOperations = convertToSpoon(new ActionClassifier(matcher.getMappingSet(), actionGenerator.getActions()).getRootActions());
+		this.rootOperations = convertToSpoon(new ActionClassifier(matcher.getMappingsAsSet(), actionGenerator.getActions()).getRootActions());
 		this._mappingsComp = mappingsComp;
 		this.context = context;
 

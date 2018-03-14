@@ -24,7 +24,7 @@
     <java.test.version>1.8</java.test.version>
 
     <!-- Dependencies -->
-    <gumtree.version>2.0.0</gumtree.version>
+    <gumtree.version>2.1.0</gumtree.version>
     <cli.version>1.2</cli.version>
     <log.version>1.2.15</log.version>
 
@@ -36,7 +36,7 @@
     <dependency>
       <groupId>fr.inria.gforge.spoon</groupId>
       <artifactId>spoon-core</artifactId>
-      <version>6.1.0</version>
+      <version>6.2.0</version>
     </dependency>
     <dependency>
       <groupId>com.github.gumtreediff</groupId>
