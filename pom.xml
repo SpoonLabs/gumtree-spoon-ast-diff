@@ -131,7 +131,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-release-plugin</artifactId>
-        <version>2.5</version>
+        <version>2.5.3</version>
         <configuration>
           <autoVersionSubmodules>true</autoVersionSubmodules>
           <useReleaseProfile>false</useReleaseProfile>
@@ -153,14 +153,6 @@
       </plugin>
     </plugins>
   </build>
-
-  <repositories>
-    <repository>
-      <id>gforge.inria.fr-release</id>
-      <name>Maven Repository for Spoon Release</name>
-      <url>http://spoon.gforge.inria.fr/repositories/releases/</url>
-    </repository>
-  </repositories>
 
   <profiles>
     <profile>
@@ -214,6 +206,8 @@
     </profile>
   </profiles>
 
+  
+  
   <distributionManagement>
     <repository>
       <id>ossrh</id>
@@ -224,7 +218,15 @@
       <url>https://oss.sonatype.org/content/repositories/snapshots</url>
     </snapshotRepository>
   </distributionManagement>
-
+  
+  <repositories>
+      <repository>
+          <id>gforge.inria.fr-release</id>
+          <name>Maven Repository for Spoon Release</name>
+          <url>http://maven.inria.fr/artifactory/spoon-public-snapshot/</url>
+      </repository>
+  </repositories>
+    
   <scm>
     <url>https://github.com/SpoonLabs/gumtree-spoon-ast-diff/</url>
     <connection>scm:git:https://github.com/SpoonLabs/gumtree-spoon-ast-diff.git</connection>
@@ -264,6 +266,7 @@
       <name>Martin Monperrus</name>
     </developer>
   </developers>
+
 
 </project>
 
