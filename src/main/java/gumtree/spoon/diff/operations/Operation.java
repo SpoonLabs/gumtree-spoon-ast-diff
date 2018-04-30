@@ -4,6 +4,8 @@ import com.github.gumtreediff.actions.model.Action;
 import com.github.gumtreediff.actions.model.Move;
 import com.github.gumtreediff.actions.model.Update;
 import gumtree.spoon.builder.SpoonGumTreeBuilder;
+import spoon.reflect.cu.SourcePosition;
+import spoon.reflect.cu.position.NoSourcePosition;
 import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtPackage;
@@ -57,13 +59,19 @@ public abstract class Operation<T extends Action> {
 		if (parent instanceof CtType) {
 			position += ((CtType) parent).getQualifiedName();
 		}
-		if (element.getPosition() != null) {
+		if (element.getPosition() != null && !(element.getPosition() instanceof NoSourcePosition)) {
 			position += ":" + element.getPosition().getLine();
 		}
 		if (action instanceof Move) {
 			CtElement elementDest = (CtElement) action.getNode().getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT_DEST);
-			position = " from " + element.getParent(CtClass.class).getQualifiedName() + ":" + element.getPosition().getLine();
-			position += " to " + elementDest.getParent(CtClass.class).getQualifiedName() + ":" + elementDest.getPosition().getLine();
+			position = " from " + element.getParent(CtClass.class).getQualifiedName();
+			if (element.getPosition() != null && !(element.getPosition() instanceof NoSourcePosition)) {
+				position += ":" + element.getPosition().getLine();
+			}
+			position += " to " + elementDest.getParent(CtClass.class).getQualifiedName();
+			if (elementDest.getPosition() != null && !(elementDest.getPosition() instanceof NoSourcePosition)) {
+				position += ":" + elementDest.getPosition().getLine();
+			}
 		}
 		stringBuilder.append(position).append(newline);
 
