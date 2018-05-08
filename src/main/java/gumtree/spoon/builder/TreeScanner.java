@@ -2,6 +2,7 @@ package gumtree.spoon.builder;
 
 import com.github.gumtreediff.tree.ITree;
 import com.github.gumtreediff.tree.TreeContext;
+import spoon.reflect.code.CtCase;
 import spoon.reflect.code.CtStatementList;
 import spoon.reflect.declaration.CtElement;
 import spoon.reflect.reference.CtReference;
@@ -46,7 +47,9 @@ public class TreeScanner extends CtScanner {
 	 * @return
 	 */
 	private boolean isToIgnore(CtElement element) {
-		return element.isImplicit() || element instanceof CtReference || element instanceof CtStatementList;
+		return element.isImplicit()
+				|| element instanceof CtReference
+				|| (element instanceof CtStatementList && !(element instanceof CtCase));
 	}
 
 	@Override
