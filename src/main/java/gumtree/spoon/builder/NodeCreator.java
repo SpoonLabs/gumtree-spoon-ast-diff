@@ -1,10 +1,13 @@
 package gumtree.spoon.builder;
 
 import com.github.gumtreediff.tree.ITree;
+import spoon.reflect.code.CtBlock;
+import spoon.reflect.code.CtIf;
 import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.declaration.CtModifiable;
 import spoon.reflect.declaration.CtVariable;
 import spoon.reflect.declaration.ModifierKind;
+import spoon.reflect.reference.CtTypeReference;
 import spoon.reflect.visitor.CtInheritanceScanner;
 
 /** responsible to add additional nodes
@@ -31,17 +34,23 @@ class NodeCreator extends CtInheritanceScanner {
 
 	@Override
 	public <T> void scanCtVariable(CtVariable<T> e) {
-		ITree variableType = builder.createNode("VARIABLE_TYPE", e.getType().getQualifiedName());
-		variableType.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, e.getType());
-		builder.addSiblingNode(variableType);
+		CtTypeReference<T> type = e.getType();
+		if (type != null) {
+			ITree variableType = builder.createNode("VARIABLE_TYPE", type.getQualifiedName());
+			variableType.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, type);
+			builder.addSiblingNode(variableType);
+		}
 	}
 
 	@Override
 	public <T> void visitCtMethod(CtMethod<T> e) {
 		// add the return type of the method
-		ITree returnType = builder.createNode("RETURN_TYPE", e.getType().getQualifiedName());
-		returnType.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, e.getType());
-		builder.addSiblingNode(returnType);
+		CtTypeReference<T> type = e.getType();
+		if (type != null) {
+			ITree returnType = builder.createNode("RETURN_TYPE", type.getQualifiedName());
+			returnType.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, type);
+			builder.addSiblingNode(returnType);
+		}
 		super.visitCtMethod(e);
 	}
 }
