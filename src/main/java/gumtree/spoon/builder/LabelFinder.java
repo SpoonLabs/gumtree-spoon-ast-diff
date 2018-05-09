@@ -19,6 +19,7 @@ import spoon.reflect.code.CtUnaryOperator;
 import spoon.reflect.code.CtVariableAccess;
 import spoon.reflect.code.CtWhile;
 import spoon.reflect.declaration.CtNamedElement;
+import spoon.reflect.path.CtRole;
 import spoon.reflect.reference.CtTypeReference;
 import spoon.reflect.visitor.CtInheritanceScanner;
 
@@ -98,7 +99,13 @@ class LabelFinder extends CtInheritanceScanner {
 
 	@Override
 	public <R> void visitCtBlock(CtBlock<R> e) {
-		label = "{";
+		if (e.getRoleInParent() == CtRole.ELSE) {
+			label = "ELSE";
+		} else if (e.getRoleInParent() == CtRole.THEN) {
+			label = "THEN";
+		} else {
+			label = "{";
+		}
 	}
 
 	@Override
