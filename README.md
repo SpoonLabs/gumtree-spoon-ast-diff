@@ -9,6 +9,15 @@ If you use this, please cite:
 
 [Fine-grained and Accurate Source Code Differencing][paper] (Jean-Rémy Falleri, Floréal Morandat, Xavier Blanc, Matias Martinez, Martin Monperrus), In Proceedings of the International Conference on Automated Software Engineering, 2014.
 
+Difference between plain gumtreediff and gumtree-spoon-ast-diff
+----------------------------------------------------------------
+
+What is the main difference between gumtree-spoon-ast-diff and [gumtreediff](https://github.com/GumTreeDiff/gumtree)?
+
+* The tree of gumtree-spoon-ast-diff is carefully designed to provide better AST diffs for Java as opposed to vanilla gumtreediff. Simply compare the AST diffs on your own data.
+* The nodes involved in the diff can be pretty-printed through the pointer to the original Spoon nodes (see method `changedNode`, `commonAncestor`, `getSrcNode`)
+* The nodes involved in the diff can be further analyzed with [Spoon](https://github.com/INRIA/spoon/)'s API
+
 Usage
 -----
 
