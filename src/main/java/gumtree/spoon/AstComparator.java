@@ -62,6 +62,7 @@ public class AstComparator {
 	public AstComparator(Factory factory) {
 		this.factory = factory;
 		factory.getEnvironment().setNoClasspath(true);
+		factory.getEnvironment().setCommentEnabled(false);
 	}
 
 	/**
