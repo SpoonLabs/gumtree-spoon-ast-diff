@@ -88,6 +88,8 @@ public class AstComparator {
 	}
 
 	private CtType getCtType(File file) throws Exception {
+		// TODO: we should instead reset the model
+		factory.getModel().setBuildModelIsFinished(false);
 		SpoonModelBuilder compiler = new JDTBasedSpoonCompiler(factory);
 		compiler.getFactory().getEnvironment().setLevel("OFF");
 		compiler.addInputSource(SpoonResourceHelper.createResource(file));
@@ -101,6 +103,8 @@ public class AstComparator {
 	}
 
 	private CtType<?> getCtType(String content) {
+		// TODO: we should instead reset the model
+		factory.getModel().setBuildModelIsFinished(false);
 		SpoonModelBuilder compiler = new JDTBasedSpoonCompiler(factory);
 		compiler.addInputSource(new VirtualFile(content, "/test"));
 		compiler.build();
