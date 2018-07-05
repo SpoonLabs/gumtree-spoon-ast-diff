@@ -79,9 +79,14 @@ Deploy
 To deploy a new version on Maven Central:
 
 * Deploy from Travis directly (easier, all keys configured in .travis.yml):
+  * Prepare branch "deploy"
+    * `git branch -D deploy` (delete previous release)
+    * `git checkout -b deploy`
   * Update version number (if it ends with "-SNAPSHOT" it is pushed as Snapshot otherwise as release)
   * Commit to branch "deploy" (only this branch deploys to Maven Central)
+    * `git commit -m release pom.xml`
   * Push to branch "deploy"  (you have to force push)
+    * `git push origin deploy -f`
 * Deploy from localhost:
   * Update version number
   * `mvn -Prelease verify deploy:deploy`
