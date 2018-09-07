@@ -530,7 +530,8 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(actions.size(), 1);
-		assertTrue(result.containsOperation(OperationKind.Update, "Invocation", "java.util.Vector#add(E)"));
+		// as of Spoon 7.1, the generics are resolved in the signature
+		assertTrue(result.containsOperation(OperationKind.Update, "Invocation", "java.util.Vector#add(java.lang.Object)"));
 	}
 
 	@Test
