@@ -27,6 +27,13 @@ The main class is used this way:
 gumtree.spoon.AstComparator <file_1> <file_2>
 ```
 
+As API:
+
+```java
+new AstComparator().compare((CtElement) el1, (CtElement) el2);
+```
+
+
 Testing AST differencing
 ------------------------
 
