@@ -29,7 +29,7 @@ import spoon.reflect.declaration.CtElement;
  */
 public class SpoonGumTreeBuilder {
 	public static final String SPOON_OBJECT = "spoon_object";
-	public static final String SPOON_OBJECT_DEST = "spoon_object_dest";
+	public static final String DESTINATION_NODE = "dest_node";
 
 	private final TreeContext treeContext = new TreeContext();
 

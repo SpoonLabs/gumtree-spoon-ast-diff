@@ -2,14 +2,18 @@ package gumtree.spoon.builder;
 
 import com.github.gumtreediff.tree.ITree;
 import com.github.gumtreediff.tree.TreeContext;
-import spoon.reflect.code.CtBlock;
-import spoon.reflect.code.CtCase;
-import spoon.reflect.code.CtStatementList;
+
+import spoon.SpoonException;
 import spoon.reflect.declaration.CtElement;
+import spoon.reflect.meta.RoleHandler;
+import spoon.reflect.meta.impl.RoleHandlerHelper;
 import spoon.reflect.path.CtRole;
-import spoon.reflect.reference.CtReference;
 import spoon.reflect.visitor.CtScanner;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.Stack;
 
 public class TreeScanner extends CtScanner {
@@ -21,49 +25,41 @@ public class TreeScanner extends CtScanner {
 		this.treeContext = treeContext;
 		nodes.push(root);
 	}
-
+	
 	@Override
-	public void enter(CtElement element) {
-		if (isToIgnore(element)) {
-			super.enter(element);
+	public void scan(CtRole role, CtElement element) {
+		if (element == null) {
 			return;
 		}
-
-		LabelFinder lf = new LabelFinder();
-		lf.scan(element);
-		pushNodeToTree(createNode(element, lf.label));
-
-		int depthBefore = nodes.size();
-
-		new NodeCreator(this).scan(element);
-
-		if (nodes.size() != depthBefore ) {
-			// contract: this should never happen
-			throw new RuntimeException("too many nodes pushed");
-		}
-	}
-
-	/**
-	 * Ignore some element from the AST
-	 * @param element
-	 * @return
-	 */
-	private boolean isToIgnore(CtElement element) {
-		if (element instanceof CtStatementList && !(element instanceof CtCase)) {
-			if (element.getRoleInParent() == CtRole.ELSE || element.getRoleInParent() == CtRole.THEN) {
-				return false;
+		ITree node = createNode(role, element, null);
+		pushNodeToTree(node);
+		//add primitive attributes as first child nodes
+		List<RoleHandler> handlers = RoleHandlerHelper.getRoleHandlers(element.getClass());
+		for (RoleHandler roleHandler : handlers) {
+			if (CtElement.class.isAssignableFrom(roleHandler.getValueClass())) {
+				continue;
 			}
-			return true;
+			if (ignoredRoles.contains(roleHandler.getRole())) {
+				continue;
+			}
+			//it is primitive role, which doesn't hold CtElement
+			Collection<Object>  values = roleHandler.asCollection(element);
+			for (Object object : values) {
+				if (object != null) {
+					node.addChild(createNode(roleHandler.getRole(), object, getPrimitiveLabel(object)));
+				}
+			}
 		}
-		return element.isImplicit() || element instanceof CtReference;
-	}
-
-	@Override
-	public void exit(CtElement element) {
-		if (!isToIgnore(element)) {
+		try {
+			super.scan(role, element);
+		} finally {
 			nodes.pop();
 		}
-		super.exit(element);
+	}
+	
+	private static final Set<CtRole> ignoredRoles = new HashSet<>();
+	static {
+		ignoredRoles.add(CtRole.POSITION);
 	}
 
 	private void pushNodeToTree(ITree node) {
@@ -74,33 +70,32 @@ public class TreeScanner extends CtScanner {
 		nodes.push(node);
 	}
 
-	void addSiblingNode(ITree node) {
-		ITree parent = nodes.peek();
-		if (parent != null) { // happens when nodes.push(null)
-			parent.addChild(node);
-		}
-	}
-
-	private ITree createNode(CtElement element, String label) {
-		String nodeTypeName = NOTYPE;
-		if (element != null) {
-			nodeTypeName = getTypeName(element.getClass().getSimpleName());
-		}
-		if (element instanceof CtBlock) {
-			nodeTypeName = element.getRoleInParent().toString();
-		}
-
-		ITree newNode = createNode(nodeTypeName, label);
+	private ITree createNode(CtRole roleInParent, Object element, String label) {
+		ITree newNode = createNode(roleInParent, label);
 		newNode.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, element);
 		return newNode;
 	}
 
-	private String getTypeName(String simpleName) {
-		// Removes the "Ct" at the beginning and the "Impl" at the end.
-		return simpleName.substring(2, simpleName.length() - 4);
+	private ITree createNode(CtRole role, String label) {
+		if (role == null) {
+			return treeContext.createTree(-2, label, "ROOT");
+		}
+		return treeContext.createTree(role.ordinal(), label, role.name());
 	}
-
-	public ITree createNode(String typeClass, String label) {
-		return treeContext.createTree(typeClass.hashCode(), label, typeClass);
+	
+	private String getPrimitiveLabel(Object value) {
+		if (value instanceof String) {
+			return (String) value;
+		}
+		if (value instanceof Boolean) {
+			return ((Boolean) value).toString();
+		}
+//		if (value instanceof Number) {
+//			return ((Number) value).toString();
+//		}
+		if (value instanceof Enum) {
+			return ((Enum) value).name();
+		}
+		throw new SpoonException("Unsupported primitive value of class " + value.getClass().getName());
 	}
 }

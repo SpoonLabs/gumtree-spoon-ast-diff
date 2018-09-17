@@ -3,22 +3,34 @@ package gumtree.spoon.diff.operations;
 import com.github.gumtreediff.actions.model.Action;
 import com.github.gumtreediff.actions.model.Move;
 import com.github.gumtreediff.actions.model.Update;
+import com.github.gumtreediff.tree.ITree;
+
 import gumtree.spoon.builder.SpoonGumTreeBuilder;
-import spoon.reflect.cu.SourcePosition;
 import spoon.reflect.cu.position.NoSourcePosition;
 import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtPackage;
 import spoon.reflect.declaration.CtType;
+import spoon.reflect.path.CtRole;
 import spoon.reflect.visitor.DefaultJavaPrettyPrinter;
 
 public abstract class Operation<T extends Action> {
 	private final CtElement node;
+	private final Object value;
+	private final CtRole role;
 	private final T action;
 
 	public Operation(T action) {
 		this.action = action;
-		this.node = (CtElement) action.getNode().getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT);
+		Object object = action.getNode().getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT);
+		if (object instanceof CtElement) {
+			this.node = (CtElement) object;
+			this.value = null;
+		} else {
+			this.value = object;
+			this.node = (CtElement) action.getNode().getParent().getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT);
+		}
+		this.role = CtRole.values()[action.getNode().getType()];
 	}
 
 	/** use {@link #getSrcNode()} or {@link #getDstNode()} instead. */
@@ -41,7 +53,14 @@ public abstract class Operation<T extends Action> {
 		StringBuilder stringBuilder = new StringBuilder();
 
 
-		CtElement element = (CtElement) action.getNode().getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT);
+		Object value = action.getNode().getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT);
+		CtElement element;
+		if (value instanceof CtElement) {
+			element = (CtElement) value;
+			value = null;
+		} else {
+			element = (CtElement) action.getNode().getParent().getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT);
+		}
 		// action name
 		stringBuilder.append(action.getClass().getSimpleName());
 
@@ -63,7 +82,15 @@ public abstract class Operation<T extends Action> {
 			position += ":" + element.getPosition().getLine();
 		}
 		if (action instanceof Move) {
-			CtElement elementDest = (CtElement) action.getNode().getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT_DEST);
+			ITree destNode = (ITree) action.getNode().getMetadata(SpoonGumTreeBuilder.DESTINATION_NODE);
+			Object destValue = destNode.getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT);
+			CtElement elementDest;
+			if (value instanceof CtElement) {
+				elementDest = (CtElement) destValue;
+				destValue = null;
+			} else {
+				elementDest = (CtElement) destNode.getParent().getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT);
+			}
 			position = " from " + element.getParent(CtClass.class).getQualifiedName();
 			if (element.getPosition() != null && !(element.getPosition() instanceof NoSourcePosition)) {
 				position += ":" + element.getPosition().getLine();
@@ -81,7 +108,15 @@ public abstract class Operation<T extends Action> {
 			label = element.toString();
 		}
 		if (action instanceof Update) {
-			CtElement elementDest = (CtElement) action.getNode().getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT_DEST);
+			ITree destNode = (ITree) action.getNode().getMetadata(SpoonGumTreeBuilder.DESTINATION_NODE);
+			Object destValue = destNode.getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT);
+			CtElement elementDest;
+			if (value instanceof CtElement) {
+				elementDest = (CtElement) destValue;
+				destValue = null;
+			} else {
+				elementDest = (CtElement) destNode.getParent().getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT);
+			}
 			label += " to " + elementDest.toString();
 		}
 		String[] split = label.split(newline);
@@ -106,7 +141,7 @@ public abstract class Operation<T extends Action> {
 		return print.getResult();
 	}
 
-	/** returns the changed (inserded/deleted/updated) element */
+	/** returns the changed (inserted/deleted/updated) element */
 	public CtElement getSrcNode() {
 		return node;
 	}
@@ -114,6 +149,14 @@ public abstract class Operation<T extends Action> {
 	/** returns the new version of the node (only for update) */
 	public CtElement getDstNode() {
 		return null;
+	}
+
+	public Object getValue() {
+		return value;
+	}
+
+	public CtRole getRole() {
+		return role;
 	}
 
 }

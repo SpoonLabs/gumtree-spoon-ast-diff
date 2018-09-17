@@ -1,6 +1,9 @@
 package gumtree.spoon.diff.operations;
 
 import com.github.gumtreediff.actions.model.Move;
+import com.github.gumtreediff.tree.ITree;
+
+import gumtree.spoon.builder.SpoonGumTreeBuilder;
 import spoon.reflect.declaration.CtElement;
 
 public class MoveOperation extends AdditionOperation<Move> {
@@ -10,6 +13,15 @@ public class MoveOperation extends AdditionOperation<Move> {
 
 	@Override
 	public CtElement getDstNode() {
-		return (CtElement) getAction().getNode().getMetadata("spoon_object_dest");
+		ITree destNode = (ITree) getAction().getNode().getMetadata(SpoonGumTreeBuilder.DESTINATION_NODE);
+		if (destNode != null) {
+			Object object = destNode.getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT);
+			if (object instanceof CtElement) {
+				return (CtElement) object;
+			} else {
+				return (CtElement) destNode.getParent().getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT);
+			}
+		}
+		return null;
 	}
 }
