@@ -1,5 +1,7 @@
 package gumtree.spoon;
 
+import java.io.File;
+
 import gumtree.spoon.builder.SpoonGumTreeBuilder;
 import gumtree.spoon.diff.Diff;
 import gumtree.spoon.diff.DiffImpl;
@@ -13,8 +15,6 @@ import spoon.support.DefaultCoreFactory;
 import spoon.support.StandardEnvironment;
 import spoon.support.compiler.VirtualFile;
 import spoon.support.compiler.jdt.JDTBasedSpoonCompiler;
-
-import java.io.File;
 
 /**
  * Computes the differences between two CtElements.
@@ -51,8 +51,8 @@ public class AstComparator {
 		// 100 OK
 		// 1000 OK
 		// see AbstractBottomUpMatcher#SIZE_THRESHOD in Gumtree
-		//System.setProperty("gumtree.match.bu.size","10");
-		//System.setProperty("gt.bum.szt", "1000");
+		// System.setProperty("gumtree.match.bu.size","10");
+		// System.setProperty("gt.bum.szt", "1000");
 	}
 
 	public AstComparator() {
@@ -87,7 +87,7 @@ public class AstComparator {
 		return new DiffImpl(scanner.getTreeContext(), scanner.getTree(left), scanner.getTree(right));
 	}
 
-	private CtType getCtType(File file) throws Exception {
+	public CtType getCtType(File file) throws Exception {
 		// TODO: we should instead reset the model
 		factory.getModel().setBuildModelIsFinished(false);
 		SpoonModelBuilder compiler = new JDTBasedSpoonCompiler(factory);
@@ -99,10 +99,15 @@ public class AstComparator {
 			return null;
 		}
 
-		return factory.Type().getAll().get(0);
+		// let's first take the first type.
+		CtType type = factory.Type().getAll().get(0);
+		// Now, let's ask to the factory the type (which it will set up the
+		// corresponding
+		// package)
+		return this.factory.Type().get(type.getQualifiedName());
 	}
 
-	private CtType<?> getCtType(String content) {
+	public CtType<?> getCtType(String content) {
 		// TODO: we should instead reset the model
 		factory.getModel().setBuildModelIsFinished(false);
 		SpoonModelBuilder compiler = new JDTBasedSpoonCompiler(factory);
