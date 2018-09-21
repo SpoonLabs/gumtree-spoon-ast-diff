@@ -6,6 +6,7 @@ import gumtree.spoon.builder.SpoonGumTreeBuilder;
 import gumtree.spoon.diff.Diff;
 import gumtree.spoon.diff.DiffImpl;
 import spoon.SpoonModelBuilder;
+import spoon.compiler.SpoonResource;
 import spoon.compiler.SpoonResourceHelper;
 import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtType;
@@ -22,7 +23,10 @@ import spoon.support.compiler.jdt.JDTBasedSpoonCompiler;
  * @author Matias Martinez, matias.martinez@inria.fr
  */
 public class AstComparator {
-	private final Factory factory;
+	// For the moment, let's create a factory each type we get a type.
+	// Sharing the factory produces a bug when asking the path of different types
+	// (>1)
+	// private final Factory factory;
 
 	static {
 		// default 0.3
@@ -56,13 +60,14 @@ public class AstComparator {
 	}
 
 	public AstComparator() {
-		this(new FactoryImpl(new DefaultCoreFactory(), new StandardEnvironment()));
+		super();
 	}
 
-	public AstComparator(Factory factory) {
-		this.factory = factory;
+	protected Factory createFactory() {
+		Factory factory = new FactoryImpl(new DefaultCoreFactory(), new StandardEnvironment());
 		factory.getEnvironment().setNoClasspath(true);
 		factory.getEnvironment().setCommentEnabled(false);
+		return factory;
 	}
 
 	/**
@@ -88,11 +93,17 @@ public class AstComparator {
 	}
 
 	public CtType getCtType(File file) throws Exception {
-		// TODO: we should instead reset the model
+
+		SpoonResource resource = SpoonResourceHelper.createResource(file);
+		return getCtType(resource);
+	}
+
+	public CtType getCtType(SpoonResource resource) {
+		Factory factory = createFactory();
 		factory.getModel().setBuildModelIsFinished(false);
 		SpoonModelBuilder compiler = new JDTBasedSpoonCompiler(factory);
 		compiler.getFactory().getEnvironment().setLevel("OFF");
-		compiler.addInputSource(SpoonResourceHelper.createResource(file));
+		compiler.addInputSource(resource);
 		compiler.build();
 
 		if (factory.Type().getAll().size() == 0) {
@@ -104,16 +115,12 @@ public class AstComparator {
 		// Now, let's ask to the factory the type (which it will set up the
 		// corresponding
 		// package)
-		return this.factory.Type().get(type.getQualifiedName());
+		return factory.Type().get(type.getQualifiedName());
 	}
 
 	public CtType<?> getCtType(String content) {
-		// TODO: we should instead reset the model
-		factory.getModel().setBuildModelIsFinished(false);
-		SpoonModelBuilder compiler = new JDTBasedSpoonCompiler(factory);
-		compiler.addInputSource(new VirtualFile(content, "/test"));
-		compiler.build();
-		return factory.Type().getAll().get(0);
+		VirtualFile resource = new VirtualFile(content, "/test");
+		return getCtType(resource);
 	}
 
 	public static void main(String[] args) throws Exception {

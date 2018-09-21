@@ -10,10 +10,13 @@ import org.junit.Test;
 
 import gumtree.spoon.diff.Diff;
 import gumtree.spoon.diff.operations.Operation;
+import spoon.Launcher;
+import spoon.compiler.SpoonResourceHelper;
 import spoon.reflect.code.CtStatement;
 import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.declaration.CtType;
+import spoon.reflect.factory.Factory;
 import spoon.reflect.path.CtPath;
 import spoon.reflect.visitor.CtScanner;
 
@@ -68,6 +71,159 @@ public class TreeTest {
 		System.out.println("All ops");
 		List<Operation> allOperations = diffResult.getAllOperations();
 		getPaths(allOperations);
+
+	}
+
+	@Test
+	public void test_Path_Scanner_failing_tofix() throws Exception {
+		AstComparator diff = new AstComparator();
+		File fl = new File("src/test/resources/examples/roots/test8/left_QuickNotepad_1.13.java");
+		File fr = new File("src/test/resources/examples/roots/test8/right_QuickNotepad_1.14.java");
+
+		CtType<?> astLeft = diff.getCtType(fl);
+
+		assertNotNull(astLeft);
+		assertEquals("QuickNotepad", astLeft.getSimpleName());
+
+		CtPath pathLeft = astLeft.getPath();
+		assertNotNull(pathLeft);
+
+		CtType<?> astRight = diff.getCtType(fr);
+
+		assertNotNull(astRight);
+		assertEquals("QuickNotepad", astRight.getSimpleName());
+		// No package in that file
+		assertEquals("QuickNotepad", astRight.getQualifiedName());
+
+		CtPath pathRight = astRight.getPath();
+		assertNotNull(pathRight);
+
+		PathScanner pscanner = new PathScanner();
+		astLeft.accept(pscanner);
+		astRight.accept(pscanner);
+
+	}
+
+	@Test
+	public void test_Path_ScannerWithSpoon_left() throws Exception {
+
+		Launcher spoon = new Launcher();
+		Factory factory = spoon.createFactory();
+		spoon.createCompiler(factory,
+				SpoonResourceHelper.resources("src/test/resources/examples/roots/test8/left_QuickNotepad_1.13.java"))
+				.build();
+
+		CtType<?> astLeft = factory.Type().get("QuickNotepad");
+		assertNotNull(astLeft.getPath());
+		assertNotNull(astLeft);
+		PathScanner pscanner = new PathScanner();
+		astLeft.accept(pscanner);
+
+	}
+
+	@Test
+	public void test_Path_ScannerWithSpoon_Right() throws Exception {
+
+		Launcher spoon = new Launcher();
+		Factory factory = spoon.createFactory();
+		spoon.createCompiler(factory,
+				SpoonResourceHelper.resources("src/test/resources/examples/roots/test8/right_QuickNotepad_1.14.java"))
+				.build();
+
+		CtType<?> astLeft = factory.Type().get("QuickNotepad");
+		assertNotNull(astLeft.getPath());
+		assertNotNull(astLeft);
+		PathScanner pscanner = new PathScanner();
+		astLeft.accept(pscanner);
+
+	}
+
+	@Test
+	public void test_Path_ScannerWithGTFailing_left() throws Exception {
+
+		AstComparator diff = new AstComparator();
+		File fl = new File("src/test/resources/examples/roots/test8/left_QuickNotepad_1.13.java");
+
+		CtType<?> astLeft = diff.getCtType(fl);
+
+		PathScanner pscanner = new PathScanner();
+
+		assertNotNull(astLeft.getPath());
+		assertNotNull(astLeft);
+		astLeft.accept(pscanner);
+
+	}
+
+	@Test
+	public void test_Path_ScannerWithGTFailing_right() throws Exception {
+
+		AstComparator diff = new AstComparator();
+
+		File fr = new File("src/test/resources/examples/roots/test8/right_QuickNotepad_1.14.java");
+
+		CtType<?> astRight = diff.getCtType(fr);
+
+		PathScanner pscanner = new PathScanner();
+
+		assertNotNull(astRight.getPath());
+		assertNotNull(astRight);
+		astRight.accept(pscanner);
+
+	}
+
+	@Test
+	public void test_Path_ScannerWithGTFailing_both() throws Exception {
+
+		AstComparator diff = new AstComparator();
+		File fl = new File("src/test/resources/examples/roots/test8/left_QuickNotepad_1.13.java");
+
+		CtType<?> astLeft = diff.getCtType(fl);
+
+		File fr = new File("src/test/resources/examples/roots/test8/right_QuickNotepad_1.14.java");
+
+		CtType<?> astRight = diff.getCtType(fr);
+
+		PathScanner pscanner = new PathScanner();
+
+		assertNotNull(astLeft.getPath());
+		assertNotNull(astLeft);
+		astLeft.accept(pscanner);
+
+		assertNotNull(astRight.getPath());
+		assertNotNull(astRight);
+		astRight.accept(pscanner);
+
+	}
+
+	@Test
+	public void test_Path_ScannerWithSpoon_both() throws Exception {
+
+		Launcher spoon = new Launcher();
+		Factory factory = spoon.createFactory();
+		spoon.createCompiler(factory,
+				SpoonResourceHelper.resources("src/test/resources/examples/roots/test8/left_QuickNotepad_1.13.java"))
+				.build();
+
+		CtType<?> astLeft = factory.Type().get("QuickNotepad");
+
+		// So, if we create a new factory, it works.
+		// Reusing the same factory, the path fails.
+		factory = spoon.createFactory();
+		spoon.createCompiler(factory,
+				SpoonResourceHelper.resources("src/test/resources/examples/roots/test8/left_QuickNotepad_1.13.java"))
+				.build();
+
+		CtType<?> astRight = factory.Type().get("QuickNotepad");
+
+		PathScanner pscanner = new PathScanner();
+
+		assertNotNull(astLeft.getPath());
+		assertNotNull(astLeft);
+		astLeft.accept(pscanner);
+
+		assertNotNull(astRight.getPath());
+		assertNotNull(astRight);
+		astRight.accept(pscanner);
 
 	}
 
