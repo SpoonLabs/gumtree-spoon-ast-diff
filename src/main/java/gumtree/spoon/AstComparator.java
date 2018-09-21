@@ -57,11 +57,8 @@ public class AstComparator {
 	}
 
 	public AstComparator() {
-		this(new FactoryImpl(new DefaultCoreFactory(), new StandardEnvironment()));
-	}
-
-	public AstComparator(Factory factory) {
-		this.factory = factory;
+		super();
+		factory = new FactoryImpl(new DefaultCoreFactory(), new StandardEnvironment());
 		factory.getEnvironment().setNoClasspath(true);
 		factory.getEnvironment().setCommentEnabled(false);
 	}
