@@ -6,6 +6,7 @@ import gumtree.spoon.builder.SpoonGumTreeBuilder;
 import gumtree.spoon.diff.Diff;
 import gumtree.spoon.diff.DiffImpl;
 import spoon.SpoonModelBuilder;
+import spoon.compiler.SpoonResource;
 import spoon.compiler.SpoonResourceHelper;
 import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtType;
@@ -88,11 +89,17 @@ public class AstComparator {
 	}
 
 	public CtType getCtType(File file) throws Exception {
+
+		SpoonResource resource = SpoonResourceHelper.createResource(file);
+		return getCtType(resource);
+	}
+
+	public CtType getCtType(SpoonResource resource) {
 		// TODO: we should instead reset the model
 		factory.getModel().setBuildModelIsFinished(false);
 		SpoonModelBuilder compiler = new JDTBasedSpoonCompiler(factory);
 		compiler.getFactory().getEnvironment().setLevel("OFF");
-		compiler.addInputSource(SpoonResourceHelper.createResource(file));
+		compiler.addInputSource(resource);
 		compiler.build();
 
 		if (factory.Type().getAll().size() == 0) {
@@ -108,12 +115,8 @@ public class AstComparator {
 	}
 
 	public CtType<?> getCtType(String content) {
-		// TODO: we should instead reset the model
-		factory.getModel().setBuildModelIsFinished(false);
-		SpoonModelBuilder compiler = new JDTBasedSpoonCompiler(factory);
-		compiler.addInputSource(new VirtualFile(content, "/test"));
-		compiler.build();
-		return factory.Type().getAll().get(0);
+		VirtualFile resource = new VirtualFile(content, "/test");
+		return getCtType(resource);
 	}
 
 	public static void main(String[] args) throws Exception {
