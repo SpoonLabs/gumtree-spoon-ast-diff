@@ -19,31 +19,20 @@ package gumtree.spoon.builder;
 
 import com.github.gumtreediff.tree.ITree;
 import com.github.gumtreediff.tree.TreeContext;
-import com.github.gumtreediff.tree.TreeUtils;
-import spoon.reflect.declaration.CtElement;
 
 /**
- * Scanner to create a GumTree's Tree representation for a Spoon CtClass.
- *
- * @author Matias Martinez, matias.martinez@inria.fr
+ * Extension of Tree, which maps to node or attribute value of Spoon AST
  */
-public class SpoonGumTreeBuilder {
-	public static final String SPOON_OBJECT = "spoon_object";
-	public static final String DESTINATION_NODE = "dest_node";
-
-	private final SpoonTreeContext treeContext = new SpoonTreeContext();
-
-	public ITree getTree(CtElement element) {
-		final ITree root = treeContext.createTree(-1, "", "root", element);
-		new TreeScanner(treeContext, root).scan(element);
-
-		root.refresh();
-		TreeUtils.postOrderNumbering(root);
-		TreeUtils.computeHeight(root);
-		return root;
+public class SpoonTreeContext extends TreeContext {
+	
+	public ITree createTree(int type, String label, String typeLabel, Object value) {
+        registerTypeLabel(type, typeLabel);
+        return new SpoonTree(type, label, value);
 	}
-
-	public TreeContext getTreeContext() {
-		return treeContext;
+	
+	@Override
+	public ITree createTree(int type, String label, String typeLabel) {
+		throw new UnsupportedOperationException();
 	}
+	
 }

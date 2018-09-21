@@ -1,66 +1,76 @@
 package gumtree.spoon.builder;
 
 import com.github.gumtreediff.tree.ITree;
-import com.github.gumtreediff.tree.TreeContext;
 
 import spoon.SpoonException;
+import spoon.metamodel.Metamodel;
+import spoon.metamodel.MetamodelConcept;
+import spoon.metamodel.MetamodelProperty;
 import spoon.reflect.declaration.CtElement;
-import spoon.reflect.meta.RoleHandler;
-import spoon.reflect.meta.impl.RoleHandlerHelper;
 import spoon.reflect.path.CtRole;
+import spoon.reflect.reference.CtTypeReference;
 import spoon.reflect.visitor.CtScanner;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 
 public class TreeScanner extends CtScanner {
 	public static final String NOTYPE = "<notype>";
-	private final TreeContext treeContext;
+	private final SpoonTreeContext treeContext;
 	private final Stack<ITree> nodes = new Stack<>();
 
-	TreeScanner(TreeContext treeContext, ITree root) {
+	TreeScanner(SpoonTreeContext treeContext, ITree root) {
 		this.treeContext = treeContext;
 		nodes.push(root);
 	}
 	
 	@Override
 	public void scan(CtRole role, CtElement element) {
-		if (element == null) {
+		if (element == null || element.isImplicit()) {
 			return;
 		}
-		ITree node = createNode(role, element, null);
-		pushNodeToTree(node);
-		//add primitive attributes as first child nodes
-		List<RoleHandler> handlers = RoleHandlerHelper.getRoleHandlers(element.getClass());
-		for (RoleHandler roleHandler : handlers) {
-			if (CtElement.class.isAssignableFrom(roleHandler.getValueClass())) {
-				continue;
-			}
-			if (ignoredRoles.contains(roleHandler.getRole())) {
-				continue;
-			}
-			//it is primitive role, which doesn't hold CtElement
-			Collection<Object>  values = roleHandler.asCollection(element);
-			for (Object object : values) {
-				if (object != null) {
-					node.addChild(createNode(roleHandler.getRole(), object, getPrimitiveLabel(object)));
-				}
-			}
+		String elementLabel = null;
+		boolean scanChildren = true;
+		if (element instanceof CtTypeReference) {
+			CtTypeReference<?> typeRef = (CtTypeReference<?>) element;
+			elementLabel = typeRef.toString();
+			scanChildren = false;
 		}
+		ITree node = createNode(role, element, elementLabel);
+		pushNodeToTree(node);
 		try {
-			super.scan(role, element);
+			if (scanChildren) {
+				//add primitive attributes as first child nodes
+				MetamodelConcept mmc = Metamodel.getInstance().getConcept(element.getClass());
+				for (MetamodelProperty property : mmc.getProperties()) {
+					if (CtElement.class.isAssignableFrom(property.getTypeofItems().getActualClass())) {
+						continue;
+					}
+					if (property.getRole() == CtRole.MODIFIER) {
+						this.getClass();
+					}
+					if (ignoredRoles.contains(property.getRole()) || property.isDerived()) {
+						continue;
+					}
+					//it is primitive role, which doesn't hold CtElement
+					Collection<Object>  values = property.getRoleHandler().asCollection(element);
+					for (Object object : values) {
+						if (object != null) {
+							node.addChild(createNode(property.getRole(), object, getPrimitiveLabel(object)));
+						}
+					}
+				}
+				super.scan(role, element);
+			}
 		} finally {
 			nodes.pop();
 		}
 	}
 	
-	private static final Set<CtRole> ignoredRoles = new HashSet<>();
-	static {
-		ignoredRoles.add(CtRole.POSITION);
-	}
+	private static final Set<CtRole> ignoredRoles = new HashSet<>(Arrays.asList(CtRole.POSITION, CtRole.IS_IMPLICIT, CtRole.IS_SHADOW));
 
 	private void pushNodeToTree(ITree node) {
 		ITree parent = nodes.peek();
@@ -71,16 +81,10 @@ public class TreeScanner extends CtScanner {
 	}
 
 	private ITree createNode(CtRole roleInParent, Object element, String label) {
-		ITree newNode = createNode(roleInParent, label);
-		newNode.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, element);
-		return newNode;
-	}
-
-	private ITree createNode(CtRole role, String label) {
-		if (role == null) {
-			return treeContext.createTree(-2, label, "ROOT");
+		if (roleInParent == null) {
+			return treeContext.createTree(-2, label, "ROOT", element);
 		}
-		return treeContext.createTree(role.ordinal(), label, role.name());
+		return treeContext.createTree(roleInParent.ordinal(), label, roleInParent.name(), element);
 	}
 	
 	private String getPrimitiveLabel(Object value) {
