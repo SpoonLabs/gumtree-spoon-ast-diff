@@ -23,7 +23,10 @@ import spoon.support.compiler.jdt.JDTBasedSpoonCompiler;
  * @author Matias Martinez, matias.martinez@inria.fr
  */
 public class AstComparator {
-	private final Factory factory;
+	// For the moment, let's create a factory each type we get a type.
+	// Sharing the factory produces a bug when asking the path of different types
+	// (>1)
+	// private final Factory factory;
 
 	static {
 		// default 0.3
@@ -58,9 +61,13 @@ public class AstComparator {
 
 	public AstComparator() {
 		super();
-		factory = new FactoryImpl(new DefaultCoreFactory(), new StandardEnvironment());
+	}
+
+	protected Factory createFactory() {
+		Factory factory = new FactoryImpl(new DefaultCoreFactory(), new StandardEnvironment());
 		factory.getEnvironment().setNoClasspath(true);
 		factory.getEnvironment().setCommentEnabled(false);
+		return factory;
 	}
 
 	/**
@@ -92,7 +99,7 @@ public class AstComparator {
 	}
 
 	public CtType getCtType(SpoonResource resource) {
-		// TODO: we should instead reset the model
+		Factory factory = createFactory();
 		factory.getModel().setBuildModelIsFinished(false);
 		SpoonModelBuilder compiler = new JDTBasedSpoonCompiler(factory);
 		compiler.getFactory().getEnvironment().setLevel("OFF");
@@ -108,7 +115,7 @@ public class AstComparator {
 		// Now, let's ask to the factory the type (which it will set up the
 		// corresponding
 		// package)
-		return this.factory.Type().get(type.getQualifiedName());
+		return factory.Type().get(type.getQualifiedName());
 	}
 
 	public CtType<?> getCtType(String content) {
