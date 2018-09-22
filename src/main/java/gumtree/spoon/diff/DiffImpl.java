@@ -1,5 +1,12 @@
 package gumtree.spoon.diff;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import com.github.gumtreediff.actions.ActionGenerator;
 import com.github.gumtreediff.actions.model.Action;
 import com.github.gumtreediff.actions.model.Delete;
@@ -11,6 +18,7 @@ import com.github.gumtreediff.matchers.MappingStore;
 import com.github.gumtreediff.matchers.Matcher;
 import com.github.gumtreediff.tree.ITree;
 import com.github.gumtreediff.tree.TreeContext;
+
 import gumtree.spoon.builder.SpoonGumTreeBuilder;
 import gumtree.spoon.diff.operations.DeleteOperation;
 import gumtree.spoon.diff.operations.InsertOperation;
@@ -19,13 +27,6 @@ import gumtree.spoon.diff.operations.Operation;
 import gumtree.spoon.diff.operations.OperationKind;
 import gumtree.spoon.diff.operations.UpdateOperation;
 import spoon.reflect.declaration.CtElement;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * @author Matias Martinez, matias.martinez@inria.fr
@@ -54,12 +55,17 @@ public class DiffImpl implements Diff {
 		final Matcher matcher = new CompositeMatchers.ClassicGumtree(rootSpoonLeft, rootSpoonRight, mappingsComp);
 		matcher.match();
 
-		final ActionGenerator actionGenerator = new ActionGenerator(rootSpoonLeft, rootSpoonRight, matcher.getMappings());
+		final ActionGenerator actionGenerator = new ActionGenerator(rootSpoonLeft, rootSpoonRight,
+				matcher.getMappings());
 		actionGenerator.generate();
 
-
+		ActionClassifier actionClassifier = new ActionClassifier(matcher.getMappingsAsSet(),
+				actionGenerator.getActions());
+		// Bugfix: the Action classifier must be executed *BEFORE* the convertToSpoon
+		// because it writes meta-data on the trees
+		this.rootOperations = convertToSpoon(actionClassifier.getRootActions());
 		this.allOperations = convertToSpoon(actionGenerator.getActions());
-		this.rootOperations = convertToSpoon(new ActionClassifier(matcher.getMappingsAsSet(), actionGenerator.getActions()).getRootActions());
+
 		this._mappingsComp = mappingsComp;
 		this.context = context;
 
@@ -120,7 +126,8 @@ public class DiffImpl implements Diff {
 			CtElement el = operation.getNode();
 			if (operation instanceof InsertOperation) {
 				// we take the corresponding node in the source tree
-				el = (CtElement) _mappingsComp.getSrc(operation.getAction().getNode().getParent()).getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT);
+				el = (CtElement) _mappingsComp.getSrc(operation.getAction().getNode().getParent())
+						.getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT);
 			}
 			copy.add(el);
 		}
@@ -170,11 +177,12 @@ public class DiffImpl implements Diff {
 	}
 
 	@Override
-	public boolean containsOperations(List<Operation> operations, OperationKind kind, String nodeKind, String nodeLabel) {
-		return operations.stream().anyMatch(operation -> operation.getAction().getClass().getSimpleName().equals(kind.name()) //
-				&& context.getTypeLabel(operation.getAction().getNode()).equals(nodeKind)
-				&& operation.getAction().getNode().getLabel().equals(nodeLabel)
-		);
+	public boolean containsOperations(List<Operation> operations, OperationKind kind, String nodeKind,
+			String nodeLabel) {
+		return operations.stream()
+				.anyMatch(operation -> operation.getAction().getClass().getSimpleName().equals(kind.name()) //
+						&& context.getTypeLabel(operation.getAction().getNode()).equals(nodeKind)
+						&& operation.getAction().getNode().getLabel().equals(nodeLabel));
 	}
 
 	@Override
@@ -193,9 +201,10 @@ public class DiffImpl implements Diff {
 			}
 			String nodeType = context.getTypeLabel(node.getType());
 			if (nodeElement != null) {
-				nodeType += "(" + nodeElement.getClass().getSimpleName()+")";
+				nodeType += "(" + nodeElement.getClass().getSimpleName() + ")";
 			}
-			result += "\"" + operation.getAction().getClass().getSimpleName() + "\", \"" + nodeType + "\", " + label + " (size: " + node.getDescendants().size() + ")" + node.toTreeString();
+			result += "\"" + operation.getAction().getClass().getSimpleName() + "\", \"" + nodeType + "\", " + label
+					+ " (size: " + node.getDescendants().size() + ")" + node.toTreeString();
 		}
 		return result;
 	}
