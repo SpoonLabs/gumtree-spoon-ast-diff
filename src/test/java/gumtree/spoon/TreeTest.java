@@ -8,6 +8,16 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.github.gumtreediff.io.TreeIoUtils;
+import com.github.gumtreediff.io.TreeIoUtils.TreeSerializer;
+import com.github.gumtreediff.tree.ITree;
+import com.github.gumtreediff.tree.TreeContext;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+
+import gumtree.spoon.builder.SpoonGumTreeBuilder;
+import gumtree.spoon.builder.TreeJSONOutput;
 import gumtree.spoon.diff.Diff;
 import gumtree.spoon.diff.operations.Operation;
 import spoon.Launcher;
@@ -136,6 +146,69 @@ public class TreeTest {
 		PathScanner pscanner = new PathScanner();
 		astLeft.accept(pscanner);
 
+	}
+
+	@Test
+	public void test_JSON_from_GT() throws Exception {
+
+		Launcher spoon = new Launcher();
+		Factory factory = spoon.createFactory();
+		spoon.createCompiler(factory,
+				SpoonResourceHelper.resources("src/test/resources/examples/roots/test8/right_QuickNotepad_1.14.java"))
+				.build();
+
+		CtType<?> astLeft = factory.Type().get("QuickNotepad");
+		SpoonGumTreeBuilder builder = new SpoonGumTreeBuilder();
+		ITree generatedTree = builder.getTree(astLeft);
+
+		TreeContext tcontext = new TreeContext();
+		tcontext.setRoot(generatedTree);
+		TreeSerializer ts = TreeIoUtils.toJson(tcontext);
+		String out = ts.toString();
+		System.out.println(out);
+		assertNotNull(out);
+	}
+
+	@Test
+	public void test_JSON_manual_generation_1() throws Exception {
+
+		Launcher spoon = new Launcher();
+		Factory factory = spoon.createFactory();
+		spoon.createCompiler(factory,
+				SpoonResourceHelper.resources("src/test/resources/examples/roots/test8/right_QuickNotepad_1.14.java"))
+				.build();
+
+		CtType<?> aType = factory.Type().get("QuickNotepad");
+		SpoonGumTreeBuilder builder = new SpoonGumTreeBuilder();
+		ITree generatedTree = builder.getTree(aType);
+
+		TreeContext tcontext = builder.getTreeContext();
+
+		TreeJSONOutput outjson = new TreeJSONOutput();
+		JsonObject json = outjson.getJSON(tcontext, generatedTree);
+		assertNotNull(json);
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		String prettyJsonString = gson.toJson(json);
+		assertNotNull(prettyJsonString);
+	}
+
+	@Test
+	public void test_JSON_manual_generation_2() throws Exception {
+
+		Launcher spoon = new Launcher();
+		Factory factory = spoon.createFactory();
+		spoon.createCompiler(factory,
+				SpoonResourceHelper.resources("src/test/resources/examples/roots/test8/right_QuickNotepad_1.14.java"))
+				.build();
+
+		CtType<?> aType = factory.Type().get("QuickNotepad");
+
+		TreeJSONOutput outjson = new TreeJSONOutput();
+		JsonObject json = outjson.getJSON(aType);
+		assertNotNull(json);
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		String prettyJsonString = gson.toJson(json);
+		assertNotNull(prettyJsonString);
 	}
 
 	@Test
