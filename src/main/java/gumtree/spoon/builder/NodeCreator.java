@@ -10,6 +10,10 @@ import spoon.reflect.declaration.ModifierKind;
 import spoon.reflect.reference.CtTypeReference;
 import spoon.reflect.visitor.CtInheritanceScanner;
 
+import java.util.Comparator;
+import java.util.Set;
+import java.util.TreeSet;
+
 /** responsible to add additional nodes
  * only overrides scan* to add new nodes */
 class NodeCreator extends CtInheritanceScanner {
@@ -23,7 +27,18 @@ class NodeCreator extends CtInheritanceScanner {
 	public void scanCtModifiable(CtModifiable m) {
 		ITree modifiers = builder.createNode("Modifiers", "");
 		modifiers.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, m);
-		for (ModifierKind kind : m.getModifiers()) {
+
+		// ensuring an order (instead of hashset)
+		// otherwise some flaky tests in CI
+		Set<ModifierKind> modifiers1 = new TreeSet<>(new Comparator<ModifierKind>() {
+			@Override
+			public int compare(ModifierKind o1, ModifierKind o2) {
+				return o1.name().compareTo(o2.name());
+			}
+		});
+		modifiers1.addAll(m.getModifiers());
+		
+		for (ModifierKind kind : modifiers1) {
 			ITree modifier = builder.createNode("Modifier", kind.toString());
 			modifier.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, m);
 			modifiers.addChild(modifier);

@@ -31,17 +31,17 @@
               "type": "Modifiers",
               "children": [
                 {
+                  "label": "final",
+                  "type": "Modifier",
+                  "children": []
+                },
+                {
                   "label": "private",
                   "type": "Modifier",
                   "children": []
                 },
                 {
                   "label": "static",
-                  "type": "Modifier",
-                  "children": []
-                },
-                {
-                  "label": "final",
                   "type": "Modifier",
                   "children": []
                 }
