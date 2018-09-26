@@ -6,6 +6,8 @@ import static org.junit.Assert.assertNotNull;
 import java.io.File;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
 import com.github.gumtreediff.io.TreeIoUtils;
@@ -17,7 +19,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
 import gumtree.spoon.builder.SpoonGumTreeBuilder;
-import gumtree.spoon.builder.TreeJSONOutput;
+import gumtree.spoon.builder.Json4SpoonGenerator;
 import gumtree.spoon.diff.Diff;
 import gumtree.spoon.diff.operations.Operation;
 import spoon.Launcher;
@@ -180,16 +182,7 @@ public class TreeTest {
 
 		CtType<?> aType = factory.Type().get("QuickNotepad");
 		SpoonGumTreeBuilder builder = new SpoonGumTreeBuilder();
-		ITree generatedTree = builder.getTree(aType);
-
-		TreeContext tcontext = builder.getTreeContext();
-
-		TreeJSONOutput outjson = new TreeJSONOutput();
-		JsonObject json = outjson.getJSON(tcontext, generatedTree);
-		assertNotNull(json);
-		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		String prettyJsonString = gson.toJson(json);
-		assertNotNull(prettyJsonString);
+		assertNotNull(new Json4SpoonGenerator().getJSONasJsonObject(aType));
 	}
 
 	@Test
@@ -202,13 +195,7 @@ public class TreeTest {
 				.build();
 
 		CtType<?> aType = factory.Type().get("QuickNotepad");
-
-		TreeJSONOutput outjson = new TreeJSONOutput();
-		JsonObject json = outjson.getJSON(aType);
-		assertNotNull(json);
-		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		String prettyJsonString = gson.toJson(json);
-		assertNotNull(prettyJsonString);
+		assertEquals(FileUtils.readFileToString(new File("./src/test/resources/examples/spoon.json")), new Json4SpoonGenerator().getJSONasString(aType));
 	}
 
 	@Test
