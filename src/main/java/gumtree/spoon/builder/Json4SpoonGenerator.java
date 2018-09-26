@@ -10,6 +10,8 @@ import com.google.gson.JsonObject;
 import spoon.reflect.declaration.CtElement;
 
 /**
+ *
+ * Creates a JSON representation of a Spoon Java abstract syntaxt tree.
  * 
  * @author Matias Martinez
  *
