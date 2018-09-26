@@ -227,4 +227,8 @@ public class DiffImpl implements Diff {
 		}
 		return stringBuilder.toString();
 	}
+
+	public TreeContext getContext() {
+		return context;
+	}
 }

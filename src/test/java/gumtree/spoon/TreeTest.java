@@ -2,25 +2,26 @@ package gumtree.spoon;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
 import com.github.gumtreediff.io.TreeIoUtils;
 import com.github.gumtreediff.io.TreeIoUtils.TreeSerializer;
 import com.github.gumtreediff.tree.ITree;
 import com.github.gumtreediff.tree.TreeContext;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
-import gumtree.spoon.builder.SpoonGumTreeBuilder;
 import gumtree.spoon.builder.Json4SpoonGenerator;
+import gumtree.spoon.builder.Json4SpoonGenerator.JSON_PROPERTIES;
+import gumtree.spoon.builder.SpoonGumTreeBuilder;
 import gumtree.spoon.diff.Diff;
+import gumtree.spoon.diff.DiffImpl;
+import gumtree.spoon.diff.operations.InsertOperation;
 import gumtree.spoon.diff.operations.Operation;
 import spoon.Launcher;
 import spoon.compiler.SpoonResourceHelper;
@@ -195,7 +196,8 @@ public class TreeTest {
 				.build();
 
 		CtType<?> aType = factory.Type().get("QuickNotepad");
-		assertEquals(FileUtils.readFileToString(new File("./src/test/resources/examples/spoon.json")), new Json4SpoonGenerator().getJSONasString(aType));
+		assertEquals(FileUtils.readFileToString(new File("./src/test/resources/examples/spoon.json")),
+				new Json4SpoonGenerator().getJSONasString(aType));
 	}
 
 	@Test
@@ -345,6 +347,42 @@ public class TreeTest {
 		assertEquals("org.argouml.uml.ui.foundation.core.PropPanelModelElement", typel.getQualifiedName());
 		assertEquals("org.argouml.uml.ui.foundation.core", typel.getPackage().getQualifiedName());
 
+	}
+
+	@Test
+	public void test_JSON_COLORED() throws Exception {
+
+		AstComparator diff = new AstComparator();
+		File fl = new File("src/test/resources/examples/roots/test8/left_QuickNotepad_1.13.java");
+
+		CtType<?> astLeft = diff.getCtType(fl);
+
+		File fr = new File("src/test/resources/examples/roots/test8/right_QuickNotepad_1.14.java");
+
+		CtType<?> astRight = diff.getCtType(fr);
+
+		assertNotNull(astLeft);
+
+		assertNotNull(astRight);
+
+		DiffImpl diffC = (DiffImpl) diff.compare(astLeft, astRight);
+
+		TreeContext context = diffC.getContext();
+
+		assertTrue(diffC.getAllOperations().size() > 0);
+		assertTrue(diffC.getAllOperations().get(0) instanceof InsertOperation);
+
+		Json4SpoonGenerator jsongen = new Json4SpoonGenerator();
+
+		// Modified
+		ITree insertedNode = diffC.getRootOperations().get(0).getAction().getNode();
+
+		JsonObject jsonOb = jsongen.getJSONasJsonObject(context, insertedNode, diffC.getAllOperations());
+		System.out.println(jsonOb);
+
+		assertTrue(jsonOb.has(JSON_PROPERTIES.op.toString()));
+
+		assertEquals("\"INS\"", jsonOb.get(JSON_PROPERTIES.op.toString()).toString());
 	}
 
 }
