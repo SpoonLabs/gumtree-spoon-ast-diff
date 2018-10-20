@@ -1,10 +1,9 @@
 package gumtree.spoon.builder;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
-import com.github.gumtreediff.actions.model.Action;
 import com.github.gumtreediff.tree.ITree;
 import com.github.gumtreediff.tree.TreeContext;
 import com.google.gson.Gson;
@@ -12,6 +11,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import gumtree.spoon.builder.jsonsupport.NodePainter;
+import gumtree.spoon.builder.jsonsupport.OperationNodePainter;
 import gumtree.spoon.diff.operations.Operation;
 import spoon.reflect.declaration.CtElement;
 
@@ -74,32 +75,27 @@ public class Json4SpoonGenerator {
 	 */
 	public JsonObject getJSONasJsonObject(TreeContext context, ITree tree, List<Operation> operations) {
 
-		// Collect all nodes and get the operator
-		Map<ITree, Operation> nodesAffectedByOps = new HashMap<>();
-		for (Operation operation : operations) {
-			nodesAffectedByOps.put(operation.getAction().getNode(), operation);
-		}
-		return getJSONasJsonObject(context, tree, operations, nodesAffectedByOps);
+		OperationNodePainter opNodePainter = new OperationNodePainter(tree, operations);
+		Collection<NodePainter> painters = new ArrayList<NodePainter>();
+		painters.add(opNodePainter);
+		return getJSONasJsonObject(context, tree, painters);
 	}
 
 	@SuppressWarnings("unused")
-	private JsonObject getJSONasJsonObject(TreeContext context, ITree tree, List<Operation> operations,
-			Map<ITree, Operation> nodesAffectedByOps) {
+	private JsonObject getJSONasJsonObject(TreeContext context, ITree tree, Collection<NodePainter> nodePainters) {
 
 		JsonObject o = new JsonObject();
 		o.addProperty(JSON_PROPERTIES.label.toString(), tree.getLabel());
 		o.addProperty(JSON_PROPERTIES.type.toString(), context.getTypeLabel(tree));
-		if (nodesAffectedByOps.containsKey(tree)) {
-
-			Operation<Action> operationOverTree = nodesAffectedByOps.get(tree);
-			o.addProperty(JSON_PROPERTIES.op.toString(), operationOverTree.getAction().getName());
+		for (NodePainter nodePainter : nodePainters) {
+			nodePainter.paint(tree, o);
 		}
 
 		JsonArray nodeChildens = new JsonArray();
 		o.add(JSON_PROPERTIES.children.toString(), nodeChildens);
 
 		for (ITree tch : tree.getChildren()) {
-			JsonObject childJSon = getJSONasJsonObject(context, tch, operations);
+			JsonObject childJSon = getJSONasJsonObject(context, tch, nodePainters);
 			if (childJSon != null)
 				nodeChildens.add(childJSon);
 		}
