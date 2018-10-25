@@ -20,7 +20,7 @@ public class OperationNodePainter implements NodePainter {
 
 	private Map<ITree, Operation> nodesAffectedByOps = new HashMap<>();
 
-	public OperationNodePainter(ITree tree, List<Operation> operations) {
+	public OperationNodePainter(List<Operation> operations) {
 		// Collect all nodes and get the operator
 		for (Operation operation : operations) {
 			nodesAffectedByOps.put(operation.getAction().getNode(), operation);

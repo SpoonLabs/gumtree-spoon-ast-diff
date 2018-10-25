@@ -73,16 +73,16 @@ public class Json4SpoonGenerator {
 	 * @param operations
 	 * @return
 	 */
-	public JsonObject getJSONasJsonObject(TreeContext context, ITree tree, List<Operation> operations) {
+	public JsonObject getJSONwithOperations(TreeContext context, ITree tree, List<Operation> operations) {
 
-		OperationNodePainter opNodePainter = new OperationNodePainter(tree, operations);
+		OperationNodePainter opNodePainter = new OperationNodePainter(operations);
 		Collection<NodePainter> painters = new ArrayList<NodePainter>();
 		painters.add(opNodePainter);
-		return getJSONasJsonObject(context, tree, painters);
+		return getJSONwithCustorLabels(context, tree, painters);
 	}
 
 	@SuppressWarnings("unused")
-	private JsonObject getJSONasJsonObject(TreeContext context, ITree tree, Collection<NodePainter> nodePainters) {
+	public JsonObject getJSONwithCustorLabels(TreeContext context, ITree tree, Collection<NodePainter> nodePainters) {
 
 		JsonObject o = new JsonObject();
 		o.addProperty(JSON_PROPERTIES.label.toString(), tree.getLabel());
@@ -95,7 +95,7 @@ public class Json4SpoonGenerator {
 		o.add(JSON_PROPERTIES.children.toString(), nodeChildens);
 
 		for (ITree tch : tree.getChildren()) {
-			JsonObject childJSon = getJSONasJsonObject(context, tch, nodePainters);
+			JsonObject childJSon = getJSONwithCustorLabels(context, tch, nodePainters);
 			if (childJSon != null)
 				nodeChildens.add(childJSon);
 		}

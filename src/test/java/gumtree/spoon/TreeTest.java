@@ -377,7 +377,7 @@ public class TreeTest {
 		// Modified
 		ITree insertedNode = diffC.getRootOperations().get(0).getAction().getNode();
 
-		JsonObject jsonOb = jsongen.getJSONasJsonObject(context, insertedNode, diffC.getAllOperations());
+		JsonObject jsonOb = jsongen.getJSONwithOperations(context, insertedNode, diffC.getAllOperations());
 		System.out.println(jsonOb);
 
 		assertTrue(jsonOb.has(JSON_PROPERTIES.op.toString()));
