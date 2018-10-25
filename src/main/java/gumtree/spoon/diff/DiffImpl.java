@@ -231,4 +231,8 @@ public class DiffImpl implements Diff {
 	public TreeContext getContext() {
 		return context;
 	}
+
+	public MappingStore getMappingsComp() {
+		return _mappingsComp;
+	}
 }

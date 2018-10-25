@@ -1,10 +1,12 @@
 package gumtree.spoon.diff;
 
+import java.util.List;
+
+import com.github.gumtreediff.matchers.MappingStore;
+
 import gumtree.spoon.diff.operations.Operation;
 import gumtree.spoon.diff.operations.OperationKind;
 import spoon.reflect.declaration.CtElement;
-
-import java.util.List;
 
 /**
  * represents a diff between two Spoon ASTs
@@ -12,8 +14,8 @@ import java.util.List;
 public interface Diff {
 
 	/**
-	 * lists all operations (move,insert, deletes).
-	 * Low-level operation, we recommend using {@link #getRootOperations()}
+	 * lists all operations (move,insert, deletes). Low-level operation, we
+	 * recommend using {@link #getRootOperations()}
 	 */
 	List<Operation> getAllOperations();
 
@@ -48,7 +50,8 @@ public interface Diff {
 	boolean containsOperation(OperationKind kind, String nodeKind);
 
 	/**
-	 * returns true if the diff contains a certain operation where the initial node is labeled with nodeLabel
+	 * returns true if the diff contains a certain operation where the initial node
+	 * is labeled with nodeLabel
 	 */
 	boolean containsOperation(OperationKind kind, String nodeKind, String nodeLabel);
 
@@ -62,4 +65,8 @@ public interface Diff {
 	 */
 	void debugInformation();
 
+	/**
+	 * returns the mappings between the compared elements
+	 */
+	public MappingStore getMappingsComp();
 }
