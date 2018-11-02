@@ -130,6 +130,8 @@ class LabelFinder extends CtInheritanceScanner {
 
 	@Override
 	public <T> void visitCtTypeAccess(CtTypeAccess<T> typeAccess) {
-		label = typeAccess.getAccessedType().getQualifiedName();
+		if (typeAccess.getAccessedType() != null) {
+			label = typeAccess.getAccessedType().getQualifiedName();
+		}
 	}
 }
