@@ -1478,4 +1478,20 @@ public class AstComparatorTest {
 		assertTrue(result.containsOperation(OperationKind.Insert, "If", "if"));
 	}
 
+	@Test
+	public void test_issue59() throws Exception {
+		CtClass c1 = Launcher.parseClass(" class foo{public static void main(String[] args){} }");
+
+		CtClass c2 = Launcher.parseClass(" class foo{public static void main(String[] args) throws Exception{} }");
+
+		AstComparator diff = new AstComparator();
+		Diff result = diff.compare(c1, c2);
+
+		List<Operation> actions = result.getRootOperations();
+		result.debugInformation();
+
+		assertEquals(1, actions.size());
+		assertTrue(result.containsOperation(OperationKind.Insert, "THROWS", "java.lang.Exception"));
+	}
+
 }
