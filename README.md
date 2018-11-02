@@ -118,4 +118,4 @@ License
 
 
  [paper]: http://hal.archives-ouvertes.fr/hal-01054552
- [jar]: https://search.maven.org/remote_content?g=fr.inria.gforge.spoon.labs&a=gumtree-spoon-ast-diff&v=LATEST
+ [jar]: https://search.maven.org/remote_content?g=fr.inria.gforge.spoon.labs&a=gumtree-spoon-ast-diff&v=LATEST&c=jar-with-dependencies
