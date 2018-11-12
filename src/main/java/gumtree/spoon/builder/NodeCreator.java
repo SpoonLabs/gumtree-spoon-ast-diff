@@ -1,8 +1,11 @@
 package gumtree.spoon.builder;
 
+import java.util.Comparator;
+import java.util.Set;
+import java.util.TreeSet;
+
 import com.github.gumtreediff.tree.ITree;
-import spoon.reflect.code.CtBlock;
-import spoon.reflect.code.CtIf;
+
 import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.declaration.CtModifiable;
 import spoon.reflect.declaration.CtVariable;
@@ -10,12 +13,9 @@ import spoon.reflect.declaration.ModifierKind;
 import spoon.reflect.reference.CtTypeReference;
 import spoon.reflect.visitor.CtInheritanceScanner;
 
-import java.util.Comparator;
-import java.util.Set;
-import java.util.TreeSet;
-
-/** responsible to add additional nodes
- * only overrides scan* to add new nodes */
+/**
+ * responsible to add additional nodes only overrides scan* to add new nodes
+ */
 class NodeCreator extends CtInheritanceScanner {
 	private final TreeScanner builder;
 
@@ -37,7 +37,7 @@ class NodeCreator extends CtInheritanceScanner {
 			}
 		});
 		modifiers1.addAll(m.getModifiers());
-		
+
 		for (ModifierKind kind : modifiers1) {
 			ITree modifier = builder.createNode("Modifier", kind.toString());
 			modifier.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, m);
@@ -53,6 +53,7 @@ class NodeCreator extends CtInheritanceScanner {
 		if (type != null) {
 			ITree variableType = builder.createNode("VARIABLE_TYPE", type.getQualifiedName());
 			variableType.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, type);
+			type.putMetadata(SpoonGumTreeBuilder.GUMTREE_NODE, variableType);
 			builder.addSiblingNode(variableType);
 		}
 	}
@@ -64,11 +65,13 @@ class NodeCreator extends CtInheritanceScanner {
 		if (type != null) {
 			ITree returnType = builder.createNode("RETURN_TYPE", type.getQualifiedName());
 			returnType.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, type);
+			type.putMetadata(SpoonGumTreeBuilder.GUMTREE_NODE, returnType);
 			builder.addSiblingNode(returnType);
 		}
 
 		for (CtTypeReference thrown : e.getThrownTypes()) {
 			ITree thrownType = builder.createNode("THROWS", thrown.getQualifiedName());
+			type.putMetadata(SpoonGumTreeBuilder.GUMTREE_NODE, thrownType);
 			builder.addSiblingNode(thrownType);
 		}
 

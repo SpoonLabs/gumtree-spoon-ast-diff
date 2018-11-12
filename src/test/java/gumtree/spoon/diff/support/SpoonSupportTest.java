@@ -7,7 +7,10 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import com.github.gumtreediff.tree.ITree;
+
 import gumtree.spoon.AstComparator;
+import gumtree.spoon.builder.SpoonGumTreeBuilder;
 import gumtree.spoon.diff.Diff;
 import gumtree.spoon.diff.operations.DeleteOperation;
 import gumtree.spoon.diff.operations.InsertOperation;
@@ -132,6 +135,31 @@ public class SpoonSupportTest {
 		CtMethod methodLeft = (CtMethod) support.getMappedElement(editScript, methodRight, true);
 
 		assertNull(methodLeft);
+	}
+
+	@Test
+	public void testGUMTREE_NODE_Link_1() {
+		String c1 = "" + "class X {" + "public int foo0() {" + " int x = 0;return 1;" + "}" + "};";
+
+		String c2 = "" + "class X {" + "public int foo0() {" + " int x = 0;x = 10;return 1;" + "}" + "};";
+
+		AstComparator diff = new AstComparator();
+		Diff editScript = diff.compare(c1, c2);
+		assertEquals(1, editScript.getRootOperations().size());
+
+		Operation op = editScript.getRootOperations().get(0);
+		assertTrue(op instanceof InsertOperation);
+
+		assertNotNull(op.getSrcNode());
+		assertEquals("x = 10", op.getSrcNode().toString());
+
+		ITree tree = (ITree) op.getSrcNode().getMetadata(SpoonGumTreeBuilder.GUMTREE_NODE);
+		assertNotNull(tree);
+
+		assertEquals("=", tree.getLabel());
+
+		assertEquals(2, tree.getChildren().size());
+
 	}
 
 }
