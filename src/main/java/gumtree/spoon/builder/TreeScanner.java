@@ -1,7 +1,10 @@
 package gumtree.spoon.builder;
 
+import java.util.Stack;
+
 import com.github.gumtreediff.tree.ITree;
 import com.github.gumtreediff.tree.TreeContext;
+
 import spoon.reflect.code.CtBlock;
 import spoon.reflect.code.CtCase;
 import spoon.reflect.code.CtStatementList;
@@ -9,8 +12,6 @@ import spoon.reflect.declaration.CtElement;
 import spoon.reflect.path.CtRole;
 import spoon.reflect.reference.CtReference;
 import spoon.reflect.visitor.CtScanner;
-
-import java.util.Stack;
 
 public class TreeScanner extends CtScanner {
 	public static final String NOTYPE = "<notype>";
@@ -37,7 +38,7 @@ public class TreeScanner extends CtScanner {
 
 		new NodeCreator(this).scan(element);
 
-		if (nodes.size() != depthBefore ) {
+		if (nodes.size() != depthBefore) {
 			// contract: this should never happen
 			throw new RuntimeException("too many nodes pushed");
 		}
@@ -45,6 +46,7 @@ public class TreeScanner extends CtScanner {
 
 	/**
 	 * Ignore some element from the AST
+	 * 
 	 * @param element
 	 * @return
 	 */
@@ -92,6 +94,7 @@ public class TreeScanner extends CtScanner {
 
 		ITree newNode = createNode(nodeTypeName, label);
 		newNode.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, element);
+		element.putMetadata(SpoonGumTreeBuilder.GUMTREE_NODE, newNode);
 		return newNode;
 	}
 

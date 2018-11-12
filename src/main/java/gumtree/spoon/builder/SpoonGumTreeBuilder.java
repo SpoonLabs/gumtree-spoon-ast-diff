@@ -20,6 +20,7 @@ package gumtree.spoon.builder;
 import com.github.gumtreediff.tree.ITree;
 import com.github.gumtreediff.tree.TreeContext;
 import com.github.gumtreediff.tree.TreeUtils;
+
 import spoon.reflect.declaration.CtElement;
 
 /**
@@ -30,6 +31,7 @@ import spoon.reflect.declaration.CtElement;
 public class SpoonGumTreeBuilder {
 	public static final String SPOON_OBJECT = "spoon_object";
 	public static final String SPOON_OBJECT_DEST = "spoon_object_dest";
+	public static final String GUMTREE_NODE = "gtnode";
 
 	private final TreeContext treeContext = new TreeContext();
 
