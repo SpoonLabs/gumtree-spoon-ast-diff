@@ -1404,8 +1404,10 @@ public class AstComparatorTest {
 	}
 
 	@Test
-	public void test_t_1205753_exception() throws Exception {
+	public void test_t_1205753_exception_not_attached_node() throws Exception {
 		AstComparator diff = new AstComparator();
+		// the problem is: the tree node corresponding to an exception does not have
+		// attached the corresponding GT node
 		File fl = new File("src/test/resources/examples/t_1205753/1205753_EmbedPooledConnection_0_s.java");
 		File fr = new File("src/test/resources/examples/t_1205753/1205753_EmbedPooledConnection_0_t.java");
 		Diff result = diff.compare(fl, fr);
@@ -1413,14 +1415,11 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
-		for (Operation operation : actions) {
-			assertNotNull(operation.getSrcNode());
-			Object relatedSpoonObject = operation.getAction().getNode().getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT);
-			assertNotNull(relatedSpoonObject);
-			assertEquals(operation.getSrcNode(), relatedSpoonObject);
-		}
-		// assertTrue(result.containsOperation(OperationKind.Update, "Modifier",
-		// "public"));
+		Operation operation = actions.get(0);
+		assertNotNull(operation.getSrcNode());
+		Object relatedSpoonObject = operation.getAction().getNode().getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT);
+		assertNotNull(relatedSpoonObject);
+		assertEquals(operation.getSrcNode(), relatedSpoonObject);
 	}
 
 	@Test
