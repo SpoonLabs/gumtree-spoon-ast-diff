@@ -1514,4 +1514,44 @@ public class AstComparatorTest {
 		assertTrue(result.containsOperation(OperationKind.Insert, "THROWS", "java.lang.Exception"));
 	}
 
+	@Test
+	public void test_issue201812() throws Exception {
+		// https://github.com/GumTreeDiff/gumtree/issues/120
+		CtClass c1 = Launcher.parseClass(" class BehaviorCall implements Call{\n" +
+				"final AtomicReference failureRef = new AtomicReference<>();\n" +
+				"final CountDownLatch latch = new CountDownLatch(1);\n" +
+				"\n" +
+				" enqueue(new Callback<T>() {\n" +
+				"  @Override public void onResponse(Response<T> response) {\n" +
+				"     responseRef.set(response);\n" +
+				"     latch.countDown();\n" +
+				"   }\n" +
+				"}\n" +
+				")\n" +
+				"\n" +
+				"}");
+
+		CtClass c2 = Launcher.parseClass("class BehaviorCall implements Call {\n" +
+				"final AtomicReference failureRef = new AtomicReference<>();\n" +
+				"final CountDownLatch latch = new CountDownLatch(1);\n" +
+				"enqueue(new Callback() {\n" +
+				"@override public void onResponse(Call call, Response response) {\n" +
+				"responseRef.set(response);\n" +
+				"latch.countDown();\n" +
+				"}\n" +
+				"}\n" +
+				")\n" +
+				"}");
+
+		AstComparator diff = new AstComparator();
+		Diff result = diff.compare(c1, c2);
+
+		List<Operation> actions = result.getRootOperations();
+		result.debugInformation();
+
+		assertEquals(1, actions.size());
+		assertTrue(result.containsOperation(OperationKind.Insert, "Parameter", "call"));
+	}
+
+
 }
