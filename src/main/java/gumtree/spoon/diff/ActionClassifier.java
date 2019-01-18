@@ -1,15 +1,5 @@
 package gumtree.spoon.diff;
 
-import com.github.gumtreediff.actions.model.Action;
-import com.github.gumtreediff.actions.model.Delete;
-import com.github.gumtreediff.actions.model.Insert;
-import com.github.gumtreediff.actions.model.Move;
-import com.github.gumtreediff.actions.model.Update;
-import com.github.gumtreediff.matchers.Mapping;
-import com.github.gumtreediff.matchers.MappingStore;
-import com.github.gumtreediff.tree.ITree;
-import gumtree.spoon.builder.SpoonGumTreeBuilder;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,12 +8,23 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.github.gumtreediff.actions.model.Action;
+import com.github.gumtreediff.actions.model.Delete;
+import com.github.gumtreediff.actions.model.Insert;
+import com.github.gumtreediff.actions.model.Move;
+import com.github.gumtreediff.actions.model.Update;
+import com.github.gumtreediff.matchers.Mapping;
+import com.github.gumtreediff.matchers.MappingStore;
+import com.github.gumtreediff.tree.ITree;
+
+import gumtree.spoon.builder.SpoonGumTreeBuilder;
+
 /**
  * Action Classifier
  *
  * @author Matias Martinez, matias.martinez@inria.fr
  */
-class ActionClassifier {
+public class ActionClassifier {
 	// /
 	// ROOT CLASSIFIER
 	// /
@@ -49,13 +50,15 @@ class ActionClassifier {
 				originalActionsDst.put(original, action);
 			} else if (action instanceof Update) {
 				ITree dest = mappings.getDst(original);
-				original.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT_DEST, dest.getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT));
+				original.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT_DEST,
+						dest.getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT));
 				srcUpdTrees.add(original);
 				dstUpdTrees.add(dest);
 				originalActionsSrc.put(original, action);
 			} else if (action instanceof Move) {
 				ITree dest = mappings.getDst(original);
-				original.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT_DEST, dest.getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT));
+				original.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT_DEST,
+						dest.getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT));
 				srcMvTrees.add(original);
 				dstMvTrees.add(dest);
 				originalActionsDst.put(dest, action);
@@ -67,7 +70,8 @@ class ActionClassifier {
 	 * This method retrieves ONLY the ROOT actions
 	 */
 	public List<Action> getRootActions() {
-		final List<Action> rootActions = srcUpdTrees.stream().map(t -> originalActionsSrc.get(t)).collect(Collectors.toList());
+		final List<Action> rootActions = srcUpdTrees.stream().map(t -> originalActionsSrc.get(t))
+				.collect(Collectors.toList());
 
 		rootActions.addAll(srcDelTrees.stream() //
 				.filter(t -> !srcDelTrees.contains(t.getParent()) && !srcUpdTrees.contains(t.getParent())) //

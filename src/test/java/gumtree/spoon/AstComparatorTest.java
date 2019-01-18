@@ -1517,31 +1517,17 @@ public class AstComparatorTest {
 	@Test
 	public void test_issue201812() throws Exception {
 		// https://github.com/GumTreeDiff/gumtree/issues/120
-		CtClass c1 = Launcher.parseClass(" class BehaviorCall implements Call{\n" +
-				"final AtomicReference failureRef = new AtomicReference<>();\n" +
-				"final CountDownLatch latch = new CountDownLatch(1);\n" +
-				"\n" +
-				" enqueue(new Callback<T>() {\n" +
-				"  @Override public void onResponse(Response<T> response) {\n" +
-				"     responseRef.set(response);\n" +
-				"     latch.countDown();\n" +
-				"   }\n" +
-				"}\n" +
-				")\n" +
-				"\n" +
-				"}");
+		CtClass c1 = Launcher.parseClass(" class BehaviorCall implements Call{\n"
+				+ "final AtomicReference failureRef = new AtomicReference<>();\n"
+				+ "final CountDownLatch latch = new CountDownLatch(1);\n" + "\n" + " enqueue(new Callback<T>() {\n"
+				+ "  @Override public void onResponse(Response<T> response) {\n" + "     responseRef.set(response);\n"
+				+ "     latch.countDown();\n" + "   }\n" + "}\n" + ")\n" + "\n" + "}");
 
-		CtClass c2 = Launcher.parseClass("class BehaviorCall implements Call {\n" +
-				"final AtomicReference failureRef = new AtomicReference<>();\n" +
-				"final CountDownLatch latch = new CountDownLatch(1);\n" +
-				"enqueue(new Callback() {\n" +
-				"@override public void onResponse(Call call, Response response) {\n" +
-				"responseRef.set(response);\n" +
-				"latch.countDown();\n" +
-				"}\n" +
-				"}\n" +
-				")\n" +
-				"}");
+		CtClass c2 = Launcher.parseClass("class BehaviorCall implements Call {\n"
+				+ "final AtomicReference failureRef = new AtomicReference<>();\n"
+				+ "final CountDownLatch latch = new CountDownLatch(1);\n" + "enqueue(new Callback() {\n"
+				+ "@override public void onResponse(Call call, Response response) {\n" + "responseRef.set(response);\n"
+				+ "latch.countDown();\n" + "}\n" + "}\n" + ")\n" + "}");
 
 		AstComparator diff = new AstComparator();
 		Diff result = diff.compare(c1, c2);
@@ -1553,5 +1539,67 @@ public class AstComparatorTest {
 		assertTrue(result.containsOperation(OperationKind.Insert, "Parameter", "call"));
 	}
 
+	@Test
+	public void test_vs_6b994_AuthorizationHelper() throws Exception {
+		AstComparator diff = new AstComparator();
+		// meld src/test/resources/examples/t_212496/left_CoreHelperImpl_1.29.java
+		// src/test/resources/examples/t_212496/right_CoreHelperImpl_1.30.java
+		File fl = new File("src/test/resources/examples/vs/06b994/AuthorizationHelper/AuthorizationHelper_s.java");
+		File fr = new File("src/test/resources/examples/vs/06b994/AuthorizationHelper/AuthorizationHelper_t.java");
+		Diff result = diff.compare(fl, fr);
+
+		List<Operation> actions = result.getRootOperations();
+		// result.debugInformation();
+		assertNotNull(actions);
+		assertTrue(actions.size() > 0);
+		System.out.println("Actions " + actions);
+		// assertEquals(actions.size(), 1);
+		assertTrue(result.containsOperation(OperationKind.Delete, "LocalVariable"));
+		assertTrue(result.containsOperation(OperationKind.Delete, "Invocation"));
+	}
+
+	@Test
+	public void test_vs_6b994_UtilityService() throws Exception {
+		AstComparator diff = new AstComparator();
+		File fl = new File("src/test/resources/examples/vs/06b994/UtilityService/UtilityService_s.java");
+		File fr = new File("src/test/resources/examples/vs/06b994/UtilityService/UtilityService_t.java");
+		Diff result = diff.compare(fl, fr);
+
+		List<Operation> actions = result.getRootOperations();
+		assertNotNull(actions);
+		assertTrue(actions.size() > 0);
+
+	}
+
+	@Test
+	public void test_vs_6b994_VerificationHost() throws Exception {
+		AstComparator diff = new AstComparator();
+		File fl = new File("src/test/resources/examples/vs/06b994/VerificationHost/VerificationHost_s.java");
+		File fr = new File("src/test/resources/examples/vs/06b994/VerificationHost/VerificationHost_t.java");
+		Diff result = diff.compare(fl, fr);
+
+		List<Operation> actions = result.getRootOperations();
+		assertNotNull(actions);
+		assertTrue(actions.size() > 0);
+		assertEquals(3, actions.size());
+		assertTrue(result.containsOperation(OperationKind.Delete, "If"));
+		assertTrue(result.containsOperation(OperationKind.Delete, "LocalVariable"));
+	}
+
+	@Test
+	public void test_vs_6b994_TestUtilityService() throws Exception {
+		AstComparator diff = new AstComparator();
+
+		File fl = new File("src/test/resources/examples/vs/06b994/TestUtilityService/TestUtilityService_s.java");
+		File fr = new File("src/test/resources/examples/vs/06b994/TestUtilityService/TestUtilityService_t.java");
+		Diff result = diff.compare(fl, fr);
+
+		List<Operation> actions = result.getRootOperations();
+		assertNotNull(actions);
+		assertTrue(actions.size() > 0);
+		System.out.println("Actions " + actions);
+		assertEquals(1, actions.size());
+		assertTrue(result.containsOperation(OperationKind.Delete, "Method"));
+	}
 
 }
