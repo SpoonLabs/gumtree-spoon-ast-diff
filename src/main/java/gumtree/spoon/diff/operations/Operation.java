@@ -3,8 +3,8 @@ package gumtree.spoon.diff.operations;
 import com.github.gumtreediff.actions.model.Action;
 import com.github.gumtreediff.actions.model.Move;
 import com.github.gumtreediff.actions.model.Update;
+
 import gumtree.spoon.builder.SpoonGumTreeBuilder;
-import spoon.reflect.cu.SourcePosition;
 import spoon.reflect.cu.position.NoSourcePosition;
 import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtElement;
@@ -39,7 +39,6 @@ public abstract class Operation<T extends Action> {
 	private String toStringAction(Action action) {
 		String newline = System.getProperty("line.separator");
 		StringBuilder stringBuilder = new StringBuilder();
-
 
 		CtElement element = (CtElement) action.getNode().getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT);
 		// action name
@@ -114,6 +113,37 @@ public abstract class Operation<T extends Action> {
 	/** returns the new version of the node (only for update) */
 	public CtElement getDstNode() {
 		return null;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((action == null) ? 0 : action.hashCode());
+		result = prime * result + ((node == null) ? 0 : node.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Operation other = (Operation) obj;
+		if (action == null) {
+			if (other.action != null)
+				return false;
+		} else if (!action.equals(other.action))
+			return false;
+		if (node == null) {
+			if (other.node != null)
+				return false;
+		} else if (!node.equals(other.node))
+			return false;
+		return true;
 	}
 
 }
