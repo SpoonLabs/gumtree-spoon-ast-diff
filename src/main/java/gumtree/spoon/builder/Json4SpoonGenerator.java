@@ -48,7 +48,7 @@ public class Json4SpoonGenerator {
 		return gson.toJson(this.getJSONasJsonObject(tcontext, generatedTree)) + "\n";
 	}
 
-	private JsonObject getJSONasJsonObject(TreeContext context, ITree tree) {
+	public JsonObject getJSONasJsonObject(TreeContext context, ITree tree) {
 		JsonObject o = new JsonObject();
 		o.addProperty(JSON_PROPERTIES.label.toString(), tree.getLabel());
 		o.addProperty(JSON_PROPERTIES.type.toString(), context.getTypeLabel(tree));
