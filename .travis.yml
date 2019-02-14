@@ -15,5 +15,5 @@ cache:
 
 # deploy if on the right branch
 after_script:
-  - ".buildscript/deploy_to_maven.sh"
+  - .buildscript/deploy_to_maven.sh
 

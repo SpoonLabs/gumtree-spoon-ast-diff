@@ -6,7 +6,7 @@
 
 SLUG="SpoonLabs/gumtree-spoon-ast-diff"
 JDK="oraclejdk8"
-BRANCH="deploy"
+BRANCH="master"
 
 set -e
 
@@ -23,8 +23,13 @@ else
   # made with "travis encrypt-file codesigning.asc -r SpoonLabs/gumtree-spoon-ast-diff --add"
   openssl aes-256-cbc -K $encrypted_9809c3ea697e_key -iv $encrypted_9809c3ea697e_iv -in .buildscript/codesigning.asc.enc -out codesigning.asc -d
   gpg --fast-import codesigning.asc
-  echo "if version ends with -SNAPSHOT goes to Sonatype Snapshot else goes to main release"
-  echo "so a release is only one commit"
+
+  # getting the previous version on Maven Central
+  PREVIOUS_MAVEN_CENTRAL_VERSION=`curl "http://search.maven.org/solrsearch/select?q=a:gumtree-spoon-ast-diff+g:fr.inria.gforge.spoon.labs&rows=20&wt=json" | jq -r .response.docs[0].latestVersion | egrep -o "[0-9]+$"`
+
+  # and incrementing it
+  mvn versions:set -DnewVersion=1.$((PREVIOUS_MAVEN_CENTRAL_VERSION+1))
+
   mvn -Prelease deploy --settings .buildscript/settings.xml -Dmaven.test.skip=true
   echo "Well deployed!"
 fi

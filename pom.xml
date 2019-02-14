@@ -9,7 +9,9 @@
 
   <groupId>fr.inria.gforge.spoon.labs</groupId>
   <artifactId>gumtree-spoon-ast-diff</artifactId>
-  <version>1.7.1-SNAPSHOT</version>
+  
+  <!--  DO NOT CHANGE THIS VERSION, VERSION NUMBER IS AUTOMATICALLY HANDLED IN .buildscript/deploy_to_maven.sh  -->
+  <version>SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>Gumtree Spoon AST Diff</name>
