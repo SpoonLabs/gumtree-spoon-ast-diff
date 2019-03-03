@@ -59,6 +59,17 @@ public class AstComparatorTest {
 	}
 
 	@Test
+	public void testgetAllOperations() throws Exception{
+		AstComparator diff = new AstComparator();
+		CtElement left = diff.getCtType(new File("src/test/resources/examples/testDuplicateOperations/left.java"));
+		CtElement right = diff.getCtType(new File("src/test/resources/examples/testDuplicateOperations/right.java"));
+
+		Diff editScript = diff.compare(left, right);
+		List<Operation> allOperations = editScript.getAllOperations();
+		assertEquals(8, editScript.getAllOperations().size());
+	}
+
+	@Test
 	public void testAnalyzeStringString() {
 		String c1 = "" + "class X {" + "public void foo0() {" + " int x = 0;" + "}" + "};";
 
