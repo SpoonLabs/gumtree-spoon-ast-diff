@@ -16,6 +16,7 @@ import org.junit.Test;
 
 import gumtree.spoon.builder.SpoonGumTreeBuilder;
 import gumtree.spoon.diff.Diff;
+import gumtree.spoon.diff.operations.InsertOperation;
 import gumtree.spoon.diff.operations.MoveOperation;
 import gumtree.spoon.diff.operations.Operation;
 import gumtree.spoon.diff.operations.OperationKind;
@@ -1616,4 +1617,17 @@ public class AstComparatorTest {
 		assertTrue(result.containsOperation(OperationKind.Delete, "Method"));
 	}
 
+
+	@Test
+	public void testComplexStr() throws Exception {
+		AstComparator comparator = new AstComparator();
+		File file0 = new File("src/test/resources/examples/testComplexStr/old.java");
+		File file1 = new File("src/test/resources/examples/testComplexStr/new.java");
+		Diff result = comparator.compare(file0, file1);
+
+		List<Operation> operations = result.getRootOperations();
+		for (Operation operation : operations) {
+			assertTrue(operation instanceof InsertOperation);
+		}
+	}
 }
