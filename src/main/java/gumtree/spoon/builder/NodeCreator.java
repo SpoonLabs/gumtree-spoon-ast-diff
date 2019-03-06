@@ -26,7 +26,6 @@ class NodeCreator extends CtInheritanceScanner {
 	@Override
 	public void scanCtModifiable(CtModifiable m) {
 		ITree modifiers = builder.createNode("Modifiers", "");
-		modifiers.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, m);
 
 		// ensuring an order (instead of hashset)
 		// otherwise some flaky tests in CI
@@ -40,7 +39,6 @@ class NodeCreator extends CtInheritanceScanner {
 
 		for (ModifierKind kind : modifiers1) {
 			ITree modifier = builder.createNode("Modifier", kind.toString());
-			modifier.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, m);
 			modifiers.addChild(modifier);
 		}
 		builder.addSiblingNode(modifiers);

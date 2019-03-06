@@ -50,7 +50,11 @@ public class DiffImpl implements Diff {
 	private final TreeContext context;
 
 	public DiffImpl(TreeContext context, ITree rootSpoonLeft, ITree rootSpoonRight) {
+		if (context == null) {
+			throw new IllegalArgumentException();
+		}
 		final MappingStore mappingsComp = new MappingStore();
+		this.context = context;
 
 		final Matcher matcher = new CompositeMatchers.ClassicGumtree(rootSpoonLeft, rootSpoonRight, mappingsComp);
 		matcher.match();
@@ -67,7 +71,6 @@ public class DiffImpl implements Diff {
 		this.allOperations = convertToSpoon(actionGenerator.getActions());
 
 		this._mappingsComp = mappingsComp;
-		this.context = context;
 
 		for (int i = 0; i < this.getAllOperations().size(); i++) {
 			Operation operation = this.getAllOperations().get(i);
@@ -79,7 +82,8 @@ public class DiffImpl implements Diff {
 	}
 
 	private List<Operation> convertToSpoon(List<Action> actions) {
-		return actions.stream().map(action -> {
+		List<Operation> collect = actions.stream().map(action -> {
+			action.getNode().setMetadata("type", context.getTypeLabel(action.getNode()));
 			if (action instanceof Insert) {
 				return new InsertOperation((Insert) action);
 			} else if (action instanceof Delete) {
@@ -92,6 +96,7 @@ public class DiffImpl implements Diff {
 				throw new IllegalArgumentException("Please support the new type " + action.getClass());
 			}
 		}).collect(Collectors.toList());
+		return collect;
 	}
 
 	@Override
@@ -191,8 +196,12 @@ public class DiffImpl implements Diff {
 	}
 
 	private String toDebugString() {
+		return toDebugString(rootOperations);
+	}
+
+	private String toDebugString(List<Operation> ops) {
 		String result = "";
-		for (Operation operation : rootOperations) {
+		for (Operation operation : ops) {
 			ITree node = operation.getAction().getNode();
 			final CtElement nodeElement = operation.getNode();
 			String label = "\"" + node.getLabel() + "\"";

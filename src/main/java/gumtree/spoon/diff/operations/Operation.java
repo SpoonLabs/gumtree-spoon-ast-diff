@@ -40,9 +40,15 @@ public abstract class Operation<T extends Action> {
 		String newline = System.getProperty("line.separator");
 		StringBuilder stringBuilder = new StringBuilder();
 
-		CtElement element = (CtElement) action.getNode().getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT);
 		// action name
 		stringBuilder.append(action.getClass().getSimpleName());
+
+		CtElement element = node;
+
+		if (element == null) {
+			// some elements are only in the gumtree for having a clean diff but not in the Spoon metamodel
+			return stringBuilder.toString() + " fake_node(" + action.getNode().getMetadata("type") + ")";
+		}
 
 		// node type
 		String nodeType = element.getClass().getSimpleName();

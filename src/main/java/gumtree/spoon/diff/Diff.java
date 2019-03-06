@@ -14,15 +14,16 @@ import spoon.reflect.declaration.CtElement;
 public interface Diff {
 
 	/**
+	 * lists all operations such that the parent is not involved in the diff
+	 */
+	List<Operation> getRootOperations();
+
+	/**
 	 * lists all operations (move,insert, deletes). Low-level operation, we
 	 * recommend using {@link #getRootOperations()}
 	 */
 	List<Operation> getAllOperations();
 
-	/**
-	 * lists all operations such that the parent is not involved in the diff
-	 */
-	List<Operation> getRootOperations();
 
 	/**
 	 * lists all operations sub the given parent operation.
