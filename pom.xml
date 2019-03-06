@@ -26,7 +26,6 @@
     <java.test.version>1.8</java.test.version>
 
     <!-- Dependencies -->
-    <gumtree.version>2.1.0</gumtree.version>
     <cli.version>1.2</cli.version>
     <log.version>1.2.15</log.version>
 
@@ -43,7 +42,7 @@
     <dependency>
       <groupId>com.github.gumtreediff</groupId>
       <artifactId>core</artifactId>
-      <version>${gumtree.version}</version>
+      <version>2.1.2</version>
     </dependency>
     <!-- for having ctfieldread in exampleInsertAndUpdate -->
     <dependency>
