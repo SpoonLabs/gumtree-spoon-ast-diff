@@ -1416,9 +1416,6 @@ public class AstComparatorTest {
 		Diff result = diff.compare(fl, fr);
 
 		List<Operation> rootActions = result.getRootOperations();
-		for (Operation o : result.getRootOperations()) {
-					+ o.getSrcNode().getPosition().getLine());
-		}
 		assertEquals(2, rootActions.size());
 		assertTrue(result.containsOperation(OperationKind.Delete, "If", "if"));
 		assertTrue(result.containsOperation(OperationKind.Move, "If")); // the else if moved one level up

@@ -29,7 +29,7 @@ public class DiffTest {
 		assertEquals("Update FieldRead at org.apache.commons.cli.TypeHandler:80" +newline
 				+ "\t(org.apache.commons.cli.PatternOptionBuilder.DATE_VALUE) to (org.apache.commons.cli.PatternOptionBuilder.CLASS_VALUE)" + newline
 				+ "Insert Invocation at org.apache.commons.cli.TypeHandler:118" + newline
-
+				+ "\tjava.lang.System.out.println(\"Hola\")" + newline, result.toString());
 		fl = new File("src/test/resources/examples/test2/CommandLine1.java");
 		fr = new File("src/test/resources/examples/test2/CommandLine2.java");
 
