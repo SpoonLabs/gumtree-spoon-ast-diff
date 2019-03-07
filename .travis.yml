@@ -14,6 +14,6 @@ cache:
   - "$HOME/.m2"
 
 # deploy if on the right branch
-after_script:
+after_success:
   - .buildscript/deploy_to_maven.sh
 
