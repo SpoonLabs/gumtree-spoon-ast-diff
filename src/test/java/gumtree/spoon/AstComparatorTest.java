@@ -65,11 +65,11 @@ public class AstComparatorTest {
 		CtElement right = diff.getCtType(new File("src/test/resources/examples/testDuplicateOperations/right.java"));
 
 		Diff editScript = diff.compare(left, right);
-		assertEquals(10, editScript.getAllOperations().size());
-		assertEquals(5, editScript.getRootOperations().size());
-		assertTrue(editScript.containsOperation(OperationKind.Insert, "Method", "print"));
-		assertTrue(editScript.containsOperation(OperationKind.Delete, "Method", "delete"));
-		assertTrue(editScript.containsOperation(OperationKind.Move, "Invocation"));
+		assertEquals(6, editScript.getAllOperations().size());
+		assertEquals(4, editScript.getRootOperations().size());
+		assertTrue(editScript.containsOperation(OperationKind.Update, "Method", "main"));
+		assertTrue(editScript.containsOperation(OperationKind.Update, "Method", "delete"));
+		assertTrue(editScript.containsOperation(OperationKind.Move, "Method"));
 	}
 
 	@Test
