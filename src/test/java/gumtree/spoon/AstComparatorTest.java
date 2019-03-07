@@ -9,7 +9,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
+import com.github.gumtreediff.actions.model.Insert;
+import com.github.gumtreediff.actions.model.Update;
+import gumtree.spoon.diff.operations.InsertOperation;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -1616,4 +1620,16 @@ public class AstComparatorTest {
 		assertTrue(result.containsOperation(OperationKind.Delete, "Method"));
 	}
 
+	@Test
+	public void test62() throws Exception {
+		AstComparator comparator = new AstComparator();
+		// meld src/test/resources/FileCleaner1.java src/test/resources/FileCleaner2.java
+		File file0 = new File("src/test/resources/FileCleaner1.java");
+		File file1 = new File("src/test/resources/FileCleaner2.java");
+		Diff result = comparator.compare(file0, file1);
+
+		List<Operation> operations = result.getRootOperations();
+		assertTrue(result.containsOperation(OperationKind.Insert, "Method", "exitWhenFinished"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "Method", "addTracker"));
+	}
 }

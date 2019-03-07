@@ -75,8 +75,12 @@ public class DiffImpl implements Diff {
 		for (int i = 0; i < this.getAllOperations().size(); i++) {
 			Operation operation = this.getAllOperations().get(i);
 			if (operation instanceof MoveOperation) {
-				operation.getSrcNode().putMetadata("isMoved", true);
-				operation.getDstNode().putMetadata("isMoved", true);
+				if (operation.getSrcNode() != null) {
+					operation.getSrcNode().putMetadata("isMoved", true);
+				}
+				if (operation.getDstNode() != null) {
+					operation.getDstNode().putMetadata("isMoved", true);
+				}
 			}
 		}
 	}
