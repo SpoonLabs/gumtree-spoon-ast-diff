@@ -143,13 +143,6 @@ public class AstComparatorTest {
 	}
 
 	@Test
-	public void testMain() throws Exception {
-		File fl = new File("src/test/resources/examples/test4/CommandLine1.java");
-		File fr = new File("src/test/resources/examples/test4/CommandLine2.java");
-		AstComparator.main(new String[] { fl.getAbsolutePath(), fr.getAbsolutePath() });
-	}
-
-	@Test
 	public void testContent() throws Exception {
 		final Factory factory = new Launcher().createFactory();
 		File fl = new File("src/test/resources/examples/test4/CommandLine1.java");
