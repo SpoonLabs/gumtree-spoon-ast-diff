@@ -29,7 +29,6 @@ public class DiffTest {
 		assertEquals("Update FieldRead at org.apache.commons.cli.TypeHandler:80" +newline
 				+ "\t(org.apache.commons.cli.PatternOptionBuilder.DATE_VALUE) to (org.apache.commons.cli.PatternOptionBuilder.CLASS_VALUE)" + newline
 				+ "Insert Invocation at org.apache.commons.cli.TypeHandler:118" + newline
-				+ "\tjava.lang.System.out.println(\"Hola\")" + newline, result.toString());
 
 		fl = new File("src/test/resources/examples/test2/CommandLine1.java");
 		fr = new File("src/test/resources/examples/test2/CommandLine2.java");
@@ -67,7 +66,6 @@ public class DiffTest {
 		Diff result = diff.compare(fl,fr);
 
 		List<Operation> actionsRoot = result.getRootOperations();
-		//result.debugInformation();
 		assertEquals(1, actionsRoot.size());
 		assertTrue(result.containsOperation(OperationKind.Insert, "If"));
 	}
@@ -85,7 +83,6 @@ public class DiffTest {
 		Diff result = diff.compare(fl,fr);
 
 		List<Operation> actionsRoot = result.getRootOperations();
-		//result.debugInformation();
 		assertEquals(2, actionsRoot.size());
 		assertEquals("(testArea) != null", actionsRoot.get(0).getSrcNode().toString());
 		assertEquals("(testArea) == null", actionsRoot.get(0).getDstNode().toString());
@@ -106,7 +103,6 @@ public class DiffTest {
 		Diff result = diff.compare(fl,fr);
 
 		List<Operation> actionsRoot = result.getRootOperations();
-		//result.debugInformation();
 		assertEquals(2, actionsRoot.size());
 
 		assertTrue(result.containsOperation(OperationKind.Delete, "If"));
@@ -125,7 +121,6 @@ public class DiffTest {
 		Diff result = diff.compare(fl,fr);
 
 		List<Operation> actionsRoot = result.getRootOperations();
-		//result.debugInformation();
 		assertEquals(2, actionsRoot.size());
 
 		assertTrue(result.containsOperation(OperationKind.Delete, "If"));
@@ -144,7 +139,6 @@ public class DiffTest {
 		Diff result = diff.compare(fl,fr);
 
 		List<Operation> actionsRoot = result.getRootOperations();
-		//result.debugInformation();
 		assertEquals(2, actionsRoot.size());
 
 		assertTrue(result.containsOperation(OperationKind.Insert, "If"));

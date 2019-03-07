@@ -78,10 +78,8 @@ public class TreeTest {
 		assertNotNull(astRight);
 
 		Diff diffResult = comparator.compare(astLeft, astRight);
-		System.out.println("Roots ops");
 		List<Operation> rootOperations = diffResult.getRootOperations();
 		getPaths(rootOperations);
-		System.out.println("All ops");
 		List<Operation> allOperations = diffResult.getAllOperations();
 		getPaths(allOperations);
 
@@ -168,7 +166,6 @@ public class TreeTest {
 		tcontext.setRoot(generatedTree);
 		TreeSerializer ts = TreeIoUtils.toJson(tcontext);
 		String out = ts.toString();
-		System.out.println(out);
 		assertNotNull(out);
 	}
 
@@ -294,12 +291,10 @@ public class TreeTest {
 
 			CtElement left = op.getSrcNode();
 			CtPath pleft = left.getPath();
-			System.out.println(pleft);
 			assertNotNull(pleft);
 
 			CtElement right = op.getSrcNode();
 			CtPath pright = right.getPath();
-			System.out.println(pright);
 			assertNotNull(pleft);
 
 		}
@@ -309,12 +304,10 @@ public class TreeTest {
 		for (CtMethod method : ast.getAllMethods()) {
 
 			CtPath path = method.getPath();
-			System.out.println("path " + path);
 			assertNotNull(path);
 
 			for (CtStatement stmt : method.getBody().getStatements()) {
 				path = stmt.getPath();
-				System.out.println("path " + path);
 				assertNotNull(path);
 			}
 
@@ -325,9 +318,7 @@ public class TreeTest {
 		@Override
 		public void scan(CtElement element) {
 			if (element != null) {
-				System.out.println("Element: " + element.getShortRepresentation());
 				CtPath path = element.getPath();
-				System.out.println("Path: " + path.toString());
 				assertNotNull(path);
 
 			}
@@ -378,7 +369,6 @@ public class TreeTest {
 		ITree insertedNode = diffC.getRootOperations().get(0).getAction().getNode();
 
 		JsonObject jsonOb = jsongen.getJSONwithOperations(context, insertedNode, diffC.getAllOperations());
-		System.out.println(jsonOb);
 
 		assertTrue(jsonOb.has(JSON_PROPERTIES.op.toString()));
 
