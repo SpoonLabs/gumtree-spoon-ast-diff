@@ -74,7 +74,7 @@ class LabelFinder extends CtInheritanceScanner {
 
 	@Override
 	public void visitCtContinue(CtContinue e) {
-		label = "break";
+		label = "continue";
 	}
 
 	@Override
