@@ -17,10 +17,12 @@ public class TreeScanner extends CtScanner {
 	public static final String NOTYPE = "<notype>";
 	private final TreeContext treeContext;
 	private final Stack<ITree> nodes = new Stack<>();
+	boolean nolabel = false;
 
 	TreeScanner(TreeContext treeContext, ITree root) {
 		this.treeContext = treeContext;
 		nodes.push(root);
+		nolabel = isNoLabelMode();
 	}
 
 	@Override
@@ -30,9 +32,17 @@ public class TreeScanner extends CtScanner {
 			return;
 		}
 
-		LabelFinder lf = new LabelFinder();
-		lf.scan(element);
-		pushNodeToTree(createNode(element, lf.label));
+		String label = null;
+		String nodeTypeName = getNodeType(element);
+
+		if (nolabel)
+			label = nodeTypeName;
+		else {
+			LabelFinder lf = new LabelFinder();
+			lf.scan(element);
+			label = lf.label;
+		}
+		pushNodeToTree(createNode(nodeTypeName, element, label));
 
 		int depthBefore = nodes.size();
 
@@ -42,6 +52,14 @@ public class TreeScanner extends CtScanner {
 			// contract: this should never happen
 			throw new RuntimeException("too many nodes pushed");
 		}
+	}
+
+	public boolean isNoLabelMode() {
+		String nolabel = System.getProperty("nolabel");
+		if (nolabel != null) {
+			return Boolean.valueOf(nolabel);
+		}
+		return false;
 	}
 
 	/**
@@ -84,6 +102,11 @@ public class TreeScanner extends CtScanner {
 	}
 
 	private ITree createNode(CtElement element, String label) {
+		String nodeTypeName = getNodeType(element);
+		return createNode(nodeTypeName, element, label);
+	}
+
+	private String getNodeType(CtElement element) {
 		String nodeTypeName = NOTYPE;
 		if (element != null) {
 			nodeTypeName = getTypeName(element.getClass().getSimpleName());
@@ -91,6 +114,10 @@ public class TreeScanner extends CtScanner {
 		if (element instanceof CtBlock) {
 			nodeTypeName = element.getRoleInParent().toString();
 		}
+		return nodeTypeName;
+	}
+
+	private ITree createNode(String nodeTypeName, CtElement element, String label) {
 
 		ITree newNode = createNode(nodeTypeName, label);
 		newNode.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, element);
