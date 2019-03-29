@@ -1612,6 +1612,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		System.out.println("action");
 		assertEquals(0, actions.size());
+		System.setProperty("nolabel", "false");
 	}
 
 	@Test
@@ -1624,6 +1625,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		System.out.println("action " + actions);
 		assertEquals(0, actions.size());
+		System.setProperty("nolabel", "false");
 	}
 
 	@Test
@@ -1637,5 +1639,6 @@ public class AstComparatorTest {
 		System.out.println("action " + actions);
 		assertEquals(1, actions.size());
 		assertTrue(result.containsOperation(OperationKind.Insert, "Invocation"));
+		System.setProperty("nolabel", "false");
 	}
 }
