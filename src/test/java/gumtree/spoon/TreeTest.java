@@ -376,7 +376,7 @@ public class TreeTest {
 	}
 
 	@Test
-	public void test_Path_of_affected__failing() throws Exception {
+	public void test_bugissue84() throws Exception {
 		File fl = new File("src/test/resources/examples/919148/ReplicationRun/919148_ReplicationRun_0_s.java");
 		File fr = new File("src/test/resources/examples/919148/ReplicationRun/919148_ReplicationRun_0_t.java");
 
