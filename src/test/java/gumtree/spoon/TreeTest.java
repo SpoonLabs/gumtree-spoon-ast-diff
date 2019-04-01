@@ -375,4 +375,20 @@ public class TreeTest {
 		assertEquals("\"INS\"", jsonOb.get(JSON_PROPERTIES.op.toString()).toString());
 	}
 
+	@Test
+	public void test_Path_of_affected__failing() throws Exception {
+		File fl = new File("src/test/resources/examples/919148/ReplicationRun/919148_ReplicationRun_0_s.java");
+		File fr = new File("src/test/resources/examples/919148/ReplicationRun/919148_ReplicationRun_0_t.java");
+
+		AstComparator diff = new AstComparator();
+
+		DiffImpl diffC = (DiffImpl) diff.compare(fl, fr);
+
+		List<Operation> ops = diffC.getAllOperations();
+		for (Operation operation : ops) {
+			assertNotNull(operation.getSrcNode());
+		}
+
+	}
+
 }
