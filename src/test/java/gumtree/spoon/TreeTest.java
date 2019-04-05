@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
@@ -16,6 +17,7 @@ import com.github.gumtreediff.tree.ITree;
 import com.github.gumtreediff.tree.TreeContext;
 import com.google.gson.JsonObject;
 
+import gumtree.spoon.builder.CtWrapper;
 import gumtree.spoon.builder.Json4SpoonGenerator;
 import gumtree.spoon.builder.Json4SpoonGenerator.JSON_PROPERTIES;
 import gumtree.spoon.builder.SpoonGumTreeBuilder;
@@ -23,6 +25,7 @@ import gumtree.spoon.diff.Diff;
 import gumtree.spoon.diff.DiffImpl;
 import gumtree.spoon.diff.operations.InsertOperation;
 import gumtree.spoon.diff.operations.Operation;
+import gumtree.spoon.diff.operations.UpdateOperation;
 import spoon.Launcher;
 import spoon.compiler.SpoonResourceHelper;
 import spoon.reflect.code.CtStatement;
@@ -375,4 +378,80 @@ public class TreeTest {
 		assertEquals("\"INS\"", jsonOb.get(JSON_PROPERTIES.op.toString()).toString());
 	}
 
+	@Test
+	public void test_bugissue84_original_failling() throws Exception {
+		File fl = new File("src/test/resources/examples/919148/ReplicationRun/919148_ReplicationRun_0_s.java");
+		File fr = new File("src/test/resources/examples/919148/ReplicationRun/919148_ReplicationRun_0_t.java");
+
+		AstComparator diff = new AstComparator();
+
+		DiffImpl diffC = (DiffImpl) diff.compare(fl, fr);
+
+		List<Operation> ops = diffC.getAllOperations();
+
+		for (Operation operation : ops) {
+			assertNotNull(operation.getSrcNode());
+		}
+
+	}
+
+	@Test
+	public void test_bugissue84_1_insert() throws Exception {
+		File fl = new File("src/test/resources/examples/issue84_1/file_s.java");
+		File fr = new File("src/test/resources/examples/issue84_1/file_t.java");
+
+		AstComparator diff = new AstComparator();
+
+		DiffImpl diffC = (DiffImpl) diff.compare(fl, fr);
+
+		List<Operation> ops = diffC.getAllOperations();
+
+		// to change a method to static means to change the type accesses that invoke
+		// that method
+		assertTrue(ops.size() > 0);
+
+		for (Operation operation : ops) {
+			assertNotNull(operation.getSrcNode());
+		}
+
+		Optional<Operation> findInsert = ops.stream().filter(e -> e instanceof InsertOperation).findFirst();
+
+		assertTrue(findInsert.isPresent());
+
+		Operation op1 = findInsert.get();
+		assertTrue(op1 instanceof InsertOperation);
+
+		assertTrue(op1.getSrcNode() instanceof CtWrapper);
+
+		assertEquals("static", ((CtWrapper) op1.getSrcNode()).getValue().toString());
+
+	}
+
+	@Test
+	public void test_bugissue84_2_update() throws Exception {
+		File fl = new File("src/test/resources/examples/issue84_2/file_s.java");
+		File fr = new File("src/test/resources/examples/issue84_2/file_t.java");
+
+		AstComparator diff = new AstComparator();
+
+		DiffImpl diffC = (DiffImpl) diff.compare(fl, fr);
+
+		List<Operation> ops = diffC.getAllOperations();
+		assertEquals(1, ops.size());
+		System.out.println(ops);
+
+		for (Operation operation : ops) {
+			assertNotNull(operation.getSrcNode());
+		}
+
+		Operation op1 = ops.get(0);
+		assertTrue(op1 instanceof UpdateOperation);
+
+		assertTrue(op1.getSrcNode() instanceof CtWrapper);
+
+		assertEquals("public", ((CtWrapper) op1.getSrcNode()).getValue().toString());
+
+		assertEquals("protected", ((CtWrapper) op1.getDstNode()).getValue().toString());
+
+	}
 }
