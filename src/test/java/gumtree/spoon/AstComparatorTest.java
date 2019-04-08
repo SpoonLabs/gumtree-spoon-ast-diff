@@ -1658,4 +1658,25 @@ public class AstComparatorTest {
 		assertEquals(1, result.getRootOperations().size());
 
 	}
+
+	@Test
+	public void testVarargs() throws Exception {
+		// https://github.com/GumTreeDiff/gumtree/issues/120
+		CtClass c1 = Launcher.parseClass(" class BehaviorCall {\n"
+				+ "   void foo(String s)}\n" + "}\n" + "\n" + "}");
+
+		CtClass c2 = Launcher.parseClass(" class BehaviorCall {\n"
+				+ "   void foo(String... s)}\n" + "}\n" + "\n" + "}");
+
+		AstComparator diff = new AstComparator();
+		Diff result = diff.compare(c1, c2);
+
+		List<Operation> actions = result.getRootOperations();
+		result.debugInformation();
+
+		assertEquals(1, actions.size());
+		// the type is now an array
+		assertTrue(result.containsOperations(OperationKind.Update, "VARIABLE_TYPE(CtTypeReferenceImpl)", "java.lang.String", "java.lang.String[]"));
+	}
+
 }
