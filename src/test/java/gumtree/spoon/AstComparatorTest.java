@@ -1641,4 +1641,20 @@ public class AstComparatorTest {
 		assertTrue(result.containsOperation(OperationKind.Insert, "Invocation"));
 		System.setProperty("nolabel", "false");
 	}
+
+	@Test
+	public void testInsertStaticFromMethodHead() throws Exception{
+		AstComparator diff = new AstComparator();
+		Diff result = diff.compare("public class Calculator {\n" +
+				"    public int add(int a, int b){\n" +
+				"        return a + b;\n" +
+				"    }\n" +
+				"}", "public class Calculator {\n" +
+				"    public static int add(int a, int b){\n" +
+				"        return a + b;\n" +
+				"    }\n" +
+				"}");
+		assertEquals(1, result.getRootOperations().size());
+
+	}
 }
