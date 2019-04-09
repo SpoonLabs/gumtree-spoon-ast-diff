@@ -14,8 +14,12 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import com.github.gumtreediff.matchers.Mapping;
+import com.github.gumtreediff.tree.ITree;
+
 import gumtree.spoon.builder.SpoonGumTreeBuilder;
 import gumtree.spoon.diff.Diff;
+import gumtree.spoon.diff.DiffImpl;
 import gumtree.spoon.diff.operations.MoveOperation;
 import gumtree.spoon.diff.operations.Operation;
 import gumtree.spoon.diff.operations.OperationKind;
@@ -1640,5 +1644,18 @@ public class AstComparatorTest {
 		assertEquals(1, actions.size());
 		assertTrue(result.containsOperation(OperationKind.Insert, "Invocation"));
 		System.setProperty("nolabel", "false");
+	}
+
+	@Test
+	public void testInsertStaticFromMethodHead() throws Exception {
+		AstComparator diff = new AstComparator();
+		Diff result = diff.compare(
+				"public class Calculator {\n" + "    public int add(int a, int b){\n" + "        return a + b;\n"
+						+ "    }\n" + "}",
+				"public class Calculator {\n" + "    public static int add(int a, int b){\n" + "        return a + b;\n"
+						+ "    }\n" + "}");
+
+		assertEquals(1, result.getRootOperations().size());
+
 	}
 }
