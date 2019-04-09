@@ -195,6 +195,19 @@ public class DiffImpl implements Diff {
 	}
 
 	@Override
+	public boolean containsOperations(OperationKind kind, String nodeKind, String nodeLabel, String newLabel) {
+		if (kind != OperationKind.Update) {
+			throw new IllegalArgumentException();
+		}
+		return getRootOperations().stream()
+				.anyMatch(operation -> operation instanceof UpdateOperation //
+						&& ((UpdateOperation) operation).getAction().getNode().getLabel().equals(nodeLabel)
+						&& ((UpdateOperation)operation).getAction().getValue().equals(newLabel)
+
+				);
+	}
+
+	@Override
 	public void debugInformation() {
 		System.err.println(toDebugString());
 	}
@@ -208,16 +221,18 @@ public class DiffImpl implements Diff {
 		for (Operation operation : ops) {
 			ITree node = operation.getAction().getNode();
 			final CtElement nodeElement = operation.getNode();
-			String label = "\"" + node.getLabel() + "\"";
-			if (operation instanceof UpdateOperation) {
-				label += " to \"" + ((Update) operation.getAction()).getValue() + "\"";
-			}
 			String nodeType = context.getTypeLabel(node.getType());
 			if (nodeElement != null) {
 				nodeType += "(" + nodeElement.getClass().getSimpleName() + ")";
 			}
-			result += "\"" + operation.getAction().getClass().getSimpleName() + "\", \"" + nodeType + "\", " + label
-					+ " (size: " + node.getDescendants().size() + ")" + node.toTreeString();
+			result += "OperationKind." + operation.getAction().getClass().getSimpleName() + ", \"" + nodeType + "\", \"" + node.getLabel()+ "\"";
+
+			if (operation instanceof UpdateOperation) {
+				// adding the new value for update
+				result += ",  \"" + ((Update) operation.getAction()).getValue() + "\"";
+			}
+
+			result += " (size: " + node.getDescendants().size() + ")" + node.toTreeString();
 		}
 		return result;
 	}

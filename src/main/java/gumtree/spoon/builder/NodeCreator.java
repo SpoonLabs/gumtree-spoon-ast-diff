@@ -8,6 +8,7 @@ import com.github.gumtreediff.tree.ITree;
 
 import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.declaration.CtModifiable;
+import spoon.reflect.declaration.CtParameter;
 import spoon.reflect.declaration.CtVariable;
 import spoon.reflect.declaration.ModifierKind;
 import spoon.reflect.reference.CtTypeReference;
@@ -89,4 +90,5 @@ class NodeCreator extends CtInheritanceScanner {
 
 		super.visitCtMethod(e);
 	}
+
 }
