@@ -25,10 +25,12 @@ class NodeCreator extends CtInheritanceScanner {
 
 	@Override
 	public void scanCtModifiable(CtModifiable m) {
-		ITree modifiers = builder.createNode("Modifiers", "");
+		// We add the type of modifiable element
+		String type = "Modifiers_" + getClassName(m.getClass().getSimpleName());
+		ITree modifiers = builder.createNode(type, "");
 
-		//We create a virtual node
-		modifiers.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, new CtVirtualElement("Modifiers", m, m.getModifiers()));
+		// We create a virtual node
+		modifiers.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, new CtVirtualElement(type, m, m.getModifiers()));
 
 		// ensuring an order (instead of hashset)
 		// otherwise some flaky tests in CI
@@ -43,11 +45,17 @@ class NodeCreator extends CtInheritanceScanner {
 		for (ModifierKind kind : modifiers1) {
 			ITree modifier = builder.createNode("Modifier", kind.toString());
 			modifiers.addChild(modifier);
-			//We wrap the modifier (which is not a ctelement)
+			// We wrap the modifier (which is not a ctelement)
 			modifier.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, new CtWrapper(kind, m));
 		}
 		builder.addSiblingNode(modifiers);
 
+	}
+
+	private String getClassName(String simpleName) {
+		if (simpleName == null)
+			return "";
+		return simpleName.replace("Ct", "").replace("Impl", "");
 	}
 
 	@Override

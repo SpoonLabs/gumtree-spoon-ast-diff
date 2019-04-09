@@ -27,7 +27,7 @@ public class CtVirtualElement extends CtWrapper<String> {
 
 	@Override
 	public String toString() {
-		return "Virtual Element " + ((value != null) ? ("with label: " + value.toString()) : null);
+		return "VE: " + ((value != null) ? (value.toString()) : null);
 	}
 
 	@Override
