@@ -214,11 +214,6 @@
                   "label": "org.gjt.sp.jedit.View",
                   "type": "VARIABLE_TYPE",
                   "children": []
-                },
-                {
-                  "label": "",
-                  "type": "Modifiers_Parameter",
-                  "children": []
                 }
               ]
             },
@@ -229,11 +224,6 @@
                 {
                   "label": "java.lang.String",
                   "type": "VARIABLE_TYPE",
-                  "children": []
-                },
-                {
-                  "label": "",
-                  "type": "Modifiers_Parameter",
                   "children": []
                 }
               ]
@@ -878,11 +868,6 @@
                   "children": []
                 },
                 {
-                  "label": "",
-                  "type": "Modifiers_LocalVariable",
-                  "children": []
-                },
-                {
                   "label": "javax.swing.JScrollPane(java.awt.Component)",
                   "type": "ConstructorCall",
                   "children": [
@@ -1098,11 +1083,6 @@
                   "label": "org.gjt.sp.jedit.EBMessage",
                   "type": "VARIABLE_TYPE",
                   "children": []
-                },
-                {
-                  "label": "",
-                  "type": "Modifiers_Parameter",
-                  "children": []
                 }
               ]
             },
@@ -1189,11 +1169,6 @@
                 {
                   "label": "java.lang.String",
                   "type": "VARIABLE_TYPE",
-                  "children": []
-                },
-                {
-                  "label": "",
-                  "type": "Modifiers_LocalVariable",
                   "children": []
                 },
                 {
@@ -1372,11 +1347,6 @@
                 {
                   "label": "java.awt.Font",
                   "type": "VARIABLE_TYPE",
-                  "children": []
-                },
-                {
-                  "label": "",
-                  "type": "Modifiers_LocalVariable",
                   "children": []
                 },
                 {
@@ -1730,11 +1700,6 @@
                       "children": []
                     },
                     {
-                      "label": "",
-                      "type": "Modifiers_LocalVariable",
-                      "children": []
-                    },
-                    {
                       "label": "java.io.FileWriter(java.lang.String)",
                       "type": "ConstructorCall",
                       "children": [
@@ -1803,11 +1768,6 @@
                         {
                           "label": "java.io.IOException",
                           "type": "VARIABLE_TYPE",
-                          "children": []
-                        },
-                        {
-                          "label": "",
-                          "type": "Modifiers_CatchVariable",
                           "children": []
                         }
                       ]
@@ -1909,11 +1869,6 @@
                 {
                   "label": "java.lang.String[]",
                   "type": "VARIABLE_TYPE",
-                  "children": []
-                },
-                {
-                  "label": "",
-                  "type": "Modifiers_LocalVariable",
                   "children": []
                 },
                 {
@@ -2321,11 +2276,6 @@
                   "children": []
                 },
                 {
-                  "label": "",
-                  "type": "Modifiers_LocalVariable",
-                  "children": []
-                },
-                {
                   "label": "null",
                   "type": "Literal",
                   "children": []
@@ -2380,11 +2330,6 @@
                       "children": []
                     },
                     {
-                      "label": "",
-                      "type": "Modifiers_LocalVariable",
-                      "children": []
-                    },
-                    {
                       "label": "java.lang.StringBuffer(int)",
                       "type": "ConstructorCall",
                       "children": [
@@ -2404,11 +2349,6 @@
                     {
                       "label": "java.lang.String",
                       "type": "VARIABLE_TYPE",
-                      "children": []
-                    },
-                    {
-                      "label": "",
-                      "type": "Modifiers_LocalVariable",
                       "children": []
                     }
                   ]
@@ -2530,11 +2470,6 @@
                           "label": "java.io.FileNotFoundException",
                           "type": "VARIABLE_TYPE",
                           "children": []
-                        },
-                        {
-                          "label": "",
-                          "type": "Modifiers_CatchVariable",
-                          "children": []
                         }
                       ]
                     },
@@ -2611,11 +2546,6 @@
                         {
                           "label": "java.io.IOException",
                           "type": "VARIABLE_TYPE",
-                          "children": []
-                        },
-                        {
-                          "label": "",
-                          "type": "Modifiers_CatchVariable",
                           "children": []
                         }
                       ]

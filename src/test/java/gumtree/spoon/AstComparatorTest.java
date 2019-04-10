@@ -15,11 +15,12 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.github.gumtreediff.matchers.Mapping;
-import com.github.gumtreediff.tree.ITree;
 
+import gumtree.spoon.builder.NodeCreator;
 import gumtree.spoon.builder.SpoonGumTreeBuilder;
 import gumtree.spoon.diff.Diff;
 import gumtree.spoon.diff.DiffImpl;
+import gumtree.spoon.diff.operations.InsertOperation;
 import gumtree.spoon.diff.operations.MoveOperation;
 import gumtree.spoon.diff.operations.Operation;
 import gumtree.spoon.diff.operations.OperationKind;
@@ -36,6 +37,7 @@ import spoon.reflect.code.CtReturn;
 import spoon.reflect.code.CtThrow;
 import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtElement;
+import spoon.reflect.declaration.CtParameter;
 import spoon.reflect.declaration.CtType;
 import spoon.reflect.factory.Factory;
 import spoon.support.compiler.VirtualFile;
@@ -1662,11 +1664,10 @@ public class AstComparatorTest {
 	@Test
 	public void testVarargs() throws Exception {
 		// https://github.com/GumTreeDiff/gumtree/issues/120
-		CtClass c1 = Launcher.parseClass(" class BehaviorCall {\n"
-				+ "   void foo(String s)}\n" + "}\n" + "\n" + "}");
+		CtClass c1 = Launcher.parseClass(" class BehaviorCall {\n" + "   void foo(String s)}\n" + "}\n" + "\n" + "}");
 
-		CtClass c2 = Launcher.parseClass(" class BehaviorCall {\n"
-				+ "   void foo(String... s)}\n" + "}\n" + "\n" + "}");
+		CtClass c2 = Launcher
+				.parseClass(" class BehaviorCall {\n" + "   void foo(String... s)}\n" + "}\n" + "\n" + "}");
 
 		AstComparator diff = new AstComparator();
 		Diff result = diff.compare(c1, c2);
@@ -1676,7 +1677,44 @@ public class AstComparatorTest {
 
 		assertEquals(1, actions.size());
 		// the type is now an array
-		assertTrue(result.containsOperations(OperationKind.Update, "VARIABLE_TYPE(CtTypeReferenceImpl)", "java.lang.String", "java.lang.String[]"));
+		assertTrue(result.containsOperations(OperationKind.Update, "VARIABLE_TYPE(CtTypeReferenceImpl)",
+				"java.lang.String", "java.lang.String[]"));
 	}
 
+	@Test
+	public void testModifEmpty() throws Exception {
+
+		CtClass c1a = Launcher.parseClass(" class BehaviorCall implements Call{\n"
+				+ "final AtomicReference failureRef = new AtomicReference<>();\n"
+				+ "final CountDownLatch latch = new CountDownLatch(1);\n" + "\n" + " enqueue(new Callback<T>() {\n"
+				+ "  @Override public void onResponse(Response<T> response) {\n" + "     responseRef.set(response);\n"
+				+ "     latch.countDown();\n" + "   }\n" + "}\n" + ")\n" + "\n" + "}");
+
+		CtClass c2a = Launcher.parseClass("class BehaviorCall implements Call {\n"
+				+ "final AtomicReference failureRef = new AtomicReference<>();\n"
+				+ "final CountDownLatch latch = new CountDownLatch(1);\n" + "enqueue(new Callback() {\n"
+				// Here the difference
+				+ "@override public void onResponse(Call call, Response response) {\n" + "responseRef.set(response);\n"
+				+ "latch.countDown();\n" + "}\n" + "}\n" + ")\n" + "}");
+
+		AstComparator diff = new AstComparator();
+		Diff resulta = diff.compare(c1a, c2a);
+
+		List<Operation> actions = resulta.getRootOperations();
+		resulta.debugInformation();
+
+		assertEquals(1, actions.size());
+
+		assertTrue(actions.get(0) instanceof InsertOperation);
+		assertTrue(actions.get(0).getSrcNode() instanceof CtParameter);
+		DiffImpl idiff = (DiffImpl) resulta;
+
+		for (Mapping map : idiff.getMappingsComp()) {
+			if ((map.getFirst().toPrettyString(idiff.getContext()).startsWith(NodeCreator.MODIFIERS))) {
+				assertFalse(map.getFirst().getChildren().isEmpty());
+				assertFalse(map.getSecond().getChildren().isEmpty());
+			}
+		}
+
+	}
 }

@@ -8,7 +8,6 @@ import com.github.gumtreediff.tree.ITree;
 
 import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.declaration.CtModifiable;
-import spoon.reflect.declaration.CtParameter;
 import spoon.reflect.declaration.CtVariable;
 import spoon.reflect.declaration.ModifierKind;
 import spoon.reflect.reference.CtTypeReference;
@@ -17,7 +16,8 @@ import spoon.reflect.visitor.CtInheritanceScanner;
 /**
  * responsible to add additional nodes only overrides scan* to add new nodes
  */
-class NodeCreator extends CtInheritanceScanner {
+public class NodeCreator extends CtInheritanceScanner {
+	public static final String MODIFIERS = "Modifiers_";
 	private final TreeScanner builder;
 
 	NodeCreator(TreeScanner builder) {
@@ -26,8 +26,12 @@ class NodeCreator extends CtInheritanceScanner {
 
 	@Override
 	public void scanCtModifiable(CtModifiable m) {
+
+		if (m.getModifiers().isEmpty())
+			return;
+
 		// We add the type of modifiable element
-		String type = "Modifiers_" + getClassName(m.getClass().getSimpleName());
+		String type = MODIFIERS + getClassName(m.getClass().getSimpleName());
 		ITree modifiers = builder.createNode(type, "");
 
 		// We create a virtual node
