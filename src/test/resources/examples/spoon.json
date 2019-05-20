@@ -18,6 +18,11 @@
           ]
         },
         {
+          "label": "javax.swing.JPanel",
+          "type": "TypeReference",
+          "children": []
+        },
+        {
           "label": "serialVersionUID",
           "type": "Field",
           "children": [
