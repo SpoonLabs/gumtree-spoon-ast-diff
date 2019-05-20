@@ -5,7 +5,10 @@ import gumtree.spoon.builder.NodeCreator;
 import gumtree.spoon.builder.SpoonGumTreeBuilder;
 import gumtree.spoon.diff.Diff;
 import gumtree.spoon.diff.DiffImpl;
-import gumtree.spoon.diff.operations.*;
+import gumtree.spoon.diff.operations.MoveOperation;
+import gumtree.spoon.diff.operations.Operation;
+import gumtree.spoon.diff.operations.OperationKind;
+import gumtree.spoon.diff.operations.UpdateOperation;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -14,7 +17,6 @@ import spoon.SpoonModelBuilder;
 import spoon.reflect.code.*;
 import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtElement;
-import spoon.reflect.declaration.CtParameter;
 import spoon.reflect.declaration.CtType;
 import spoon.reflect.factory.Factory;
 import spoon.support.compiler.VirtualFile;
@@ -1527,6 +1529,7 @@ public class AstComparatorTest {
 
 		assertEquals(2, actions.size());
 		assertTrue(result.containsOperation(OperationKind.Insert, "Parameter", "call"));
+        assertTrue(result.containsOperation(OperationKind.Update, "TypeReference", "Callback<T>"));
 	}
 
 	@Test
@@ -1689,8 +1692,9 @@ public class AstComparatorTest {
 
 		assertEquals(2, actions.size());
 
-		assertTrue(actions.get(1) instanceof InsertOperation);
-		assertTrue(actions.get(1).getSrcNode() instanceof CtParameter);
+        assertTrue(resulta.containsOperation(OperationKind.Insert, "Parameter", "call"));
+        assertTrue(resulta.containsOperation(OperationKind.Update, "TypeReference", "Callback<T>"));
+
 		DiffImpl idiff = (DiffImpl) resulta;
 
 		for (Mapping map : idiff.getMappingsComp()) {
