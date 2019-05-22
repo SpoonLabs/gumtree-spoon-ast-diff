@@ -1705,4 +1705,51 @@ public class AstComparatorTest {
 		}
 
 	}
+
+
+    @Test
+    public void testExtends() throws Exception {
+        CtClass c1a = Launcher.parseClass("class Main extends SuperClass1 { }");
+        CtClass c2a = Launcher.parseClass("class Main extends SuperClass2 { }");
+
+        AstComparator diff = new AstComparator();
+        Diff result = diff.compare(c1a, c2a);
+
+        List<Operation> actions = result.getRootOperations();
+        result.debugInformation();
+
+        assertEquals(1, actions.size());
+        assertTrue(result.containsOperation(OperationKind.Update, "TypeReference", "SuperClass1"));
+    }
+
+    @Test
+    public void testExtendsGenerics1() throws Exception {
+        CtClass c1a = Launcher.parseClass("class Main extends SuperClass<One> { }");
+        CtClass c2a = Launcher.parseClass("class Main extends SuperClass<Two> { }");
+
+        AstComparator diff = new AstComparator();
+        Diff result = diff.compare(c1a, c2a);
+
+        List<Operation> actions = result.getRootOperations();
+        result.debugInformation();
+
+        assertEquals(1, actions.size());
+        assertTrue(result.containsOperation(OperationKind.Update, "TypeReference", "SuperClass<One>"));
+    }
+
+    @Test
+    public void testExtendsGenerics2() throws Exception {
+        CtClass c1a = Launcher.parseClass("class Main extends SuperClass { }");
+        CtClass c2a = Launcher.parseClass("class Main extends SuperClass<One> { }");
+
+        AstComparator diff = new AstComparator();
+        Diff result = diff.compare(c1a, c2a);
+
+        List<Operation> actions = result.getRootOperations();
+        result.debugInformation();
+
+        assertEquals(1, actions.size());
+        assertTrue(result.containsOperation(OperationKind.Update, "TypeReference", "SuperClass"));
+    }
+
 }
