@@ -1,17 +1,18 @@
 package gumtree.spoon.builder;
 
-import java.util.Comparator;
-import java.util.Set;
-import java.util.TreeSet;
-
 import com.github.gumtreediff.tree.ITree;
-
 import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.declaration.CtModifiable;
 import spoon.reflect.declaration.CtVariable;
 import spoon.reflect.declaration.ModifierKind;
+import spoon.reflect.path.CtRole;
+import spoon.reflect.reference.CtReference;
 import spoon.reflect.reference.CtTypeReference;
 import spoon.reflect.visitor.CtInheritanceScanner;
+
+import java.util.Comparator;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * responsible to add additional nodes only overrides scan* to add new nodes
@@ -94,5 +95,20 @@ public class NodeCreator extends CtInheritanceScanner {
 
 		super.visitCtMethod(e);
 	}
+
+    @Override
+    public void scanCtReference(CtReference reference) {
+
+
+        if (reference instanceof CtTypeReference && reference.getRoleInParent() == CtRole.SUPER_TYPE) {
+            ITree superType = builder.createNode("SUPER_TYPE", reference.toString());
+            CtWrapper<CtReference> k = new CtWrapper<CtReference>(reference, reference.getParent());
+            superType.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, k);
+            reference.putMetadata(SpoonGumTreeBuilder.GUMTREE_NODE, superType);
+            builder.addSiblingNode(superType);
+        } else {
+            super.scanCtReference(reference);
+        }
+    }
 
 }

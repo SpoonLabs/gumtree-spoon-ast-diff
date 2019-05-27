@@ -3,7 +3,6 @@ package gumtree.spoon.builder;
 import spoon.reflect.code.*;
 import spoon.reflect.declaration.CtNamedElement;
 import spoon.reflect.path.CtRole;
-import spoon.reflect.reference.CtReference;
 import spoon.reflect.reference.CtTypeReference;
 import spoon.reflect.visitor.CtInheritanceScanner;
 
@@ -119,11 +118,11 @@ class LabelFinder extends CtInheritanceScanner {
 		}
 	}
 
-    @Override
-    public void scanCtReference(CtReference reference) {
-        super.scanCtReference(reference);
-        if( reference!=null && label.equals("") && reference.getRoleInParent() == CtRole.SUPER_TYPE){
-            label = reference.toString();
-        }
-    }
+//    @Override
+//    public void scanCtReference(CtReference reference) {
+//        super.scanCtReference(reference);
+//        if( reference!=null && label.equals("") && reference.getRoleInParent() == CtRole.SUPER_TYPE){
+//            label = reference.toString();
+//        }
+//    }
 }

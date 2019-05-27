@@ -18,9 +18,15 @@
           ]
         },
         {
-          "label": "javax.swing.JPanel",
+          "label": "",
           "type": "TypeReference",
-          "children": []
+          "children": [
+            {
+              "label": "javax.swing.JPanel",
+              "type": "SUPER_TYPE",
+              "children": []
+            }
+          ]
         },
         {
           "label": "serialVersionUID",

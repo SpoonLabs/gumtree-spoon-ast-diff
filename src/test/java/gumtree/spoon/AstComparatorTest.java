@@ -1529,7 +1529,7 @@ public class AstComparatorTest {
 
 		assertEquals(2, actions.size());
 		assertTrue(result.containsOperation(OperationKind.Insert, "Parameter", "call"));
-        assertTrue(result.containsOperation(OperationKind.Update, "TypeReference", "Callback<T>"));
+        assertTrue(result.containsOperation(OperationKind.Update, "SUPER_TYPE", "Callback<T>"));
 	}
 
 	@Test
@@ -1693,7 +1693,7 @@ public class AstComparatorTest {
 		assertEquals(2, actions.size());
 
         assertTrue(resulta.containsOperation(OperationKind.Insert, "Parameter", "call"));
-        assertTrue(resulta.containsOperation(OperationKind.Update, "TypeReference", "Callback<T>"));
+        assertTrue(resulta.containsOperation(OperationKind.Update, "SUPER_TYPE", "Callback<T>"));
 
 		DiffImpl idiff = (DiffImpl) resulta;
 
@@ -1719,7 +1719,7 @@ public class AstComparatorTest {
         result.debugInformation();
 
         assertEquals(1, actions.size());
-        assertTrue(result.containsOperation(OperationKind.Update, "TypeReference", "SuperClass1"));
+        assertTrue(result.containsOperation(OperationKind.Update, "SUPER_TYPE", "SuperClass1"));
     }
 
     @Test
@@ -1734,7 +1734,7 @@ public class AstComparatorTest {
         result.debugInformation();
 
         assertEquals(1, actions.size());
-        assertTrue(result.containsOperation(OperationKind.Update, "TypeReference", "SuperClass<One>"));
+        assertTrue(result.containsOperation(OperationKind.Update, "SUPER_TYPE", "SuperClass<One>"));
     }
 
     @Test
@@ -1749,7 +1749,7 @@ public class AstComparatorTest {
         result.debugInformation();
 
         assertEquals(1, actions.size());
-        assertTrue(result.containsOperation(OperationKind.Update, "TypeReference", "SuperClass"));
+        assertTrue(result.containsOperation(OperationKind.Update, "SUPER_TYPE", "SuperClass"));
     }
 
 }
