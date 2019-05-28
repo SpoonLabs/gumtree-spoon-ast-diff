@@ -117,12 +117,4 @@ class LabelFinder extends CtInheritanceScanner {
 			label = typeAccess.getAccessedType().getQualifiedName();
 		}
 	}
-
-//    @Override
-//    public void scanCtReference(CtReference reference) {
-//        super.scanCtReference(reference);
-//        if( reference!=null && label.equals("") && reference.getRoleInParent() == CtRole.SUPER_TYPE){
-//            label = reference.toString();
-//        }
-//    }
 }
