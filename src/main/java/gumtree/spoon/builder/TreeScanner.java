@@ -1,10 +1,7 @@
 package gumtree.spoon.builder;
 
-import java.util.Stack;
-
 import com.github.gumtreediff.tree.ITree;
 import com.github.gumtreediff.tree.TreeContext;
-
 import spoon.reflect.code.CtBlock;
 import spoon.reflect.code.CtCase;
 import spoon.reflect.code.CtStatementList;
@@ -12,6 +9,8 @@ import spoon.reflect.declaration.CtElement;
 import spoon.reflect.path.CtRole;
 import spoon.reflect.reference.CtReference;
 import spoon.reflect.visitor.CtScanner;
+
+import java.util.Stack;
 
 public class TreeScanner extends CtScanner {
 	public static final String NOTYPE = "<notype>";
@@ -75,6 +74,11 @@ public class TreeScanner extends CtScanner {
 			}
 			return true;
 		}
+
+        if (element instanceof CtReference && element.getRoleInParent() == CtRole.SUPER_TYPE) {
+            return false;
+        }
+
 		return element.isImplicit() || element instanceof CtReference;
 	}
 

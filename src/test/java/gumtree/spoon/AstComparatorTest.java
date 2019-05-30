@@ -1,48 +1,34 @@
 package gumtree.spoon;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import com.github.gumtreediff.matchers.Mapping;
+import gumtree.spoon.builder.NodeCreator;
+import gumtree.spoon.builder.SpoonGumTreeBuilder;
+import gumtree.spoon.diff.Diff;
+import gumtree.spoon.diff.DiffImpl;
+import gumtree.spoon.diff.operations.MoveOperation;
+import gumtree.spoon.diff.operations.Operation;
+import gumtree.spoon.diff.operations.OperationKind;
+import gumtree.spoon.diff.operations.UpdateOperation;
+import org.junit.Assert;
+import org.junit.Ignore;
+import org.junit.Test;
+import spoon.Launcher;
+import spoon.SpoonModelBuilder;
+import spoon.reflect.code.*;
+import spoon.reflect.declaration.CtClass;
+import spoon.reflect.declaration.CtElement;
+import spoon.reflect.declaration.CtType;
+import spoon.reflect.factory.Factory;
+import spoon.support.compiler.VirtualFile;
+import spoon.support.compiler.jdt.JDTBasedSpoonCompiler;
+import spoon.support.compiler.jdt.JDTSnippetCompiler;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
-
-import com.github.gumtreediff.matchers.Mapping;
-
-import gumtree.spoon.builder.NodeCreator;
-import gumtree.spoon.builder.SpoonGumTreeBuilder;
-import gumtree.spoon.diff.Diff;
-import gumtree.spoon.diff.DiffImpl;
-import gumtree.spoon.diff.operations.InsertOperation;
-import gumtree.spoon.diff.operations.MoveOperation;
-import gumtree.spoon.diff.operations.Operation;
-import gumtree.spoon.diff.operations.OperationKind;
-import gumtree.spoon.diff.operations.UpdateOperation;
-import spoon.Launcher;
-import spoon.SpoonModelBuilder;
-import spoon.reflect.code.CtBinaryOperator;
-import spoon.reflect.code.CtConstructorCall;
-import spoon.reflect.code.CtIf;
-import spoon.reflect.code.CtInvocation;
-import spoon.reflect.code.CtLocalVariable;
-import spoon.reflect.code.CtNewClass;
-import spoon.reflect.code.CtReturn;
-import spoon.reflect.code.CtThrow;
-import spoon.reflect.declaration.CtClass;
-import spoon.reflect.declaration.CtElement;
-import spoon.reflect.declaration.CtParameter;
-import spoon.reflect.declaration.CtType;
-import spoon.reflect.factory.Factory;
-import spoon.support.compiler.VirtualFile;
-import spoon.support.compiler.jdt.JDTBasedSpoonCompiler;
-import spoon.support.compiler.jdt.JDTSnippetCompiler;
+import static org.junit.Assert.*;
 
 /**
  * Test Spoon Diff
@@ -1541,8 +1527,9 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 
-		assertEquals(1, actions.size());
+		assertEquals(2, actions.size());
 		assertTrue(result.containsOperation(OperationKind.Insert, "Parameter", "call"));
+        assertTrue(result.containsOperation(OperationKind.Update, "SUPER_TYPE", "Callback<T>"));
 	}
 
 	@Test
@@ -1703,10 +1690,11 @@ public class AstComparatorTest {
 		List<Operation> actions = resulta.getRootOperations();
 		resulta.debugInformation();
 
-		assertEquals(1, actions.size());
+		assertEquals(2, actions.size());
 
-		assertTrue(actions.get(0) instanceof InsertOperation);
-		assertTrue(actions.get(0).getSrcNode() instanceof CtParameter);
+        assertTrue(resulta.containsOperation(OperationKind.Insert, "Parameter", "call"));
+        assertTrue(resulta.containsOperation(OperationKind.Update, "SUPER_TYPE", "Callback<T>"));
+
 		DiffImpl idiff = (DiffImpl) resulta;
 
 		for (Mapping map : idiff.getMappingsComp()) {
@@ -1717,4 +1705,51 @@ public class AstComparatorTest {
 		}
 
 	}
+
+
+    @Test
+    public void testExtends() throws Exception {
+        CtClass c1a = Launcher.parseClass("class Main extends SuperClass1 { }");
+        CtClass c2a = Launcher.parseClass("class Main extends SuperClass2 { }");
+
+        AstComparator diff = new AstComparator();
+        Diff result = diff.compare(c1a, c2a);
+
+        List<Operation> actions = result.getRootOperations();
+        result.debugInformation();
+
+        assertEquals(1, actions.size());
+        assertTrue(result.containsOperation(OperationKind.Update, "SUPER_TYPE", "SuperClass1"));
+    }
+
+    @Test
+    public void testExtendsGenerics1() throws Exception {
+        CtClass c1a = Launcher.parseClass("class Main extends SuperClass<One> { }");
+        CtClass c2a = Launcher.parseClass("class Main extends SuperClass<Two> { }");
+
+        AstComparator diff = new AstComparator();
+        Diff result = diff.compare(c1a, c2a);
+
+        List<Operation> actions = result.getRootOperations();
+        result.debugInformation();
+
+        assertEquals(1, actions.size());
+        assertTrue(result.containsOperation(OperationKind.Update, "SUPER_TYPE", "SuperClass<One>"));
+    }
+
+    @Test
+    public void testExtendsGenerics2() throws Exception {
+        CtClass c1a = Launcher.parseClass("class Main extends SuperClass { }");
+        CtClass c2a = Launcher.parseClass("class Main extends SuperClass<One> { }");
+
+        AstComparator diff = new AstComparator();
+        Diff result = diff.compare(c1a, c2a);
+
+        List<Operation> actions = result.getRootOperations();
+        result.debugInformation();
+
+        assertEquals(1, actions.size());
+        assertTrue(result.containsOperation(OperationKind.Update, "SUPER_TYPE", "SuperClass"));
+    }
+
 }

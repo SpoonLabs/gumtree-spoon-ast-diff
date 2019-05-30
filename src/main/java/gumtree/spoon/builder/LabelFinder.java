@@ -1,23 +1,6 @@
 package gumtree.spoon.builder;
 
-import spoon.reflect.code.CtAssert;
-import spoon.reflect.code.CtAssignment;
-import spoon.reflect.code.CtBinaryOperator;
-import spoon.reflect.code.CtBlock;
-import spoon.reflect.code.CtBreak;
-import spoon.reflect.code.CtConstructorCall;
-import spoon.reflect.code.CtContinue;
-import spoon.reflect.code.CtIf;
-import spoon.reflect.code.CtInvocation;
-import spoon.reflect.code.CtLiteral;
-import spoon.reflect.code.CtOperatorAssignment;
-import spoon.reflect.code.CtReturn;
-import spoon.reflect.code.CtSuperAccess;
-import spoon.reflect.code.CtThisAccess;
-import spoon.reflect.code.CtTypeAccess;
-import spoon.reflect.code.CtUnaryOperator;
-import spoon.reflect.code.CtVariableAccess;
-import spoon.reflect.code.CtWhile;
+import spoon.reflect.code.*;
 import spoon.reflect.declaration.CtNamedElement;
 import spoon.reflect.path.CtRole;
 import spoon.reflect.reference.CtTypeReference;
