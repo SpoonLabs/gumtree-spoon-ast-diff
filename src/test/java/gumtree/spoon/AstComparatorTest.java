@@ -1,6 +1,21 @@
 package gumtree.spoon;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.List;
+
+import org.junit.Assert;
+import org.junit.Ignore;
+import org.junit.Test;
+
 import com.github.gumtreediff.matchers.Mapping;
+
 import gumtree.spoon.builder.NodeCreator;
 import gumtree.spoon.builder.SpoonGumTreeBuilder;
 import gumtree.spoon.diff.Diff;
@@ -9,12 +24,16 @@ import gumtree.spoon.diff.operations.MoveOperation;
 import gumtree.spoon.diff.operations.Operation;
 import gumtree.spoon.diff.operations.OperationKind;
 import gumtree.spoon.diff.operations.UpdateOperation;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
 import spoon.Launcher;
 import spoon.SpoonModelBuilder;
-import spoon.reflect.code.*;
+import spoon.reflect.code.CtBinaryOperator;
+import spoon.reflect.code.CtConstructorCall;
+import spoon.reflect.code.CtIf;
+import spoon.reflect.code.CtInvocation;
+import spoon.reflect.code.CtLocalVariable;
+import spoon.reflect.code.CtNewClass;
+import spoon.reflect.code.CtReturn;
+import spoon.reflect.code.CtThrow;
 import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtType;
@@ -22,13 +41,6 @@ import spoon.reflect.factory.Factory;
 import spoon.support.compiler.VirtualFile;
 import spoon.support.compiler.jdt.JDTBasedSpoonCompiler;
 import spoon.support.compiler.jdt.JDTSnippetCompiler;
-
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.List;
-
-import static org.junit.Assert.*;
 
 /**
  * Test Spoon Diff
@@ -229,7 +241,7 @@ public class AstComparatorTest {
 		System.out.println(actions);
 		assertEquals(2, actions.size());
 		assertTrue(result.containsOperation(OperationKind.Delete, "Invocation",
-				"QuickNotepadTextArea#addKeyListener(QuickNotepad$KeyHandler)"));
+				"addKeyListener"));
 		assertTrue(result.containsOperation(OperationKind.Delete, "Class", "KeyHandler"));
 
 		CtElement ancestor = result.commonAncestor();
@@ -330,7 +342,8 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		// result.debugInformation();
 		assertEquals(actions.size(), 1);
-		assertTrue(result.containsOperation(OperationKind.Insert, "Invocation", "#addField(<unknown>,<unknown>)"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "Invocation", "addField"));
+
 	}
 
 	@Test
@@ -346,7 +359,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		// result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(result.containsOperation(OperationKind.Update, "Invocation", "#getTarget()"));
+		assertTrue(result.containsOperation(OperationKind.Update, "Invocation", "getTarget"));
 
 		UpdateOperation updateOp = (UpdateOperation) actions.get(0);
 		CtElement dst = updateOp.getDstNode();
@@ -365,7 +378,9 @@ public class AstComparatorTest {
 
 		List<Operation> actions = result.getAllOperations();
 		assertEquals(1, actions.size());
-		assertTrue(result.containsOperation(OperationKind.Update, "Invocation", "#getTarget()"));
+		// assertTrue(result.containsOperation(OperationKind.Update, "Invocation",
+		// "#getTarget()"));
+		assertTrue(result.containsOperation(OperationKind.Update, "Invocation", "getTarget"));
 
 		UpdateOperation updateOp = (UpdateOperation) actions.get(0);
 		CtElement dst = updateOp.getDstNode();
@@ -456,8 +471,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		// result.debugInformation();
 		assertEquals(actions.size(), 1);
-		assertTrue(result.containsOperation(OperationKind.Delete, "Invocation",
-				"java.awt.Container#setFocusTraversalPolicyProvider(boolean)"));
+		assertTrue(result.containsOperation(OperationKind.Delete, "Invocation", "setFocusTraversalPolicyProvider"));
 	}
 
 	@Test
@@ -525,7 +539,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(actions.size(), 1);
-		assertTrue(result.containsOperation(OperationKind.Delete, "Invocation", "java.io.PrintStream#println(char[])"));
+		assertTrue(result.containsOperation(OperationKind.Delete, "Invocation", "println"));
 	}
 
 	@Test
@@ -540,7 +554,9 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(result.containsOperation(OperationKind.Update, "Invocation", "java.util.Vector#remove(int)"));
+		// assertTrue(result.containsOperation(OperationKind.Update, "Invocation",
+		// "java.util.Vector#remove(int)"));
+		assertTrue(result.containsOperation(OperationKind.Update, "Invocation", "remove"));
 	}
 
 	@Test
@@ -555,8 +571,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(actions.size(), 1);
-		assertTrue(result.containsOperation(OperationKind.Update, "Invocation",
-				"java.util.Vector#removeElement(java.lang.Object)"));
+		assertTrue(result.containsOperation(OperationKind.Update, "Invocation", "removeElement"));
 	}
 
 	@Test
@@ -630,9 +645,9 @@ public class AstComparatorTest {
 		assertEquals(3, actions.size());
 		assertEquals(229, ancestor.getPosition().getLine());
 
-		assertTrue(result.containsOperation(OperationKind.Update, "Invocation", "#equals(java.lang.String)"));
+		assertTrue(result.containsOperation(OperationKind.Update, "Invocation", "equals"));
 		assertTrue(result.containsOperation(OperationKind.Insert, "BinaryOperator", "NE"));
-		assertTrue(result.containsOperation(OperationKind.Move, "Invocation", "#equals(java.lang.String)"));
+		assertTrue(result.containsOperation(OperationKind.Move, "Invocation", "equals"));
 
 		// updated the if condition
 		CtElement elem = actions.get(0).getNode();
@@ -653,7 +668,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(actions.size(), 1);
-		assertTrue(result.containsOperation(OperationKind.Insert, "Invocation", "#append(java.lang.String)"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "Invocation", "append"));
 	}
 
 	@Test
@@ -724,8 +739,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(actions.size(), 1);
-		assertTrue(
-				result.containsOperation(OperationKind.Insert, "Invocation", "megamek.client.bot.CEntity#refresh()"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "Invocation", "refresh"));
 	}
 
 	@Test
@@ -797,8 +811,7 @@ public class AstComparatorTest {
 
 		List<Operation> actions = result.getRootOperations();
 		assertTrue(actions.size() >= 3);
-		assertTrue(result.containsOperation(OperationKind.Delete, "Invocation",
-				"java.lang.String#format(java.lang.String,java.lang.Object[])"));
+		assertTrue(result.containsOperation(OperationKind.Delete, "Invocation", "format"));
 		assertTrue(result.containsOperation(OperationKind.Insert, "BinaryOperator", "PLUS"));
 
 		// the move can be either getEntity or getShortName
@@ -820,8 +833,7 @@ public class AstComparatorTest {
 		result.debugInformation();
 		assertEquals(actions.size(), 2);
 		assertTrue(result.containsOperation(OperationKind.Insert, "If"));
-		assertTrue(result.containsOperation(OperationKind.Move, "Invocation",
-				"org.apache.lucene.index.SegmentTermEnum#growBuffer(int)"));
+		assertTrue(result.containsOperation(OperationKind.Move, "Invocation", "growBuffer"));
 	}
 
 	@Test
@@ -837,8 +849,7 @@ public class AstComparatorTest {
 		result.debugInformation();
 		assertEquals(actions.size(), 2);
 		assertTrue(result.containsOperation(OperationKind.Insert, "BinaryOperator", "OR"));
-		assertTrue(result.containsOperation(OperationKind.Move, "Invocation",
-				"org.apache.lucene.index.SegmentReader#hasDeletions()"));
+		assertTrue(result.containsOperation(OperationKind.Move, "Invocation", "hasDeletions"));
 	}
 
 	@Test
@@ -853,7 +864,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(actions.size(), 1);
-		assertTrue(result.containsOperation(OperationKind.Update, "Invocation", "#delete(int)"));
+		assertTrue(result.containsOperation(OperationKind.Update, "Invocation", "delete"));
 	}
 
 	@Test
@@ -919,10 +930,8 @@ public class AstComparatorTest {
 
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
-		assertEquals(2, actions.size());
+		assertEquals(1, actions.size());
 		assertTrue(result.containsOperation(OperationKind.Update, "Literal", "' '"));
-		assertTrue(result.containsOperation(OperationKind.Update, "Invocation",
-				"java.lang.StringBuffer#insert(int,char)"));
 	}
 
 	/**
@@ -1089,8 +1098,7 @@ public class AstComparatorTest {
 		result.debugInformation();
 		assertEquals(3, actions.size());
 		assertTrue(result.containsOperation(OperationKind.Delete, "Assignment"));
-		assertTrue(result.containsOperation(OperationKind.Insert, "Invocation",
-				"org.apache.lucene.index.IndexWriter#setMaxFieldLength(int)"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "Invocation", "setMaxFieldLength"));
 		assertTrue(result.containsOperation(OperationKind.Move, "FieldRead", "writer"));
 	}
 
@@ -1106,7 +1114,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(result.containsOperation(OperationKind.Update, "Invocation", "java.lang.Throwable#getMessage()"));
+		assertTrue(result.containsOperation(OperationKind.Update, "Invocation", "getMessage"));
 	}
 
 	@Test
@@ -1151,8 +1159,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		// result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(result.containsOperation(OperationKind.Update, "Invocation",
-				"org.apache.turbine.util.Log#error(java.lang.String,java.lang.Exception)"));
+		assertTrue(result.containsOperation(OperationKind.Update, "Invocation", "error"));
 	}
 
 	@Test
@@ -1212,8 +1219,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(result.containsOperation(OperationKind.Insert, "Invocation",
-				"org.apache.turbine.Log#debug(java.lang.String)"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "Invocation", "debug"));
 	}
 
 	@Test
@@ -1227,14 +1233,15 @@ public class AstComparatorTest {
 
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
-		assertEquals(1, actions.size());
+		assertEquals(2, actions.size());
 		// root actions
-		assertTrue(result.containsOperation(OperationKind.Update, "Invocation",
-				"java.lang.String#lastIndexOf(java.lang.String)"));
+		// Issue #102
+		// assertTrue(result.containsOperation(OperationKind.Update, "Invocation",
+		// "lastIndexOf"));
 		// low level actions
 		assertTrue(
-				result.containsOperations(result.getAllOperations(), OperationKind.Delete, "FieldRead", "separator"));
-		assertTrue(result.containsOperations(result.getAllOperations(), OperationKind.Insert, "Literal", "'/'"));
+				result.containsOperations(result.getRootOperations(), OperationKind.Delete, "FieldRead", "separator"));
+		assertTrue(result.containsOperations(result.getRootOperations(), OperationKind.Insert, "Literal", "'/'"));
 	}
 
 	@Test
@@ -1265,8 +1272,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(result.containsOperation(OperationKind.Delete, "Invocation",
-				"java.io.PrintStream#println(java.lang.String)"));
+		assertTrue(result.containsOperation(OperationKind.Delete, "Invocation", "println"));
 	}
 
 	@Test
@@ -1296,7 +1302,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(result.containsOperation(OperationKind.Update, "Invocation", "#addAscendingOrderByColumn()"));
+		assertTrue(result.containsOperation(OperationKind.Update, "Invocation", "addAscendingOrderByColumn"));
 	}
 
 	@Test
@@ -1342,8 +1348,9 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(2, actions.size());
-		assertTrue(result.containsOperation(OperationKind.Update, "Invocation",
-				"org.tigris.scarab.util.Email#sendEmail(org.apache.fulcrum.template.TemplateContext,org.tigris.scarab.om.Module,<unknown>,<unknown>,java.lang.String,java.lang.String)"));
+		// assertTrue(result.containsOperation(OperationKind.Update, "Invocation",
+		// "sendEmail"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "Literal", "null"));
 
 		// one parameter is moved to another argument
 		assertTrue(result.containsOperation(OperationKind.Move, "Invocation"));
@@ -1361,8 +1368,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(result.containsOperation(OperationKind.Insert, "Invocation",
-				"#setDisplayDescription(java.lang.String)"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "Invocation", "setDisplayDescription"));
 	}
 
 	@Test
@@ -1529,7 +1535,7 @@ public class AstComparatorTest {
 
 		assertEquals(2, actions.size());
 		assertTrue(result.containsOperation(OperationKind.Insert, "Parameter", "call"));
-        assertTrue(result.containsOperation(OperationKind.Update, "SUPER_TYPE", "Callback<T>"));
+		assertTrue(result.containsOperation(OperationKind.Update, "SUPER_TYPE", "Callback<T>"));
 	}
 
 	@Test
@@ -1692,8 +1698,8 @@ public class AstComparatorTest {
 
 		assertEquals(2, actions.size());
 
-        assertTrue(resulta.containsOperation(OperationKind.Insert, "Parameter", "call"));
-        assertTrue(resulta.containsOperation(OperationKind.Update, "SUPER_TYPE", "Callback<T>"));
+		assertTrue(resulta.containsOperation(OperationKind.Insert, "Parameter", "call"));
+		assertTrue(resulta.containsOperation(OperationKind.Update, "SUPER_TYPE", "Callback<T>"));
 
 		DiffImpl idiff = (DiffImpl) resulta;
 
@@ -1706,50 +1712,73 @@ public class AstComparatorTest {
 
 	}
 
+	@Test
+	public void testExtends() throws Exception {
+		CtClass c1a = Launcher.parseClass("class Main extends SuperClass1 { }");
+		CtClass c2a = Launcher.parseClass("class Main extends SuperClass2 { }");
 
-    @Test
-    public void testExtends() throws Exception {
-        CtClass c1a = Launcher.parseClass("class Main extends SuperClass1 { }");
-        CtClass c2a = Launcher.parseClass("class Main extends SuperClass2 { }");
+		AstComparator diff = new AstComparator();
+		Diff result = diff.compare(c1a, c2a);
 
-        AstComparator diff = new AstComparator();
-        Diff result = diff.compare(c1a, c2a);
+		List<Operation> actions = result.getRootOperations();
+		result.debugInformation();
 
-        List<Operation> actions = result.getRootOperations();
-        result.debugInformation();
+		assertEquals(1, actions.size());
+		assertTrue(result.containsOperation(OperationKind.Update, "SUPER_TYPE", "SuperClass1"));
+	}
 
-        assertEquals(1, actions.size());
-        assertTrue(result.containsOperation(OperationKind.Update, "SUPER_TYPE", "SuperClass1"));
-    }
+	@Test
+	public void testExtendsGenerics1() throws Exception {
+		CtClass c1a = Launcher.parseClass("class Main extends SuperClass<One> { }");
+		CtClass c2a = Launcher.parseClass("class Main extends SuperClass<Two> { }");
 
-    @Test
-    public void testExtendsGenerics1() throws Exception {
-        CtClass c1a = Launcher.parseClass("class Main extends SuperClass<One> { }");
-        CtClass c2a = Launcher.parseClass("class Main extends SuperClass<Two> { }");
+		AstComparator diff = new AstComparator();
+		Diff result = diff.compare(c1a, c2a);
 
-        AstComparator diff = new AstComparator();
-        Diff result = diff.compare(c1a, c2a);
+		List<Operation> actions = result.getRootOperations();
+		result.debugInformation();
 
-        List<Operation> actions = result.getRootOperations();
-        result.debugInformation();
+		assertEquals(1, actions.size());
+		assertTrue(result.containsOperation(OperationKind.Update, "SUPER_TYPE", "SuperClass<One>"));
+	}
 
-        assertEquals(1, actions.size());
-        assertTrue(result.containsOperation(OperationKind.Update, "SUPER_TYPE", "SuperClass<One>"));
-    }
+	@Test
+	public void testExtendsGenerics2() throws Exception {
+		CtClass c1a = Launcher.parseClass("class Main extends SuperClass { }");
+		CtClass c2a = Launcher.parseClass("class Main extends SuperClass<One> { }");
 
-    @Test
-    public void testExtendsGenerics2() throws Exception {
-        CtClass c1a = Launcher.parseClass("class Main extends SuperClass { }");
-        CtClass c2a = Launcher.parseClass("class Main extends SuperClass<One> { }");
+		AstComparator diff = new AstComparator();
+		Diff result = diff.compare(c1a, c2a);
 
-        AstComparator diff = new AstComparator();
-        Diff result = diff.compare(c1a, c2a);
+		List<Operation> actions = result.getRootOperations();
+		result.debugInformation();
 
-        List<Operation> actions = result.getRootOperations();
-        result.debugInformation();
+		assertEquals(1, actions.size());
+		assertTrue(result.containsOperation(OperationKind.Update, "SUPER_TYPE", "SuperClass"));
+	}
 
-        assertEquals(1, actions.size());
-        assertTrue(result.containsOperation(OperationKind.Update, "SUPER_TYPE", "SuperClass"));
-    }
+	@Test
+	public void testD4JLang57() throws Exception {
+		AstComparator diff = new AstComparator();
+		File fl = new File("src/test/resources/examples/d4j/Lang_57/LocaleUtils/Lang_57_LocaleUtils_s.java");
+		File fr = new File("src/test/resources/examples/d4j/Lang_57/LocaleUtils/Lang_57_LocaleUtils_t.java");
+
+		Diff result = diff.compare(fl, fr);
+		List<Operation> actions = result.getAllOperations();
+		assertEquals(4, actions.size());
+
+	}
+
+	@Test
+	public void testD4JMath34() throws Exception {
+		AstComparator diff = new AstComparator();
+		File fl = new File("src/test/resources/examples/d4j/Math_34/ListPopulation/Math_34_ListPopulation_s.java");
+		File fr = new File("src/test/resources/examples/d4j/Math_34/ListPopulation/Math_34_ListPopulation_t.java");
+
+		Diff result = diff.compare(fl, fr);
+		List<Operation> actions = result.getAllOperations();
+		assertEquals(4, actions.size());
+
+	}
 
 }

@@ -1,6 +1,23 @@
 package gumtree.spoon.builder;
 
-import spoon.reflect.code.*;
+import spoon.reflect.code.CtAssert;
+import spoon.reflect.code.CtAssignment;
+import spoon.reflect.code.CtBinaryOperator;
+import spoon.reflect.code.CtBlock;
+import spoon.reflect.code.CtBreak;
+import spoon.reflect.code.CtConstructorCall;
+import spoon.reflect.code.CtContinue;
+import spoon.reflect.code.CtIf;
+import spoon.reflect.code.CtInvocation;
+import spoon.reflect.code.CtLiteral;
+import spoon.reflect.code.CtOperatorAssignment;
+import spoon.reflect.code.CtReturn;
+import spoon.reflect.code.CtSuperAccess;
+import spoon.reflect.code.CtThisAccess;
+import spoon.reflect.code.CtTypeAccess;
+import spoon.reflect.code.CtUnaryOperator;
+import spoon.reflect.code.CtVariableAccess;
+import spoon.reflect.code.CtWhile;
 import spoon.reflect.declaration.CtNamedElement;
 import spoon.reflect.path.CtRole;
 import spoon.reflect.reference.CtTypeReference;
@@ -19,12 +36,15 @@ class LabelFinder extends CtInheritanceScanner {
 		label = variableAccess.getVariable().getSimpleName();
 	}
 
-
 	@Override
 	public <T> void visitCtInvocation(CtInvocation<T> invocation) {
 		if (invocation.getExecutable() != null) {
 			CtTypeReference decl = invocation.getExecutable().getDeclaringType();
-			label = (decl!=null?decl.getQualifiedName():"")+"#"+invocation.getExecutable().getSignature();
+			// label =
+			// (decl!=null?decl.getQualifiedName():"")+"#"+invocation.getExecutable().getSignature();
+			//label = (decl != null ? decl.getQualifiedName() : "") + "#" + invocation.getExecutable().getSimpleName();
+			label = invocation.getExecutable().getSimpleName();
+			
 		}
 	}
 
@@ -103,12 +123,12 @@ class LabelFinder extends CtInheritanceScanner {
 
 	@Override
 	public <T> void visitCtThisAccess(CtThisAccess<T> thisAccess) {
-		label =  thisAccess.toString();
+		label = thisAccess.toString();
 	}
 
 	@Override
 	public <T> void visitCtSuperAccess(CtSuperAccess<T> f) {
-		label =  f.toString();
+		label = f.toString();
 	}
 
 	@Override

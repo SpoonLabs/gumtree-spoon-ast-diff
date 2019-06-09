@@ -240,7 +240,7 @@
               ]
             },
             {
-              "label": "javax.swing.JPanel#javax.swing.JPanel(java.awt.LayoutManager)",
+              "label": "\u003cinit\u003e",
               "type": "Invocation",
               "children": [
                 {
@@ -300,7 +300,7 @@
                   ]
                 },
                 {
-                  "label": "java.lang.String#equals(java.lang.Object)",
+                  "label": "equals",
                   "type": "Invocation",
                   "children": [
                     {
@@ -326,7 +326,7 @@
                   "type": "BinaryOperator",
                   "children": [
                     {
-                      "label": "org.gjt.sp.jedit.jEdit#getSettingsDirectory()",
+                      "label": "getSettingsDirectory",
                       "type": "Invocation",
                       "children": [
                         {
@@ -369,7 +369,7 @@
                           ]
                         },
                         {
-                          "label": "org.gjt.sp.jedit.jEdit#getProperty()",
+                          "label": "getProperty",
                           "type": "Invocation",
                           "children": [
                             {
@@ -444,7 +444,7 @@
                               "type": "BinaryOperator",
                               "children": [
                                 {
-                                  "label": "java.lang.String#length()",
+                                  "label": "length",
                                   "type": "Invocation",
                                   "children": [
                                     {
@@ -513,7 +513,7 @@
                                           "type": "BinaryOperator",
                                           "children": [
                                             {
-                                              "label": "org.gjt.sp.jedit.jEdit#getSettingsDirectory()",
+                                              "label": "getSettingsDirectory",
                                               "type": "Invocation",
                                               "children": [
                                                 {
@@ -548,7 +548,7 @@
                               ]
                             },
                             {
-                              "label": "org.gjt.sp.jedit.jEdit#setProperty(java.lang.String)",
+                              "label": "setProperty",
                               "type": "Invocation",
                               "children": [
                                 {
@@ -686,7 +686,7 @@
               ]
             },
             {
-              "label": "java.awt.Container#add(java.lang.String,java.awt.Component)",
+              "label": "add",
               "type": "Invocation",
               "children": [
                 {
@@ -744,7 +744,7 @@
                   "type": "then",
                   "children": [
                     {
-                      "label": "javax.swing.JComponent#setPreferredSize(java.awt.Dimension)",
+                      "label": "setPreferredSize",
                       "type": "Invocation",
                       "children": [
                         {
@@ -803,7 +803,7 @@
               ]
             },
             {
-              "label": "QuickNotepadTextArea#setFont()",
+              "label": "setFont",
               "type": "Invocation",
               "children": [
                 {
@@ -818,7 +818,7 @@
                   ]
                 },
                 {
-                  "label": "QuickNotepadOptionPane#makeFont()",
+                  "label": "makeFont",
                   "type": "Invocation",
                   "children": [
                     {
@@ -844,7 +844,7 @@
                   "type": "then",
                   "children": [
                     {
-                      "label": "java.io.PrintStream#println(java.lang.String)",
+                      "label": "println",
                       "type": "Invocation",
                       "children": [
                         {
@@ -898,7 +898,7 @@
               ]
             },
             {
-              "label": "java.awt.Container#add(java.lang.String,java.awt.Component)",
+              "label": "add",
               "type": "Invocation",
               "children": [
                 {
@@ -925,7 +925,7 @@
               ]
             },
             {
-              "label": "QuickNotepad#readFile()",
+              "label": "readFile",
               "type": "Invocation",
               "children": [
                 {
@@ -984,7 +984,7 @@
               ]
             },
             {
-              "label": "QuickNotepadTextArea#requestFocus()",
+              "label": "requestFocus",
               "type": "Invocation",
               "children": [
                 {
@@ -1122,7 +1122,7 @@
                   "type": "then",
                   "children": [
                     {
-                      "label": "QuickNotepad#propertiesChanged()",
+                      "label": "propertiesChanged",
                       "type": "Invocation",
                       "children": [
                         {
@@ -1183,7 +1183,7 @@
                   "children": []
                 },
                 {
-                  "label": "org.gjt.sp.jedit.jEdit#getProperty()",
+                  "label": "getProperty",
                   "type": "Invocation",
                   "children": [
                     {
@@ -1226,7 +1226,7 @@
                   "type": "UnaryOperator",
                   "children": [
                     {
-                      "label": "org.gjt.sp.jedit.MiscUtilities#objectsEqual(java.lang.String,java.lang.String)",
+                      "label": "objectsEqual",
                       "type": "Invocation",
                       "children": [
                         {
@@ -1259,7 +1259,7 @@
                   "type": "then",
                   "children": [
                     {
-                      "label": "QuickNotepad#saveFile()",
+                      "label": "saveFile",
                       "type": "Invocation",
                       "children": [
                         {
@@ -1270,7 +1270,7 @@
                       ]
                     },
                     {
-                      "label": "QuickNotepadToolPanel#propertiesChanged()",
+                      "label": "propertiesChanged",
                       "type": "Invocation",
                       "children": [
                         {
@@ -1337,7 +1337,7 @@
                       ]
                     },
                     {
-                      "label": "QuickNotepad#readFile()",
+                      "label": "readFile",
                       "type": "Invocation",
                       "children": [
                         {
@@ -1361,7 +1361,7 @@
                   "children": []
                 },
                 {
-                  "label": "QuickNotepadOptionPane#makeFont()",
+                  "label": "makeFont",
                   "type": "Invocation",
                   "children": [
                     {
@@ -1382,7 +1382,7 @@
                   "type": "UnaryOperator",
                   "children": [
                     {
-                      "label": "java.awt.Font#equals(java.lang.Object)",
+                      "label": "equals",
                       "type": "Invocation",
                       "children": [
                         {
@@ -1391,7 +1391,7 @@
                           "children": []
                         },
                         {
-                          "label": "QuickNotepadTextArea#getFont()",
+                          "label": "getFont",
                           "type": "Invocation",
                           "children": [
                             {
@@ -1416,7 +1416,7 @@
                   "type": "then",
                   "children": [
                     {
-                      "label": "QuickNotepadTextArea#setFont(java.awt.Font)",
+                      "label": "setFont",
                       "type": "Invocation",
                       "children": [
                         {
@@ -1474,7 +1474,7 @@
               ]
             },
             {
-              "label": "javax.swing.JComponent#addNotify()",
+              "label": "addNotify",
               "type": "Invocation",
               "children": [
                 {
@@ -1485,7 +1485,7 @@
               ]
             },
             {
-              "label": "org.gjt.sp.jedit.EditBus#addToBus(QuickNotepad)",
+              "label": "addToBus",
               "type": "Invocation",
               "children": [
                 {
@@ -1549,7 +1549,7 @@
               ]
             },
             {
-              "label": "QuickNotepad#saveFile()",
+              "label": "saveFile",
               "type": "Invocation",
               "children": [
                 {
@@ -1560,7 +1560,7 @@
               ]
             },
             {
-              "label": "javax.swing.JComponent#removeNotify()",
+              "label": "removeNotify",
               "type": "Invocation",
               "children": [
                 {
@@ -1571,7 +1571,7 @@
               ]
             },
             {
-              "label": "org.gjt.sp.jedit.EditBus#removeFromBus(QuickNotepad)",
+              "label": "removeFromBus",
               "type": "Invocation",
               "children": [
                 {
@@ -1659,7 +1659,7 @@
                       "type": "BinaryOperator",
                       "children": [
                         {
-                          "label": "java.lang.String#length()",
+                          "label": "length",
                           "type": "Invocation",
                           "children": [
                             {
@@ -1730,7 +1730,7 @@
                   ]
                 },
                 {
-                  "label": "java.io.Writer#write(char[])",
+                  "label": "write",
                   "type": "Invocation",
                   "children": [
                     {
@@ -1739,7 +1739,7 @@
                       "children": []
                     },
                     {
-                      "label": "QuickNotepadTextArea#getText()",
+                      "label": "getText",
                       "type": "Invocation",
                       "children": [
                         {
@@ -1758,7 +1758,7 @@
                   ]
                 },
                 {
-                  "label": "java.io.OutputStreamWriter#close()",
+                  "label": "close",
                   "type": "Invocation",
                   "children": [
                     {
@@ -1784,7 +1784,7 @@
                       ]
                     },
                     {
-                      "label": "org.gjt.sp.util.Log#log(java.lang.Class,java.lang.String)",
+                      "label": "log",
                       "type": "Invocation",
                       "children": [
                         {
@@ -1883,7 +1883,7 @@
                   "children": []
                 },
                 {
-                  "label": "org.gjt.sp.jedit.GUIUtilities#showVFSFileDialog(org.gjt.sp.jedit.View,\u003cunknown\u003e,int,boolean)",
+                  "label": "showVFSFileDialog",
                   "type": "Invocation",
                   "children": [
                     {
@@ -1956,7 +1956,7 @@
                       "type": "UnaryOperator",
                       "children": [
                         {
-                          "label": "java.lang.String#equals(java.lang.Object)",
+                          "label": "equals",
                           "type": "Invocation",
                           "children": [
                             {
@@ -1997,7 +1997,7 @@
                   "type": "then",
                   "children": [
                     {
-                      "label": "QuickNotepad#saveFile()",
+                      "label": "saveFile",
                       "type": "Invocation",
                       "children": [
                         {
@@ -2041,7 +2041,7 @@
                       ]
                     },
                     {
-                      "label": "QuickNotepadToolPanel#propertiesChanged()",
+                      "label": "propertiesChanged",
                       "type": "Invocation",
                       "children": [
                         {
@@ -2058,7 +2058,7 @@
                       ]
                     },
                     {
-                      "label": "QuickNotepad#readFile()",
+                      "label": "readFile",
                       "type": "Invocation",
                       "children": [
                         {
@@ -2105,7 +2105,7 @@
               ]
             },
             {
-              "label": "org.gjt.sp.jedit.jEdit#newFile(org.gjt.sp.jedit.View)",
+              "label": "newFile",
               "type": "Invocation",
               "children": [
                 {
@@ -2127,15 +2127,15 @@
               ]
             },
             {
-              "label": "#setText()",
+              "label": "setText",
               "type": "Invocation",
               "children": [
                 {
-                  "label": "#getTextArea()",
+                  "label": "getTextArea",
                   "type": "Invocation",
                   "children": [
                     {
-                      "label": "org.gjt.sp.jedit.View#getEditPane()",
+                      "label": "getEditPane",
                       "type": "Invocation",
                       "children": [
                         {
@@ -2154,7 +2154,7 @@
                   ]
                 },
                 {
-                  "label": "QuickNotepadTextArea#getText()",
+                  "label": "getText",
                   "type": "Invocation",
                   "children": [
                     {
@@ -2239,7 +2239,7 @@
                       "type": "BinaryOperator",
                       "children": [
                         {
-                          "label": "java.lang.String#length()",
+                          "label": "length",
                           "type": "Invocation",
                           "children": [
                             {
@@ -2382,7 +2382,7 @@
                               "children": []
                             },
                             {
-                              "label": "java.io.BufferedReader#readLine()",
+                              "label": "readLine",
                               "type": "Invocation",
                               "children": [
                                 {
@@ -2402,11 +2402,11 @@
                       ]
                     },
                     {
-                      "label": "java.lang.StringBuffer#append(char)",
+                      "label": "append",
                       "type": "Invocation",
                       "children": [
                         {
-                          "label": "java.lang.StringBuffer#append(java.lang.String)",
+                          "label": "append",
                           "type": "Invocation",
                           "children": [
                             {
@@ -2431,7 +2431,7 @@
                   ]
                 },
                 {
-                  "label": "java.io.BufferedReader#close()",
+                  "label": "close",
                   "type": "Invocation",
                   "children": [
                     {
@@ -2442,7 +2442,7 @@
                   ]
                 },
                 {
-                  "label": "QuickNotepadTextArea#setText(java.lang.String)",
+                  "label": "setText",
                   "type": "Invocation",
                   "children": [
                     {
@@ -2457,7 +2457,7 @@
                       ]
                     },
                     {
-                      "label": "java.lang.StringBuffer#toString()",
+                      "label": "toString",
                       "type": "Invocation",
                       "children": [
                         {
@@ -2485,7 +2485,7 @@
                       ]
                     },
                     {
-                      "label": "org.gjt.sp.util.Log#log(java.lang.Class,java.lang.String)",
+                      "label": "log",
                       "type": "Invocation",
                       "children": [
                         {
@@ -2562,7 +2562,7 @@
                       ]
                     },
                     {
-                      "label": "org.gjt.sp.util.Log#log(java.lang.Class,java.lang.String)",
+                      "label": "log",
                       "type": "Invocation",
                       "children": [
                         {

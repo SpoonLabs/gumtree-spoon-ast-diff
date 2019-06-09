@@ -196,8 +196,9 @@ public class TreeTest {
 				.build();
 
 		CtType<?> aType = factory.Type().get("QuickNotepad");
-		assertEquals(FileUtils.readFileToString(new File("./src/test/resources/examples/spoon.json")),
-				new Json4SpoonGenerator().getJSONasString(aType));
+		String jsoNasString = new Json4SpoonGenerator().getJSONasString(aType).trim();
+		assertEquals(FileUtils.readFileToString(new File("./src/test/resources/examples/spoon.json")).trim(),
+				jsoNasString);
 	}
 
 	@Test
