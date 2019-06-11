@@ -78,10 +78,17 @@ public class AstComparator {
 	}
 
 	/**
-	 * compares two snippet
+	 * compares two snippets
 	 */
 	public Diff compare(String left, String right) {
 		return compare(getCtType(left), getCtType(right));
+	}
+
+	/**
+	 * compares two snippets that come from the files given as argument
+	 */
+	public Diff compare(String left, String right, String filenameLeft, String filenameRight) {
+		return compare(getCtType(left, filenameLeft), getCtType(right, filenameRight));
 	}
 
 	/**
@@ -119,7 +126,11 @@ public class AstComparator {
 	}
 
 	public CtType<?> getCtType(String content) {
-		VirtualFile resource = new VirtualFile(content, "/test");
+		return getCtType(content, "/test");
+	}
+
+	public CtType<?> getCtType(String content, String filename) {
+		VirtualFile resource = new VirtualFile(content, filename);
 		return getCtType(resource);
 	}
 
