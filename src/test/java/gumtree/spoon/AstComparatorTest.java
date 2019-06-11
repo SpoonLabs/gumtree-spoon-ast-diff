@@ -20,6 +20,7 @@ import gumtree.spoon.builder.NodeCreator;
 import gumtree.spoon.builder.SpoonGumTreeBuilder;
 import gumtree.spoon.diff.Diff;
 import gumtree.spoon.diff.DiffImpl;
+import gumtree.spoon.diff.operations.InsertOperation;
 import gumtree.spoon.diff.operations.MoveOperation;
 import gumtree.spoon.diff.operations.Operation;
 import gumtree.spoon.diff.operations.OperationKind;
@@ -240,8 +241,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		System.out.println(actions);
 		assertEquals(2, actions.size());
-		assertTrue(result.containsOperation(OperationKind.Delete, "Invocation",
-				"addKeyListener"));
+		assertTrue(result.containsOperation(OperationKind.Delete, "Invocation", "addKeyListener"));
 		assertTrue(result.containsOperation(OperationKind.Delete, "Class", "KeyHandler"));
 
 		CtElement ancestor = result.commonAncestor();
@@ -1651,6 +1651,34 @@ public class AstComparatorTest {
 						+ "    }\n" + "}");
 
 		assertEquals(1, result.getRootOperations().size());
+
+	}
+
+	@Test
+	public void testFileName() throws Exception {
+		AstComparator diff = new AstComparator();
+		String left = "public class Calculator {\n" + "    public int add(int a, int b){\n" + "        return a + b;\n"
+				+ "    }\n" + "}";
+		String right = "public class Calculator {\n" + "    public int add(int a, int b){\n"
+				+ "    a = a + b;    return a + b;\n" + "    }\n" + "}";
+		Diff result = diff.compare(left, right);
+
+		assertEquals(1, result.getRootOperations().size());
+		// by default, name is "test"
+		assertEquals("test", result.getRootOperations().get(0).getSrcNode().getPosition().getFile().getName());
+
+		// let's put other names
+		result = diff.compare(left, right, "mleft.java", "mright.java");
+
+		assertEquals(1, result.getRootOperations().size());
+
+		assertTrue(result.getRootOperations().get(0) instanceof InsertOperation);
+
+		assertEquals("mright.java", result.getRootOperations().get(0).getSrcNode().getPosition().getFile().getName());
+
+		InsertOperation ins = (InsertOperation) result.getRootOperations().get(0);
+
+		assertEquals("mleft.java", ins.getParent().getPosition().getFile().getName());
 
 	}
 
