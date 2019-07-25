@@ -27,7 +27,7 @@ public class DiffTest {
 		AstComparator diff = new AstComparator();
 		Diff result = diff.compare(fl,fr);
 		assertEquals("Update FieldRead at org.apache.commons.cli.TypeHandler:80" +newline
-				+ "\t(org.apache.commons.cli.PatternOptionBuilder.DATE_VALUE) to (org.apache.commons.cli.PatternOptionBuilder.CLASS_VALUE)" + newline
+				+ "\torg.apache.commons.cli.PatternOptionBuilder.DATE_VALUE to org.apache.commons.cli.PatternOptionBuilder.CLASS_VALUE" + newline
 				+ "Insert Invocation at org.apache.commons.cli.TypeHandler:118" + newline
 				+ "\tjava.lang.System.out.println(\"Hola\")" + newline, result.toString());
 		fl = new File("src/test/resources/examples/test2/CommandLine1.java");
@@ -45,7 +45,7 @@ public class DiffTest {
 				+ "\tpublic java.lang.String[] getOptionValues(java.lang.String opt) {" + newline
 				+ "\t    java.util.List<java.lang.String> values = new java.util.ArrayList<java.lang.String>();" + newline
 				+ "\t    for (org.apache.commons.cli.Option option : options) {" + newline
-				+ "\t        if ((opt.equals(option.getOpt())) || (opt.equals(option.getLongOpt()))) {" + newline
+				+ "\t        if (opt.equals(option.getOpt()) || opt.equals(option.getLongOpt())) {" + newline
 				+ "\t            values.addAll(option.getValuesList());" + newline
 				+ "\t        }" + newline
 				+ "\t    }" + newline
@@ -84,8 +84,8 @@ public class DiffTest {
 
 		List<Operation> actionsRoot = result.getRootOperations();
 		assertEquals(2, actionsRoot.size());
-		assertEquals("(testArea) != null", actionsRoot.get(0).getSrcNode().toString());
-		assertEquals("(testArea) == null", actionsRoot.get(0).getDstNode().toString());
+		assertEquals("testArea != null", actionsRoot.get(0).getSrcNode().toString());
+		assertEquals("testArea == null", actionsRoot.get(0).getDstNode().toString());
 		assertTrue(result.containsOperation(OperationKind.Update, "BinaryOperator"));
 		assertTrue(result.containsOperation(OperationKind.Insert, "Return"));
 		assertEquals(null, actionsRoot.get(1).getDstNode());
