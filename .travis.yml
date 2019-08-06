@@ -17,3 +17,4 @@ cache:
 after_success:
   - .buildscript/deploy_to_maven.sh
 
+dist: trusty
