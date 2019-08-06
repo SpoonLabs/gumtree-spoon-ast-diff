@@ -1,8 +1,8 @@
 package gumtree.spoon.diff;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,12 +28,12 @@ public class ActionClassifier {
 	// /
 	// ROOT CLASSIFIER
 	// /
-	private Set<ITree> srcUpdTrees = new HashSet<>();
-	private Set<ITree> dstUpdTrees = new HashSet<>();
-	private Set<ITree> srcMvTrees = new HashSet<>();
-	private Set<ITree> dstMvTrees = new HashSet<>();
-	private Set<ITree> srcDelTrees = new HashSet<>();
-	private Set<ITree> dstAddTrees = new HashSet<>();
+	private List<ITree> srcUpdTrees = new ArrayList<>();
+	private List<ITree> dstUpdTrees = new ArrayList<>();
+	private List<ITree> srcMvTrees = new ArrayList<>();
+	private List<ITree> dstMvTrees = new ArrayList<>();
+	private List<ITree> srcDelTrees = new ArrayList<>();
+	private List<ITree> dstAddTrees = new ArrayList<>();
 	private Map<ITree, Action> originalActionsSrc = new HashMap<>();
 	private Map<ITree, Action> originalActionsDst = new HashMap<>();
 
