@@ -83,12 +83,13 @@ public class AstComparatorTest {
 		Diff result = diff.compare(fl, fr);
 		List<Operation> actions = result.getRootOperations();
 		// result.debugInformation();
-		assertEquals(2, actions.size());
+		assertEquals(4, actions.size());
+
+		result.debugInformation();
 
 		CtElement ancestor = result.commonAncestor();
 		assertTrue(ancestor instanceof CtClass);
 		assertTrue(result.containsOperation(OperationKind.Insert, "Invocation"));
-		assertTrue(result.containsOperation(OperationKind.Update, "FieldRead"));
 
 		assertFalse(result.containsOperation(OperationKind.Delete, "Invocation"));
 		assertFalse(result.containsOperation(OperationKind.Update, "Invocation"));
@@ -1088,18 +1089,17 @@ public class AstComparatorTest {
 	@Test
 	public void test_t_225391() throws Exception {
 		AstComparator diff = new AstComparator();
-		// meld src/test/resources/examples/t_225391/left_IndexHTML_1.4.java
-		// src/test/resources/examples/t_225391/right_IndexHTML_1.5.java
+		// meld src/test/resources/examples/t_225391/left_IndexHTML_1.4.java src/test/resources/examples/t_225391/right_IndexHTML_1.5.java
 		File fl = new File("src/test/resources/examples/t_225391/left_IndexHTML_1.4.java");
 		File fr = new File("src/test/resources/examples/t_225391/right_IndexHTML_1.5.java");
 		Diff result = diff.compare(fl, fr);
 
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
-		assertEquals(3, actions.size());
+		assertEquals(2, actions.size());
 		assertTrue(result.containsOperation(OperationKind.Delete, "Assignment"));
 		assertTrue(result.containsOperation(OperationKind.Insert, "Invocation", "setMaxFieldLength"));
-		assertTrue(result.containsOperation(OperationKind.Move, "FieldRead", "writer"));
+		//assertTrue(result.containsOperation(OperationKind.Move, "FieldRead", "writer"));
 	}
 
 	@Test
@@ -1788,12 +1788,16 @@ public class AstComparatorTest {
 	@Test
 	public void testD4JLang57() throws Exception {
 		AstComparator diff = new AstComparator();
+		// meld src/test/resources/examples/d4j/Lang_57/LocaleUtils/Lang_57_LocaleUtils_s.java src/test/resources/examples/d4j/Lang_57/LocaleUtils/Lang_57_LocaleUtils_t.java
 		File fl = new File("src/test/resources/examples/d4j/Lang_57/LocaleUtils/Lang_57_LocaleUtils_s.java");
 		File fr = new File("src/test/resources/examples/d4j/Lang_57/LocaleUtils/Lang_57_LocaleUtils_t.java");
 
 		Diff result = diff.compare(fl, fr);
+		result.debugInformation();
 		List<Operation> actions = result.getAllOperations();
-		assertEquals(4, actions.size());
+		assertEquals(2, actions.size());
+		assertTrue(result.containsOperation(OperationKind.Delete, "FieldRead", "cAvailableLocaleSet"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "Invocation", "availableLocaleList"));
 
 	}
 
