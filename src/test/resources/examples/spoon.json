@@ -2643,27 +2643,7 @@
         },
         {
           "label": "",
-          "type": "Comment",
-          "children": []
-        },
-        {
-          "label": "",
-          "type": "Comment",
-          "children": []
-        },
-        {
-          "label": "",
-          "type": "Comment",
-          "children": []
-        },
-        {
-          "label": "",
           "type": "JavaDoc",
-          "children": []
-        },
-        {
-          "label": "",
-          "type": "Comment",
           "children": []
         },
         {

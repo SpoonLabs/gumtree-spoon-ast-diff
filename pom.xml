@@ -37,7 +37,8 @@
     <dependency>
       <groupId>fr.inria.gforge.spoon</groupId>
       <artifactId>spoon-core</artifactId>
-      <version>7.5.0</version>
+      <!-- must be set to 7.6.0 before releasing a new version --> 
+      <version>7.6.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>com.github.gumtreediff</groupId>
