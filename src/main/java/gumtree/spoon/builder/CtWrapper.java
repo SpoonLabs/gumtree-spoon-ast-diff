@@ -27,6 +27,7 @@ public class CtWrapper<L> extends CtElementImpl {
 		super();
 		this.value = wrapped;
 		this.parent = parent;
+		setFactory(parent.getFactory());
 	}
 
 	public CtWrapper(L wrapped, CtElement parent, CtRole roleInParent) {
@@ -34,6 +35,7 @@ public class CtWrapper<L> extends CtElementImpl {
 		this.value = wrapped;
 		this.parent = parent;
 		this.roleInParent = roleInParent;
+		setFactory(parent.getFactory());
 	}
 
 	@Override
