@@ -4,6 +4,8 @@
 #
 # Inspired from https://github.com/square/retrofit/blob/fccedbeb4d5181c926fff450cdf5c5116ef0eeaa/.buildscript/deploy_snapshot.sh
 
+set -e
+
 SLUG="SpoonLabs/gumtree-spoon-ast-diff"
 JDK="oraclejdk8"
 BRANCH="master"
@@ -20,7 +22,7 @@ elif [ "$TRAVIS_BRANCH" != "$BRANCH" ]; then
   echo "Skipping deployment: wrong branch. Expected '$BRANCH' but was '$TRAVIS_BRANCH'."
 else
   echo "Deploying ..."
-  # made with "travis encrypt-file codesigning.asc -r SpoonLabs/gumtree-spoon-ast-diff --add"
+  # made with "travis encrypt-file .buildscript/codesigning.asc -r SpoonLabs/gumtree-spoon-ast-diff --add"
   openssl aes-256-cbc -K $encrypted_9809c3ea697e_key -iv $encrypted_9809c3ea697e_iv -in .buildscript/codesigning.asc.enc -out codesigning.asc -d
   gpg --fast-import codesigning.asc
 
