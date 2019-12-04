@@ -1,6 +1,7 @@
 package gumtree.spoon;
 
 import java.io.File;
+import java.util.Map;
 
 import gumtree.spoon.builder.SpoonGumTreeBuilder;
 import gumtree.spoon.diff.Diff;
@@ -58,15 +59,31 @@ public class AstComparator {
 		// System.setProperty("gumtree.match.bu.size","10");
 		// System.setProperty("gt.bum.szt", "1000");
 	}
+	/**
+	 * By default, comments are ignored
+	 */
+	private boolean includeComments = false;
 
 	public AstComparator() {
 		super();
 	}
 
+	public AstComparator(boolean includeComments) {
+		super();
+		this.includeComments = includeComments;
+	}
+
+	public AstComparator(Map<String, String> configuration) {
+		super();
+		for (String k : configuration.keySet()) {
+			System.setProperty(k, configuration.get(k));
+		}
+	}
+
 	protected Factory createFactory() {
 		Factory factory = new FactoryImpl(new DefaultCoreFactory(), new StandardEnvironment());
 		factory.getEnvironment().setNoClasspath(true);
-		factory.getEnvironment().setCommentEnabled(false);
+		factory.getEnvironment().setCommentEnabled(includeComments);
 		return factory;
 	}
 

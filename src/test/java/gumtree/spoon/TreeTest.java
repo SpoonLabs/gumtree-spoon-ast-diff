@@ -29,6 +29,8 @@ import gumtree.spoon.diff.operations.UpdateOperation;
 import spoon.Launcher;
 import spoon.compiler.SpoonResourceHelper;
 import spoon.reflect.code.CtStatement;
+import spoon.reflect.cu.SourcePosition;
+import spoon.reflect.cu.position.NoSourcePosition;
 import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.declaration.CtType;
@@ -190,7 +192,10 @@ public class TreeTest {
 	public void test_JSON_manual_generation_2() throws Exception {
 
 		Launcher spoon = new Launcher();
+
+		spoon.getFactory().getEnvironment().setCommentEnabled(false);
 		Factory factory = spoon.createFactory();
+		factory.getEnvironment().setCommentEnabled(false);
 		spoon.createCompiler(factory,
 				SpoonResourceHelper.resources("src/test/resources/examples/roots/test8/right_QuickNotepad_1.14.java"))
 				.build();
@@ -453,6 +458,57 @@ public class TreeTest {
 		assertEquals("public", ((CtWrapper) op1.getSrcNode()).getValue().toString());
 
 		assertEquals("protected", ((CtWrapper) op1.getDstNode()).getValue().toString());
+
+	}
+
+	@Test
+	public void test_bug_Possition() throws Exception {
+		AstComparator comparator = new AstComparator();
+		File fl = new File("src/test/resources/examples/roots/test8/left_QuickNotepad_1.13.java");
+		File fr = new File("src/test/resources/examples/roots/test8/right_QuickNotepad_1.14.java");
+
+		CtType<?> astLeft = comparator.getCtType(fl);
+
+		assertNotNull(astLeft);
+
+		CtType<?> astRight = comparator.getCtType(fr);
+		assertNotNull(astRight);
+
+		Diff diffResult = comparator.compare(astLeft, astRight);
+		List<Operation> rootOperations = diffResult.getRootOperations();
+		getPaths(rootOperations);
+		List<Operation> allOperations = diffResult.getAllOperations();
+		getPaths(allOperations);
+
+		assertEquals(1, rootOperations.size());
+
+		SourcePosition position = rootOperations.get(0).getSrcNode().getPosition();
+		assertTrue(position.getLine() > 0);
+		assertEquals(113, position.getLine());
+
+		assertTrue(!(position instanceof NoSourcePosition));
+
+	}
+
+	@Test
+	public void test_bug_Possition_from_String() {
+		String c1 = "" + "class X {\n" + "public void foo() {\n" + " int x = 0;\n" + "}" + "};";
+
+		String c2 = "" + "class X {\n" + "public void foo() {\n" + " int x = 1;\n" + "}" + "};";
+
+		AstComparator diff = new AstComparator();
+		Diff editScript = diff.compare(c1, c2);
+		assertTrue(editScript.getRootOperations().size() == 1);
+
+		List<Operation> rootOperations = editScript.getRootOperations();
+
+		assertEquals(1, rootOperations.size());
+
+		SourcePosition position = rootOperations.get(0).getSrcNode().getPosition();
+		assertTrue(!(position instanceof NoSourcePosition));
+
+		assertTrue(position.getLine() > 0);
+		assertEquals(3, position.getLine());
 
 	}
 }

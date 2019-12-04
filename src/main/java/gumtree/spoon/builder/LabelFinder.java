@@ -5,6 +5,7 @@ import spoon.reflect.code.CtAssignment;
 import spoon.reflect.code.CtBinaryOperator;
 import spoon.reflect.code.CtBlock;
 import spoon.reflect.code.CtBreak;
+import spoon.reflect.code.CtComment;
 import spoon.reflect.code.CtConstructorCall;
 import spoon.reflect.code.CtContinue;
 import spoon.reflect.code.CtIf;
@@ -42,9 +43,10 @@ class LabelFinder extends CtInheritanceScanner {
 			CtTypeReference decl = invocation.getExecutable().getDeclaringType();
 			// label =
 			// (decl!=null?decl.getQualifiedName():"")+"#"+invocation.getExecutable().getSignature();
-			//label = (decl != null ? decl.getQualifiedName() : "") + "#" + invocation.getExecutable().getSimpleName();
+			// label = (decl != null ? decl.getQualifiedName() : "") + "#" +
+			// invocation.getExecutable().getSimpleName();
 			label = invocation.getExecutable().getSimpleName();
-			
+
 		}
 	}
 
@@ -136,5 +138,10 @@ class LabelFinder extends CtInheritanceScanner {
 		if (typeAccess.getAccessedType() != null) {
 			label = typeAccess.getAccessedType().getQualifiedName();
 		}
+	}
+
+	@Override
+	public void visitCtComment(CtComment comment) {
+		label = comment.getContent();
 	}
 }
