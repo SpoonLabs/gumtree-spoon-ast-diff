@@ -28,6 +28,7 @@ import gumtree.spoon.diff.operations.UpdateOperation;
 import spoon.Launcher;
 import spoon.SpoonModelBuilder;
 import spoon.reflect.code.CtBinaryOperator;
+import spoon.reflect.code.CtComment;
 import spoon.reflect.code.CtConstructorCall;
 import spoon.reflect.code.CtIf;
 import spoon.reflect.code.CtInvocation;
@@ -1089,7 +1090,8 @@ public class AstComparatorTest {
 	@Test
 	public void test_t_225391() throws Exception {
 		AstComparator diff = new AstComparator();
-		// meld src/test/resources/examples/t_225391/left_IndexHTML_1.4.java src/test/resources/examples/t_225391/right_IndexHTML_1.5.java
+		// meld src/test/resources/examples/t_225391/left_IndexHTML_1.4.java
+		// src/test/resources/examples/t_225391/right_IndexHTML_1.5.java
 		File fl = new File("src/test/resources/examples/t_225391/left_IndexHTML_1.4.java");
 		File fr = new File("src/test/resources/examples/t_225391/right_IndexHTML_1.5.java");
 		Diff result = diff.compare(fl, fr);
@@ -1099,7 +1101,8 @@ public class AstComparatorTest {
 		assertEquals(2, actions.size());
 		assertTrue(result.containsOperation(OperationKind.Delete, "Assignment"));
 		assertTrue(result.containsOperation(OperationKind.Insert, "Invocation", "setMaxFieldLength"));
-		//assertTrue(result.containsOperation(OperationKind.Move, "FieldRead", "writer"));
+		// assertTrue(result.containsOperation(OperationKind.Move, "FieldRead",
+		// "writer"));
 	}
 
 	@Test
@@ -1535,7 +1538,8 @@ public class AstComparatorTest {
 
 		assertEquals(1, actions.size());
 		assertTrue(result.containsOperation(OperationKind.Insert, "Parameter", "call"));
-		//assertTrue(result.containsOperation(OperationKind.Update, "SUPER_TYPE", "Callback<T>"));
+		// assertTrue(result.containsOperation(OperationKind.Update, "SUPER_TYPE",
+		// "Callback<T>"));
 	}
 
 	@Test
@@ -1727,7 +1731,8 @@ public class AstComparatorTest {
 		assertEquals(1, actions.size());
 
 		assertTrue(resulta.containsOperation(OperationKind.Insert, "Parameter", "call"));
-		//assertTrue(resulta.containsOperation(OperationKind.Update, "SUPER_TYPE", "Callback<T>"));
+		// assertTrue(resulta.containsOperation(OperationKind.Update, "SUPER_TYPE",
+		// "Callback<T>"));
 
 		DiffImpl idiff = (DiffImpl) resulta;
 
@@ -1788,7 +1793,9 @@ public class AstComparatorTest {
 	@Test
 	public void testD4JLang57() throws Exception {
 		AstComparator diff = new AstComparator();
-		// meld src/test/resources/examples/d4j/Lang_57/LocaleUtils/Lang_57_LocaleUtils_s.java src/test/resources/examples/d4j/Lang_57/LocaleUtils/Lang_57_LocaleUtils_t.java
+		// meld
+		// src/test/resources/examples/d4j/Lang_57/LocaleUtils/Lang_57_LocaleUtils_s.java
+		// src/test/resources/examples/d4j/Lang_57/LocaleUtils/Lang_57_LocaleUtils_t.java
 		File fl = new File("src/test/resources/examples/d4j/Lang_57/LocaleUtils/Lang_57_LocaleUtils_s.java");
 		File fr = new File("src/test/resources/examples/d4j/Lang_57/LocaleUtils/Lang_57_LocaleUtils_t.java");
 
@@ -1810,6 +1817,76 @@ public class AstComparatorTest {
 		Diff result = diff.compare(fl, fr);
 		List<Operation> actions = result.getAllOperations();
 		assertEquals(4, actions.size());
+
+	}
+
+	@Test
+	public void testDiff1Comment() throws Exception {
+		File s = new File("src/test/resources/examples/diffcomment1/1205753_EmbedPooledConnection_0_s.java");
+		File t = new File("src/test/resources/examples/diffcomment1/1205753_EmbedPooledConnection_0_t.java");
+		boolean includeComments = true;
+		AstComparator r = new AstComparator(includeComments);
+		Diff diffOut = r.compare(s, t);
+		System.out.println("Output: " + diffOut);
+		Assert.assertEquals(1, diffOut.getRootOperations().size());
+		Operation op = diffOut.getRootOperations().get(0);
+		Assert.assertTrue(op.getSrcNode().getComments().size() > 0);
+
+		List<Operation> allop = diffOut.getAllOperations();
+		boolean hasComment = false;
+		for (Operation operation : allop) {
+			hasComment = hasComment || (operation.getSrcNode() instanceof CtComment);
+		}
+		assertTrue(hasComment);
+
+	}
+
+	@Test
+	public void testDiff2Comment() throws Exception {
+		File s = new File("src/test/resources/examples/diffcomment2/1205753_EmbedPooledConnection_0_s.java");
+		File t = new File("src/test/resources/examples/diffcomment2/1205753_EmbedPooledConnection_0_t.java");
+		boolean includeComments = true;
+		AstComparator r = new AstComparator(includeComments);
+
+		Diff diffOut = r.compare(s, t);
+		System.out.println("Output: " + diffOut);
+		Assert.assertEquals(1, diffOut.getRootOperations().size());
+		Operation op = diffOut.getRootOperations().get(0);
+		// Assert.assertTrue(op.getSrcNode().getComments().size() > 0);
+
+		List<Operation> allop = diffOut.getAllOperations();
+		boolean hasComment = false;
+		for (Operation operation : allop) {
+			hasComment = hasComment || (operation.getSrcNode() instanceof CtComment);
+		}
+		assertTrue(hasComment);
+
+	}
+
+	@Test
+	public void testDiff3Comment() throws Exception {
+		File s = new File("src/test/resources/examples/diffcomment3/RectangularCholeskyDecomposition_s.java");
+		File t = new File("src/test/resources/examples/diffcomment3/RectangularCholeskyDecomposition_t.java");
+		boolean includeComments = true;
+		AstComparator r = new AstComparator(includeComments);
+
+		Diff diffOut = r.compare(s, t);
+		System.out.println("Output: " + diffOut);
+		Assert.assertEquals(1, diffOut.getRootOperations().size());
+		Operation op = diffOut.getRootOperations().get(0);
+		Assert.assertTrue(op.getSrcNode().getComments().size() > 0);
+
+		assertFalse(op.getSrcNode() instanceof CtComment);
+
+		List<Operation> allop = diffOut.getAllOperations();
+		boolean hasComment = false;
+		for (Operation operation : allop) {
+			if ((operation.getSrcNode() instanceof CtComment)) {
+				hasComment = true;
+				System.out.println(operation.getSrcNode());
+			}
+		}
+		assertTrue(hasComment);
 
 	}
 
