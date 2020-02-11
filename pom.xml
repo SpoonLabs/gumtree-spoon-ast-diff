@@ -235,7 +235,7 @@
       <repository>
           <id>gforge.inria.fr-release</id>
           <name>Maven Repository for Spoon Release</name>
-          <url>http://maven.inria.fr/artifactory/spoon-public-snapshot/</url>
+          <url>https://maven.inria.fr/artifactory/spoon-public-snapshot/</url>
       </repository>
   </repositories>
     
