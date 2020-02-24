@@ -42,12 +42,12 @@ public class AstComparator {
 		// 0.8 2 failing
 		// 0.9 two failing tests with more changes
 		// see GreedyBottomUpMatcher.java in Gumtree
-		System.setProperty("gumtree.match.bu.sim", "0.6");
+		System.setProperty("gt.bum.smt", "0.6");
 
 		// default 2
 		// 0 is really bad for 211903 t_224542 225391 226622
 		// 1 is required for t_225262 and t_213712 to pass
-		System.setProperty("gumtree.match.gt.minh", "1");
+		System.setProperty("gt.stm.mh", "1");
 
 		// default 1000
 		// 0 fails
