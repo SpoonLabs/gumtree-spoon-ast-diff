@@ -43,6 +43,8 @@ import spoon.reflect.factory.Factory;
 import spoon.support.compiler.VirtualFile;
 import spoon.support.compiler.jdt.JDTBasedSpoonCompiler;
 import spoon.support.compiler.jdt.JDTSnippetCompiler;
+import com.github.gumtreediff.matchers.heuristic.gt.AbstractBottomUpMatcher;
+import com.github.gumtreediff.matchers.heuristic.gt.AbstractSubtreeMatcher;
 
 /**
  * Test Spoon Diff
@@ -51,6 +53,14 @@ import spoon.support.compiler.jdt.JDTSnippetCompiler;
  *
  */
 public class AstComparatorTest {
+
+	@Test
+	public void propertiesCorrectlySet() {
+		new AstComparator(); // just to run the static code of the class
+
+		assertEquals(0.6, AbstractBottomUpMatcher.SIM_THRESHOLD, 1e-6);
+		assertEquals(1, AbstractSubtreeMatcher.MIN_HEIGHT);
+	}
 
 	@Test
 	public void testgetCtType() throws Exception {
