@@ -107,6 +107,14 @@ public class ActionClassifier {
 		originalActionsDst.clear();
 	}
 
+	public static List<Operation> replaceMoveFromAll(Diff editScript) {
+		return replaceMove(editScript.getMappingsComp(), editScript.getAllOperations(), true);
+	}
+
+	public static List<Operation> replaceMoveFromRoots(Diff editScript) {
+		return replaceMove(editScript.getMappingsComp(), editScript.getRootOperations(), false);
+	}
+
 	/**
 	 * replaces moves by Insert/Delete operations
 	 * 
@@ -114,34 +122,45 @@ public class ActionClassifier {
 	 * @param ops
 	 * @return
 	 */
-	public static List<Operation> replaceMove(MappingStore mapping, List<Operation> ops) {
+	public static List<Operation> replaceMove(MappingStore mapping, List<Operation> ops, boolean all) {
 		List<Operation> newOps = new ArrayList<>();
+
+		List<ITree> dels = ops.stream().filter(e -> e instanceof DeleteOperation).map(e -> e.getAction().getNode())
+				.collect(Collectors.toList());
+		List<ITree> inss = ops.stream().filter(e -> e instanceof InsertOperation).map(e -> e.getAction().getNode())
+				.collect(Collectors.toList());
 
 		for (Operation operation : ops) {
 
 			if (operation instanceof MoveOperation) {
 
 				MoveOperation movOp = (MoveOperation) operation;
+				ITree node = movOp.getAction().getNode();
 
 				// Create the delete
 
-				Delete deleteAction = new Delete(movOp.getAction().getNode());
+				Delete deleteAction = new Delete(node);
 
 				DeleteOperation delOp = new DeleteOperation(deleteAction);
 
 				// add to the final list
-				newOps.add(delOp);
+				if (all || !inParent(dels, node.getParent())) {
+					newOps.add(delOp);
+				}
 
 				// Now the insert
-
-				ITree node = mapping.getDst(movOp.getAction().getNode());
-				ITree parent = (mapping.hasSrc(node)) ? mapping.getDst(node) : node;
+				ITree dstNode = mapping.getDst(node);
+				ITree parentInAction = movOp.getAction().getParent();
+				ITree parent = (mapping.hasSrc(parentInAction)) ? mapping.getDst(parentInAction) : parentInAction;
 				int pos = movOp.getPosition();
 
-				Insert insertAc = new Insert(node, parent, pos);
+				Insert insertAc = new Insert(dstNode, parent, pos);
 
 				InsertOperation insertOp = new InsertOperation(insertAc);
-				newOps.add(insertOp);
+
+				if (all || !inParent(inss, parentInAction)) {
+					newOps.add(insertOp);
+				}
 
 			} else {
 				newOps.add(operation);
@@ -152,4 +171,14 @@ public class ActionClassifier {
 		return newOps;
 	}
 
+	public static boolean inParent(List<ITree> trees, ITree parent) {
+		if (parent == null) {
+			return false;
+		}
+		if (trees.contains(parent))
+			return true;
+		else
+			return inParent(trees, parent.getParent());
+
+	}
 }

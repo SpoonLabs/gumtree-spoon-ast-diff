@@ -1905,7 +1905,7 @@ public class AstComparatorTest {
 	}
 
 	@Test
-	public void testReplaceMoves1() {
+	public void testReplaceMovesFromRoot1() {
 		String c1 = "" + "class X {" + "public void foo0() {" + " int z = 0;" + " int x = 0;" + " int y = 0;" + "}"
 				+ "};";
 
@@ -1915,8 +1915,6 @@ public class AstComparatorTest {
 		AstComparator diff = new AstComparator();
 		Diff editScript = diff.compare(c1, c2);
 
-		System.out.println(editScript);
-
 		assertEquals(1, editScript.getRootOperations().size());
 
 		assertEquals(1, editScript.getAllOperations().size());
@@ -1925,8 +1923,10 @@ public class AstComparatorTest {
 				.findAny();
 		assertTrue(moveOpt.isPresent());
 
-		List<Operation> newOps = ActionClassifier.replaceMove(editScript.getMappingsComp(),
-				editScript.getAllOperations());
+		List<Operation> newOps = ActionClassifier.replaceMoveFromRoots(editScript);
+
+		Optional<Operation> moveOptN = newOps.stream().filter(e -> e instanceof MoveOperation).findAny();
+		assertFalse(moveOptN.isPresent());
 
 		assertEquals(2, newOps.size());
 
@@ -1954,7 +1954,7 @@ public class AstComparatorTest {
 	}
 
 	@Test
-	public void testReplaceMoves2() {
+	public void testReplaceMovesFromRoot2() {
 		String c1 = "" + "class X {" + "public void foo0() {" + " int z = 0;" + " int x = 0;" + " int y = 0;" + "}"
 				+ "};";
 
@@ -1972,10 +1972,10 @@ public class AstComparatorTest {
 				.findAny();
 		assertTrue(moveOpt.isPresent());
 
-		List<Operation> newOps = ActionClassifier.replaceMove(editScript.getMappingsComp(),
-				editScript.getRootOperations());
+		List<Operation> newOps = ActionClassifier.replaceMoveFromRoots(editScript);
 
-		assertEquals(3, newOps.size());
+		Optional<Operation> moveOptN = newOps.stream().filter(e -> e instanceof MoveOperation).findAny();
+		assertFalse(moveOptN.isPresent());
 
 		Move moveAction = (Move) (moveOpt.get().getAction());
 		assertFalse(editScript.getMappingsComp().hasSrc(moveAction.getParent()));
@@ -1984,10 +1984,17 @@ public class AstComparatorTest {
 
 		Optional<Operation> insertOpt = newOps.stream()
 				.filter(e -> e instanceof InsertOperation && e.getNode() instanceof CtLocalVariable).findAny();
-		assertTrue(insertOpt.isPresent());
+		// The insert must not exist
+		assertFalse(insertOpt.isPresent());
 		Optional<Operation> deleteOpt = newOps.stream()
 				.filter(e -> e instanceof DeleteOperation && e.getNode() instanceof CtLocalVariable).findAny();
 		assertTrue(deleteOpt.isPresent());
+
+		assertEquals(2, newOps.size());
+
+		Optional<Operation> insertIfOpt = newOps.stream()
+				.filter(e -> e instanceof InsertOperation && e.getNode() instanceof CtIf).findAny();
+		assertTrue(insertIfOpt.isPresent());
 
 		// Same object
 		assertTrue(deleteOpt.get().getNode() == moveOpt.get().getNode());
@@ -1995,10 +2002,54 @@ public class AstComparatorTest {
 		// Same content
 		assertEquals(deleteOpt.get().getNode().toString(), moveOpt.get().getNode().toString());
 
-		// Different object
-		assertTrue(insertOpt.get().getNode() != moveOpt.get().getNode());
-		assertTrue(insertOpt.get().getAction().getNode() != moveOpt.get().getAction().getNode());
-		assertEquals(insertOpt.get().getNode().toString(), moveOpt.get().getNode().toString());
+	}
+
+	@Test
+	public void testReplaceMovesFromAll2() {
+		String c1 = "" + "class X {" + "public void foo0() {" + " int z = 0;" + " int x = 0;" + " int y = 0;" + "}"
+				+ "};";
+
+		String c2 = "" + "class X {" + "public void foo0() {" + " int x = 0;" + " int y = 0;" + "if(y>0){ int z = 0;}"
+				+ "}" + "};";
+
+		AstComparator diff = new AstComparator();
+		Diff editScript = diff.compare(c1, c2);
+
+		assertEquals(2, editScript.getRootOperations().size());
+
+		assertEquals(1, editScript.getAllOperations().stream().filter(e -> e instanceof MoveOperation).count());
+
+		Optional<Operation> moveOpt = editScript.getAllOperations().stream().filter(e -> e instanceof MoveOperation)
+				.findAny();
+		assertTrue(moveOpt.isPresent());
+
+		List<Operation> newOps = ActionClassifier.replaceMoveFromAll(editScript);
+
+		Optional<Operation> moveOptN = newOps.stream().filter(e -> e instanceof MoveOperation).findAny();
+		assertFalse(moveOptN.isPresent());
+
+		Move moveAction = (Move) (moveOpt.get().getAction());
+		assertFalse(editScript.getMappingsComp().hasSrc(moveAction.getParent()));
+
+		assertFalse(editScript.getMappingsComp().hasDst(moveAction.getParent()));
+
+		Optional<Operation> insertOpt = newOps.stream()
+				.filter(e -> e instanceof InsertOperation && e.getNode() instanceof CtLocalVariable).findAny();
+		// The insert must exist in all
+		assertTrue(insertOpt.isPresent());
+		Optional<Operation> deleteOpt = newOps.stream()
+				.filter(e -> e instanceof DeleteOperation && e.getNode() instanceof CtLocalVariable).findAny();
+		assertTrue(deleteOpt.isPresent());
+
+		Optional<Operation> insertIfOpt = newOps.stream()
+				.filter(e -> e instanceof InsertOperation && e.getNode() instanceof CtIf).findAny();
+		assertTrue(insertIfOpt.isPresent());
+
+		// Same object
+		assertTrue(deleteOpt.get().getNode() == moveOpt.get().getNode());
+		assertTrue(deleteOpt.get().getAction().getNode() == moveOpt.get().getAction().getNode());
+		// Same content
+		assertEquals(deleteOpt.get().getNode().toString(), moveOpt.get().getNode().toString());
 
 	}
 
