@@ -18,6 +18,10 @@ import com.github.gumtreediff.matchers.MappingStore;
 import com.github.gumtreediff.tree.ITree;
 
 import gumtree.spoon.builder.SpoonGumTreeBuilder;
+import gumtree.spoon.diff.operations.DeleteOperation;
+import gumtree.spoon.diff.operations.InsertOperation;
+import gumtree.spoon.diff.operations.MoveOperation;
+import gumtree.spoon.diff.operations.Operation;
 
 /**
  * Action Classifier
@@ -102,4 +106,50 @@ public class ActionClassifier {
 		originalActionsSrc.clear();
 		originalActionsDst.clear();
 	}
+
+	/**
+	 * replaces moves by Insert/Delete operations
+	 * 
+	 * @param mapping
+	 * @param ops
+	 * @return
+	 */
+	public static List<Operation> replaceMove(MappingStore mapping, List<Operation> ops) {
+		List<Operation> newOps = new ArrayList<>();
+
+		for (Operation operation : ops) {
+
+			if (operation instanceof MoveOperation) {
+
+				MoveOperation movOp = (MoveOperation) operation;
+
+				// Create the delete
+
+				Delete deleteAction = new Delete(movOp.getAction().getNode());
+
+				DeleteOperation delOp = new DeleteOperation(deleteAction);
+
+				// add to the final list
+				newOps.add(delOp);
+
+				// Now the insert
+
+				ITree node = mapping.getDst(movOp.getAction().getNode());
+				ITree parent = (mapping.hasSrc(node)) ? mapping.getDst(node) : node;
+				int pos = movOp.getPosition();
+
+				Insert insertAc = new Insert(node, parent, pos);
+
+				InsertOperation insertOp = new InsertOperation(insertAc);
+				newOps.add(insertOp);
+
+			} else {
+				newOps.add(operation);
+			}
+
+		}
+
+		return newOps;
+	}
+
 }

@@ -9,17 +9,23 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import com.github.gumtreediff.actions.model.Move;
 import com.github.gumtreediff.matchers.Mapping;
+import com.github.gumtreediff.matchers.heuristic.gt.AbstractBottomUpMatcher;
+import com.github.gumtreediff.matchers.heuristic.gt.AbstractSubtreeMatcher;
 
 import gumtree.spoon.builder.NodeCreator;
 import gumtree.spoon.builder.SpoonGumTreeBuilder;
+import gumtree.spoon.diff.ActionClassifier;
 import gumtree.spoon.diff.Diff;
 import gumtree.spoon.diff.DiffImpl;
+import gumtree.spoon.diff.operations.DeleteOperation;
 import gumtree.spoon.diff.operations.InsertOperation;
 import gumtree.spoon.diff.operations.MoveOperation;
 import gumtree.spoon.diff.operations.Operation;
@@ -43,8 +49,6 @@ import spoon.reflect.factory.Factory;
 import spoon.support.compiler.VirtualFile;
 import spoon.support.compiler.jdt.JDTBasedSpoonCompiler;
 import spoon.support.compiler.jdt.JDTSnippetCompiler;
-import com.github.gumtreediff.matchers.heuristic.gt.AbstractBottomUpMatcher;
-import com.github.gumtreediff.matchers.heuristic.gt.AbstractSubtreeMatcher;
 
 /**
  * Test Spoon Diff
@@ -1897,6 +1901,104 @@ public class AstComparatorTest {
 			}
 		}
 		assertTrue(hasComment);
+
+	}
+
+	@Test
+	public void testReplaceMoves1() {
+		String c1 = "" + "class X {" + "public void foo0() {" + " int z = 0;" + " int x = 0;" + " int y = 0;" + "}"
+				+ "};";
+
+		String c2 = "" + "class X {" + "public void foo0() {" + " int x = 0;" + " int y = 0;" + " int z = 0;" + "}"
+				+ "};";
+
+		AstComparator diff = new AstComparator();
+		Diff editScript = diff.compare(c1, c2);
+
+		System.out.println(editScript);
+
+		assertEquals(1, editScript.getRootOperations().size());
+
+		assertEquals(1, editScript.getAllOperations().size());
+
+		Optional<Operation> moveOpt = editScript.getAllOperations().stream().filter(e -> e instanceof MoveOperation)
+				.findAny();
+		assertTrue(moveOpt.isPresent());
+
+		List<Operation> newOps = ActionClassifier.replaceMove(editScript.getMappingsComp(),
+				editScript.getAllOperations());
+
+		assertEquals(2, newOps.size());
+
+		Optional<Operation> insertOpt = newOps.stream().filter(e -> e instanceof InsertOperation).findAny();
+		assertTrue(insertOpt.isPresent());
+		Optional<Operation> deleteOpt = newOps.stream().filter(e -> e instanceof DeleteOperation).findAny();
+		assertTrue(deleteOpt.isPresent());
+
+		Move moveAction = (Move) (moveOpt.get().getAction());
+		assertTrue(editScript.getMappingsComp().hasSrc(moveAction.getParent()));
+
+		assertFalse(editScript.getMappingsComp().hasDst(moveAction.getParent()));
+
+		// Same object
+		assertTrue(deleteOpt.get().getNode() == moveOpt.get().getNode());
+		assertTrue(deleteOpt.get().getAction().getNode() == moveOpt.get().getAction().getNode());
+		// Same content
+		assertEquals(deleteOpt.get().getNode().toString(), moveOpt.get().getNode().toString());
+
+		// Different object
+		assertTrue(insertOpt.get().getNode() != moveOpt.get().getNode());
+		assertTrue(insertOpt.get().getAction().getNode() != moveOpt.get().getAction().getNode());
+		assertEquals(insertOpt.get().getNode().toString(), moveOpt.get().getNode().toString());
+
+	}
+
+	@Test
+	public void testReplaceMoves2() {
+		String c1 = "" + "class X {" + "public void foo0() {" + " int z = 0;" + " int x = 0;" + " int y = 0;" + "}"
+				+ "};";
+
+		String c2 = "" + "class X {" + "public void foo0() {" + " int x = 0;" + " int y = 0;" + "if(y>0){ int z = 0;}"
+				+ "}" + "};";
+
+		AstComparator diff = new AstComparator();
+		Diff editScript = diff.compare(c1, c2);
+
+		assertEquals(2, editScript.getRootOperations().size());
+
+		assertEquals(1, editScript.getAllOperations().stream().filter(e -> e instanceof MoveOperation).count());
+
+		Optional<Operation> moveOpt = editScript.getAllOperations().stream().filter(e -> e instanceof MoveOperation)
+				.findAny();
+		assertTrue(moveOpt.isPresent());
+
+		List<Operation> newOps = ActionClassifier.replaceMove(editScript.getMappingsComp(),
+				editScript.getRootOperations());
+
+		assertEquals(3, newOps.size());
+
+		Move moveAction = (Move) (moveOpt.get().getAction());
+		assertFalse(editScript.getMappingsComp().hasSrc(moveAction.getParent()));
+
+		assertFalse(editScript.getMappingsComp().hasDst(moveAction.getParent()));
+
+		Optional<Operation> insertOpt = newOps.stream()
+				.filter(e -> e instanceof InsertOperation && e.getNode() instanceof CtLocalVariable).findAny();
+		assertTrue(insertOpt.isPresent());
+		Optional<Operation> deleteOpt = newOps.stream()
+				.filter(e -> e instanceof DeleteOperation && e.getNode() instanceof CtLocalVariable).findAny();
+		assertTrue(deleteOpt.isPresent());
+
+		// Same object
+		assertTrue(deleteOpt.get().getNode() == moveOpt.get().getNode());
+		assertTrue(deleteOpt.get().getAction().getNode() == moveOpt.get().getAction().getNode());
+		// Same content
+		assertEquals(deleteOpt.get().getNode().toString(), moveOpt.get().getNode().toString());
+
+		// Different object
+		assertTrue(insertOpt.get().getNode() != moveOpt.get().getNode());
+		assertTrue(insertOpt.get().getAction().getNode() != moveOpt.get().getAction().getNode());
+		assertEquals(insertOpt.get().getNode().toString(), moveOpt.get().getNode().toString());
 
 	}
 
