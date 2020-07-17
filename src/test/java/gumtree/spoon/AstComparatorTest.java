@@ -486,7 +486,7 @@ public class AstComparatorTest {
 
 		List<Operation> actions = result.getRootOperations();
 		// result.debugInformation();
-		assertEquals(actions.size(), 1);
+		assertEquals(2, actions.size());
 		assertTrue(result.containsOperation(OperationKind.Delete, "Invocation", "setFocusTraversalPolicyProvider"));
 	}
 
@@ -895,7 +895,7 @@ public class AstComparatorTest {
 
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
-		assertEquals(actions.size(), 1);
+		assertEquals(3, actions.size());
 		assertTrue(result.containsOperation(OperationKind.Insert, "Method", "testClear"));
 	}
 
