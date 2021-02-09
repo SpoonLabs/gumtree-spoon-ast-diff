@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+import java.io.File;
 
 import com.github.gumtreediff.tree.ITree;
 
@@ -16,6 +17,7 @@ import gumtree.spoon.diff.operations.DeleteOperation;
 import gumtree.spoon.diff.operations.InsertOperation;
 import gumtree.spoon.diff.operations.Operation;
 import gumtree.spoon.diff.operations.UpdateOperation;
+import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtMethod;
 
 public class SpoonSupportTest {
@@ -162,4 +164,19 @@ public class SpoonSupportTest {
 
 	}
 
+	@Test
+	public void testExistenceOfSpoonObjectMetaData() throws Exception {
+		File fl = new File("src/test/resources/examples/test10/left.java");
+		File fr = new File("src/test/resources/examples/test10/right.java");
+
+		CtElement left = new AstComparator().getCtType(fl);
+		CtElement right = new AstComparator().getCtType(fr);
+
+		SpoonGumTreeBuilder scanner = new SpoonGumTreeBuilder();
+		ITree leftTree = scanner.getTree(left);
+		ITree rightTree = scanner.getTree(right);
+
+		assertNotNull("SPOON_OBJECT of left tree is Null", left.getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT));
+		assertNotNull("SPOON_OBJECT of right tree is Null", right.getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT));
+	}
 }
