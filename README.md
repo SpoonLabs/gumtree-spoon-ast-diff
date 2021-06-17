@@ -9,6 +9,18 @@ If you use this, please cite:
 
 [Fine-grained and Accurate Source Code Differencing][paper] (Jean-Rémy Falleri, Floréal Morandat, Xavier Blanc, Matias Martinez, Martin Monperrus), In Proceedings of the International Conference on Automated Software Engineering, 2014. DOI: [10.1145/2642937.2642982](https://doi.org/10.1145/2642937.2642982). 
 
+```bibtex
+@inproceedings{gumtree,
+ title = {Fine-grained and Accurate Source Code Differencing},
+ author = {Falleri, Jean-R{\'e}my and Morandat, Flor{\'e}al and Blanc, Xavier and Martinez, Matias and Monperrus, Martin},
+ url = {https://hal.archives-ouvertes.fr/hal-01054552/file/main.pdf},
+ booktitle = {{Proceedings of the International Conference on Automated Software Engineering}},
+ pages = {313-324},
+ year = {2014},
+ doi = {10.1145/2642937.2642982},
+}
+```
+
 Difference between plain gumtreediff and gumtree-spoon-ast-diff
 ----------------------------------------------------------------
 
