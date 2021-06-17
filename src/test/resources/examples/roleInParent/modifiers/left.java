@@ -1,3 +1,3 @@
-class Final {
-    private static int x;
+class Modifiers {
+    int x;
 }

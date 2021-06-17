@@ -167,7 +167,19 @@ public class SpoonSupportTest {
 	}
 
 	@Test
-	public void testRoleOfModifierInParent() throws Exception {
+	public void testRoleOfFinalInParent() throws Exception {
+		File fl = new File("src/test/resources/examples/roleInParent/final/left.java");
+		File fr = new File("src/test/resources/examples/roleInParent/final/right.java");
+
+		Diff diff = new AstComparator().compare(fl, fr);
+
+		CtElement insertedFinalNode = diff.getRootOperations().get(0).getSrcNode();
+
+		assertEquals(CtRole.MODIFIER, insertedFinalNode.getRoleInParent());
+	}
+
+	@Test
+	public void testRoleOfModifiersInParent() throws Exception {
 		File fl = new File("src/test/resources/examples/roleInParent/modifiers/left.java");
 		File fr = new File("src/test/resources/examples/roleInParent/modifiers/right.java");
 
