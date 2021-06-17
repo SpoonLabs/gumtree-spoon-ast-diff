@@ -5,6 +5,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import gumtree.spoon.builder.CtVirtualElement;
+import gumtree.spoon.builder.CtWrapper;
 import org.junit.Test;
 
 import com.github.gumtreediff.tree.ITree;
@@ -18,6 +20,7 @@ import gumtree.spoon.diff.operations.Operation;
 import gumtree.spoon.diff.operations.UpdateOperation;
 import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtMethod;
+import spoon.reflect.declaration.ModifierKind;
 import spoon.reflect.path.CtRole;
 
 import java.io.File;
@@ -173,9 +176,9 @@ public class SpoonSupportTest {
 
 		Diff diff = new AstComparator().compare(fl, fr);
 
-		CtElement insertedFinalNode = diff.getRootOperations().get(0).getSrcNode();
+		CtWrapper<?> finalNode = (CtWrapper<?>) diff.getRootOperations().get(0).getSrcNode();
 
-		assertEquals(CtRole.MODIFIER, insertedFinalNode.getRoleInParent());
+		assertEquals(CtRole.MODIFIER, finalNode.getRoleInParent());
 	}
 
 	@Test
@@ -185,8 +188,8 @@ public class SpoonSupportTest {
 
 		Diff diff = new AstComparator().compare(fl, fr);
 
-		CtElement insertedFinalNode = diff.getRootOperations().get(0).getSrcNode();
+		CtVirtualElement modifiers = (CtVirtualElement) diff.getRootOperations().get(0).getSrcNode();
 
-		assertEquals(CtRole.MODIFIER, insertedFinalNode.getRoleInParent());
+		assertEquals(CtRole.MODIFIER, modifiers.getRoleInParent());
 	}
 }
