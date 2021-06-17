@@ -16,7 +16,11 @@ import gumtree.spoon.diff.operations.DeleteOperation;
 import gumtree.spoon.diff.operations.InsertOperation;
 import gumtree.spoon.diff.operations.Operation;
 import gumtree.spoon.diff.operations.UpdateOperation;
+import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtMethod;
+import spoon.reflect.path.CtRole;
+
+import java.io.File;
 
 public class SpoonSupportTest {
 
@@ -162,4 +166,15 @@ public class SpoonSupportTest {
 
 	}
 
+	@Test
+	public void testRoleOfModifierInParent() throws Exception {
+		File fl = new File("src/test/resources/examples/roleInParent/modifiers/left.java");
+		File fr = new File("src/test/resources/examples/roleInParent/modifiers/right.java");
+
+		Diff diff = new AstComparator().compare(fl, fr);
+
+		CtElement insertedFinalNode = diff.getRootOperations().get(0).getSrcNode();
+
+		assertEquals(CtRole.MODIFIER, insertedFinalNode.getRoleInParent());
+	}
 }
