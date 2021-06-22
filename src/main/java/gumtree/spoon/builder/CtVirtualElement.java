@@ -25,6 +25,10 @@ public class CtVirtualElement extends CtWrapper<String> {
 		this.children = children;
 	}
 
+	public Collection<?> getChildren() {
+		return children;
+	}
+
 	@Override
 	public String toString() {
 		return "VE: " + ((value != null) ? (value.toString()) : null);
