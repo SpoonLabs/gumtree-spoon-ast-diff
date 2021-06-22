@@ -5,6 +5,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import gumtree.spoon.builder.CtVirtualElement;
+import gumtree.spoon.builder.CtWrapper;
 import org.junit.Test;
 
 import com.github.gumtreediff.tree.ITree;
@@ -16,7 +18,12 @@ import gumtree.spoon.diff.operations.DeleteOperation;
 import gumtree.spoon.diff.operations.InsertOperation;
 import gumtree.spoon.diff.operations.Operation;
 import gumtree.spoon.diff.operations.UpdateOperation;
+import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtMethod;
+import spoon.reflect.declaration.ModifierKind;
+import spoon.reflect.path.CtRole;
+
+import java.io.File;
 
 public class SpoonSupportTest {
 
@@ -162,4 +169,27 @@ public class SpoonSupportTest {
 
 	}
 
+	@Test
+	public void testRoleOfFinalInParent() throws Exception {
+		File fl = new File("src/test/resources/examples/roleInParent/final/left.java");
+		File fr = new File("src/test/resources/examples/roleInParent/final/right.java");
+
+		Diff diff = new AstComparator().compare(fl, fr);
+
+		CtWrapper<?> finalNode = (CtWrapper<?>) diff.getRootOperations().get(0).getSrcNode();
+
+		assertEquals(CtRole.MODIFIER, finalNode.getRoleInParent());
+	}
+
+	@Test
+	public void testRoleOfModifiersInParent() throws Exception {
+		File fl = new File("src/test/resources/examples/roleInParent/modifiers/left.java");
+		File fr = new File("src/test/resources/examples/roleInParent/modifiers/right.java");
+
+		Diff diff = new AstComparator().compare(fl, fr);
+
+		CtVirtualElement modifiers = (CtVirtualElement) diff.getRootOperations().get(0).getSrcNode();
+
+		assertEquals(CtRole.MODIFIER, modifiers.getRoleInParent());
+	}
 }

@@ -1,0 +1,3 @@
+class Modifiers {
+    int x;
+}

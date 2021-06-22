@@ -36,7 +36,7 @@ public class NodeCreator extends CtInheritanceScanner {
 		ITree modifiers = builder.createNode(type, "");
 
 		// We create a virtual node
-		modifiers.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, new CtVirtualElement(type, m, m.getModifiers()));
+		modifiers.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, new CtVirtualElement(type, m, m.getModifiers(), CtRole.MODIFIER));
 
 		// ensuring an order (instead of hashset)
 		// otherwise some flaky tests in CI
@@ -52,7 +52,7 @@ public class NodeCreator extends CtInheritanceScanner {
 			ITree modifier = builder.createNode("Modifier", kind.toString());
 			modifiers.addChild(modifier);
 			// We wrap the modifier (which is not a ctelement)
-			modifier.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, new CtWrapper(kind, m));
+			modifier.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, new CtWrapper(kind, m, CtRole.MODIFIER));
 		}
 		builder.addSiblingNode(modifiers);
 
