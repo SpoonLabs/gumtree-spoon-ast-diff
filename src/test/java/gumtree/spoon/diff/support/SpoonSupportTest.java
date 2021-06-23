@@ -24,6 +24,8 @@ import spoon.reflect.declaration.ModifierKind;
 import spoon.reflect.path.CtRole;
 
 import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
 
 public class SpoonSupportTest {
 
@@ -191,5 +193,25 @@ public class SpoonSupportTest {
 		CtVirtualElement modifiers = (CtVirtualElement) diff.getRootOperations().get(0).getSrcNode();
 
 		assertEquals(CtRole.MODIFIER, modifiers.getRoleInParent());
+	}
+
+	@Test
+	public void testGettingChildrenOfCtVirtualElement() {
+		String c1 = "class Test { }";
+		String c2 = "public abstract final class Test { }";
+
+		Diff editScript = new AstComparator().compare(c1, c2);
+
+		CtVirtualElement srcNode = (CtVirtualElement) editScript.getRootOperations().get(0).getSrcNode();
+		Set<?> modifiers = new HashSet<>(srcNode.getChildren());
+
+		Set<ModifierKind> expectedModifiers = new HashSet<>();
+		expectedModifiers.add(ModifierKind.PUBLIC);
+		expectedModifiers.add(ModifierKind.ABSTRACT);
+		expectedModifiers.add(ModifierKind.FINAL);
+
+
+		assertEquals(3, modifiers.size());
+		assertTrue(modifiers.containsAll(expectedModifiers));
 	}
 }
