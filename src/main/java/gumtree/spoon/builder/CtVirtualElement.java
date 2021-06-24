@@ -1,6 +1,7 @@
 package gumtree.spoon.builder;
 
 import java.util.Collection;
+import java.util.Collections;
 
 import spoon.reflect.declaration.CtElement;
 import spoon.reflect.path.CtRole;
@@ -23,6 +24,10 @@ public class CtVirtualElement extends CtWrapper<String> {
 	public CtVirtualElement(String wrapped, CtElement parent, Collection<?> children, CtRole roleInParent) {
 		super(wrapped, parent, roleInParent);
 		this.children = children;
+	}
+
+	public Collection<?> getChildren() {
+		return Collections.unmodifiableCollection(children);
 	}
 
 	@Override
