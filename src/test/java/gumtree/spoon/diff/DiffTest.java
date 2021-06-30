@@ -197,4 +197,14 @@ public class DiffTest {
 
 	}
 
+	@Test
+	public void testInsertInRootOperations() throws Exception {
+		AstComparator diff = new AstComparator();
+		File fl = new File("src/test/resources/examples/update-class/left.java");
+		File fr = new File("src/test/resources/examples/update-class/right.java");
+		Diff result = diff.compare(fl, fr);
+
+		assertTrue(result.containsOperation(OperationKind.Insert, "Method"));
+	}
+
 }
