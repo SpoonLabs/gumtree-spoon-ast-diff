@@ -19,6 +19,11 @@ public interface Diff {
 	List<Operation> getRootOperations();
 
 	/**
+	 * lists all the update operations
+	 */
+	List<Operation> getUpdateOperations();
+
+	/**
 	 * lists all operations (move,insert, deletes). Low-level operation, we
 	 * recommend using {@link #getRootOperations()}
 	 */

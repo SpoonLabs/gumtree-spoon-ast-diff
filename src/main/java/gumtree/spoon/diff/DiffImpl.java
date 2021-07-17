@@ -41,6 +41,10 @@ public class DiffImpl implements Diff {
 	 */
 	private final List<Operation> rootOperations;
 	/**
+	 * Actions over updated nodes.
+	 */
+	private final List<Operation> updateOperations;
+	/**
 	 * the mapping of this diff
 	 */
 	private final MappingStore _mappingsComp;
@@ -68,6 +72,7 @@ public class DiffImpl implements Diff {
 		// Bugfix: the Action classifier must be executed *BEFORE* the convertToSpoon
 		// because it writes meta-data on the trees
 		this.rootOperations = convertToSpoon(actionClassifier.getRootActions());
+		this.updateOperations = convertToSpoon(actionClassifier.getUpdateActions());
 		this.allOperations = convertToSpoon(actionGenerator.getActions());
 
 		this._mappingsComp = mappingsComp;
@@ -111,6 +116,11 @@ public class DiffImpl implements Diff {
 	@Override
 	public List<Operation> getRootOperations() {
 		return Collections.unmodifiableList(rootOperations);
+	}
+
+	@Override
+	public List<Operation> getUpdateOperations() {
+		return Collections.unmodifiableList(updateOperations);
 	}
 
 	@Override
