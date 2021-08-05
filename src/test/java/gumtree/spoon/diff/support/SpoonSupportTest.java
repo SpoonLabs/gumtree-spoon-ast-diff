@@ -214,4 +214,20 @@ public class SpoonSupportTest {
 		assertEquals(3, modifiers.size());
 		assertTrue(modifiers.containsAll(expectedModifiers));
 	}
+
+	@Test
+	public void testUpdatingModifier() {
+		String c1 = "public static class Test { }";
+		String c2 = "public final class Test { }";
+
+		Diff editScript = new AstComparator().compare(c1, c2);
+
+		CtWrapper srcNode = (CtWrapper<?>) editScript.getRootOperations().get(0).getSrcNode();
+		String dstModifier = editScript.getRootOperations().get(0).getDstNode().getValueByRole(CtRole.NAME);
+
+		srcNode.setValueByRole(CtRole.NAME, dstModifier);
+
+		assertEquals(ModifierKind.FINAL, srcNode.getValue());
+
+	}
 }
