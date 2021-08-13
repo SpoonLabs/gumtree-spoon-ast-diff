@@ -102,8 +102,7 @@ public class NodeCreator extends CtInheritanceScanner {
 
         if (reference instanceof CtTypeReference && reference.getRoleInParent() == CtRole.SUPER_TYPE) {
             ITree superType = builder.createNode("SUPER_TYPE", reference.toString());
-            CtWrapper<CtReference> k = new CtWrapper<CtReference>(reference, reference.getParent());
-            superType.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, k);
+            superType.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, reference);
             reference.putMetadata(SpoonGumTreeBuilder.GUMTREE_NODE, superType);
             builder.addSiblingNode(superType);
         } else {

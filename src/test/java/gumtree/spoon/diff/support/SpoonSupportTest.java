@@ -1,5 +1,7 @@
 package gumtree.spoon.diff.support;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -18,10 +20,10 @@ import gumtree.spoon.diff.operations.DeleteOperation;
 import gumtree.spoon.diff.operations.InsertOperation;
 import gumtree.spoon.diff.operations.Operation;
 import gumtree.spoon.diff.operations.UpdateOperation;
-import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.declaration.ModifierKind;
 import spoon.reflect.path.CtRole;
+import spoon.reflect.reference.CtTypeReference;
 
 import java.io.File;
 import java.util.HashSet;
@@ -193,6 +195,19 @@ public class SpoonSupportTest {
 		CtVirtualElement modifiers = (CtVirtualElement) diff.getRootOperations().get(0).getSrcNode();
 
 		assertEquals(CtRole.MODIFIER, modifiers.getRoleInParent());
+	}
+
+	@Test
+	public void test_typeOfUpdatedNodeShouldEqualCtTypeReference() {
+		String c1 = "class Child extends Parent1 { }";
+		String c2 = "class Child extends Parent2 { }";
+
+		Diff diff = new AstComparator().compare(c1, c2);
+
+		UpdateOperation updateOperation = (UpdateOperation) diff.getRootOperations().get(0);
+
+		assertThat(updateOperation.getSrcNode(), instanceOf(CtTypeReference.class));
+		assertThat(updateOperation.getDstNode(), instanceOf(CtTypeReference.class));
 	}
 
 	@Test
