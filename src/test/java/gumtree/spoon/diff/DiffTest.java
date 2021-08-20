@@ -170,7 +170,7 @@ public class DiffTest {
 		CtClass c2b = Launcher.parseClass("class BehaviorCall implements Call {\n"
 				+ "final AtomicReference failureRef = new AtomicReference<>();\n"
 				+ "final CountDownLatch latch = new CountDownLatch(1);\n" + "\n" + " enqueue(new Callback<T>() {\n"
-				+ "@override public void onResponse(Response response) {\n"
+				+ "@Override public void onResponse(Response<T> response) {\n"
 
 				// Added
 				+ "System.out.println();"
