@@ -2053,4 +2053,36 @@ public class AstComparatorTest {
 
 	}
 
+	@Test
+	public void test_diffOfGenericTypeReference_builtInTypeToBuiltInType() throws Exception {
+		File left = new File("src/test/resources/examples/diffOfGenericTypeReferences/builtInTypeToBuiltInType/left.java");
+		File right = new File("src/test/resources/examples/diffOfGenericTypeReferences/builtInTypeToBuiltInType/right.java");
+
+		Diff diff = new AstComparator().compare(left, right);
+		assertEquals(2, diff.getRootOperations().size());
+		assertTrue(diff.containsOperation(OperationKind.Delete, "TypeReference"));
+		assertTrue(diff.containsOperation(OperationKind.Insert, "WildcardReference"));
+	}
+
+	@Test
+	public void test_diffOfGenericTypeReference_builtInTypeToTypeParameter() throws Exception {
+		File left = new File("src/test/resources/examples/diffOfGenericTypeReferences/builtInTypeToTypeParameter/left.java");
+		File right = new File("src/test/resources/examples/diffOfGenericTypeReferences/builtInTypeToTypeParameter/right.java");
+
+		Diff diff = new AstComparator().compare(left, right);
+		assertEquals(2, diff.getRootOperations().size());
+		assertTrue(diff.containsOperation(OperationKind.Delete, "TypeReference"));
+		assertTrue(diff.containsOperation(OperationKind.Insert, "TypeParameterReference"));
+	}
+
+	@Test
+	public void test_diffOfGenericTypeReference_typeParameterToBuiltInType() throws Exception {
+		File left = new File("src/test/resources/examples/diffOfGenericTypeReferences/typeParameterToBuiltInType/left.java");
+		File right = new File("src/test/resources/examples/diffOfGenericTypeReferences/typeParameterToBuiltInType/right.java");
+
+		Diff diff = new AstComparator().compare(left, right);
+		assertEquals(2, diff.getRootOperations().size());
+		assertTrue(diff.containsOperation(OperationKind.Insert, "TypeReference"));
+		assertTrue(diff.containsOperation(OperationKind.Delete, "TypeParameterReference"));
+	}
 }

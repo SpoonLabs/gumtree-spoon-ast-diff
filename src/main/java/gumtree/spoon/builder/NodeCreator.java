@@ -71,6 +71,12 @@ public class NodeCreator extends CtInheritanceScanner {
 			ITree variableType = builder.createNode("VARIABLE_TYPE", type.getQualifiedName());
 			variableType.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, type);
 			type.putMetadata(SpoonGumTreeBuilder.GUMTREE_NODE, variableType);
+			for (CtTypeReference<?> typeArgument: type.getActualTypeArguments()) {
+				ITree arg = builder.createNode(getClassName(typeArgument.getClass().getSimpleName()), typeArgument.getQualifiedName());
+				arg.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, typeArgument);
+				typeArgument.putMetadata(SpoonGumTreeBuilder.GUMTREE_NODE, arg);
+				variableType.addChild(arg);
+			}
 			builder.addSiblingNode(variableType);
 		}
 	}
