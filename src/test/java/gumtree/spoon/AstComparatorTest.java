@@ -1541,7 +1541,7 @@ public class AstComparatorTest {
 		CtClass c2 = Launcher.parseClass("class BehaviorCall implements Call {\n"
 				+ "final AtomicReference failureRef = new AtomicReference<>();\n"
 				+ "final CountDownLatch latch = new CountDownLatch(1);\n" + "enqueue(new Callback() {\n"
-				+ "@override public void onResponse(Call call, Response response) {\n" + "responseRef.set(response);\n"
+				+ "@Override public void onResponse(Call call, Response<T> response) {\n" + "responseRef.set(response);\n"
 				+ "latch.countDown();\n" + "}\n" + "}\n" + ")\n" + "}");
 
 		AstComparator diff = new AstComparator();
@@ -1733,7 +1733,7 @@ public class AstComparatorTest {
 				+ "final AtomicReference failureRef = new AtomicReference<>();\n"
 				+ "final CountDownLatch latch = new CountDownLatch(1);\n" + "enqueue(new Callback() {\n"
 				// Here the difference
-				+ "@override public void onResponse(Call call, Response response) {\n" + "responseRef.set(response);\n"
+				+ "@Override public void onResponse(Call call, Response<T> response) {\n" + "responseRef.set(response);\n"
 				+ "latch.countDown();\n" + "}\n" + "}\n" + ")\n" + "}");
 
 		AstComparator diff = new AstComparator();
@@ -2052,5 +2052,4 @@ public class AstComparatorTest {
 		assertEquals(deleteOpt.get().getNode().toString(), moveOpt.get().getNode().toString());
 
 	}
-
 }

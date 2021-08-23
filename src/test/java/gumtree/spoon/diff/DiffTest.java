@@ -170,7 +170,7 @@ public class DiffTest {
 		CtClass c2b = Launcher.parseClass("class BehaviorCall implements Call {\n"
 				+ "final AtomicReference failureRef = new AtomicReference<>();\n"
 				+ "final CountDownLatch latch = new CountDownLatch(1);\n" + "\n" + " enqueue(new Callback<T>() {\n"
-				+ "@override public void onResponse(Response response) {\n"
+				+ "@Override public void onResponse(Response<T> response) {\n"
 
 				// Added
 				+ "System.out.println();"
@@ -197,4 +197,36 @@ public class DiffTest {
 
 	}
 
+	@Test
+	public void test_diffOfGenericTypeReference_builtInTypeToBuiltInType() throws Exception {
+		File left = new File("src/test/resources/examples/diffOfGenericTypeReferences/builtInTypeToBuiltInType/left.java");
+		File right = new File("src/test/resources/examples/diffOfGenericTypeReferences/builtInTypeToBuiltInType/right.java");
+
+		Diff diff = new AstComparator().compare(left, right);
+		assertEquals(2, diff.getRootOperations().size());
+		assertTrue(diff.containsOperation(OperationKind.Delete, "TypeReference"));
+		assertTrue(diff.containsOperation(OperationKind.Insert, "WildcardReference"));
+	}
+
+	@Test
+	public void test_diffOfGenericTypeReference_builtInTypeToTypeParameter() throws Exception {
+		File left = new File("src/test/resources/examples/diffOfGenericTypeReferences/builtInTypeToTypeParameter/left.java");
+		File right = new File("src/test/resources/examples/diffOfGenericTypeReferences/builtInTypeToTypeParameter/right.java");
+
+		Diff diff = new AstComparator().compare(left, right);
+		assertEquals(2, diff.getRootOperations().size());
+		assertTrue(diff.containsOperation(OperationKind.Delete, "TypeReference"));
+		assertTrue(diff.containsOperation(OperationKind.Insert, "TypeParameterReference"));
+	}
+
+	@Test
+	public void test_diffOfGenericTypeReference_typeParameterToBuiltInType() throws Exception {
+		File left = new File("src/test/resources/examples/diffOfGenericTypeReferences/typeParameterToBuiltInType/left.java");
+		File right = new File("src/test/resources/examples/diffOfGenericTypeReferences/typeParameterToBuiltInType/right.java");
+
+		Diff diff = new AstComparator().compare(left, right);
+		assertEquals(2, diff.getRootOperations().size());
+		assertTrue(diff.containsOperation(OperationKind.Insert, "TypeReference"));
+		assertTrue(diff.containsOperation(OperationKind.Delete, "TypeParameterReference"));
+	}
 }
