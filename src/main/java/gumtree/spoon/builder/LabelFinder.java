@@ -19,10 +19,13 @@ import spoon.reflect.code.CtTypeAccess;
 import spoon.reflect.code.CtUnaryOperator;
 import spoon.reflect.code.CtVariableAccess;
 import spoon.reflect.code.CtWhile;
+import spoon.reflect.declaration.CtAnnotation;
 import spoon.reflect.declaration.CtNamedElement;
 import spoon.reflect.path.CtRole;
 import spoon.reflect.reference.CtTypeReference;
 import spoon.reflect.visitor.CtInheritanceScanner;
+
+import java.lang.annotation.Annotation;
 
 class LabelFinder extends CtInheritanceScanner {
 	public String label = "";
@@ -143,5 +146,10 @@ class LabelFinder extends CtInheritanceScanner {
 	@Override
 	public void visitCtComment(CtComment comment) {
 		label = comment.getContent();
+	}
+
+	@Override
+	public <T extends Annotation> void visitCtAnnotation(CtAnnotation<T> annotation) {
+		label = annotation.toString();
 	}
 }
