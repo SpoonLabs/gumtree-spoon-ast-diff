@@ -229,4 +229,15 @@ public class DiffTest {
 		assertTrue(diff.containsOperation(OperationKind.Insert, "TypeReference"));
 		assertTrue(diff.containsOperation(OperationKind.Delete, "TypeParameterReference"));
 	}
+
+	@Test
+	public void test_diffOfAnnotations() throws Exception {
+		File left = new File("src/test/resources/examples/annotations/left.java");
+		File right = new File("src/test/resources/examples/annotations/right.java");
+
+		Diff diff = new AstComparator().compare(left, right);
+
+		assertEquals(1, diff.getRootOperations().size());
+		assertTrue(diff.containsOperation(OperationKind.Update, "Annotation"));
+	}
 }

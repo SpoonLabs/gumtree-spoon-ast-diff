@@ -511,4 +511,18 @@ public class TreeTest {
 		assertEquals(3, position.getLine());
 
 	}
+
+	@Test
+	public void test_getTree_labelExistsForAnnotations() {
+		String codeWithAnnotation = "class A { @Override public boolean equals(Object obj) { return false; }";
+
+		AstComparator comparator = new AstComparator();
+		CtType<?> spoonType = comparator.getCtType(codeWithAnnotation);
+
+		final SpoonGumTreeBuilder scanner = new SpoonGumTreeBuilder();
+		ITree root = scanner.getTree(spoonType);
+
+		ITree annotationNode = root.getChild(0).getChild(0).getChild(2);
+		assertEquals("@java.lang.Override", annotationNode.getLabel());
+	}
 }
