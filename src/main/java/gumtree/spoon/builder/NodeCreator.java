@@ -5,7 +5,6 @@ import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.declaration.CtModifiable;
 import spoon.reflect.declaration.ModifierKind;
 import spoon.reflect.path.CtRole;
-import spoon.reflect.reference.CtReference;
 import spoon.reflect.reference.CtTypeReference;
 import spoon.reflect.visitor.CtInheritanceScanner;
 
@@ -83,19 +82,4 @@ public class NodeCreator extends CtInheritanceScanner {
 
 		super.visitCtMethod(e);
 	}
-
-    @Override
-    public void scanCtReference(CtReference reference) {
-
-
-        if (reference instanceof CtTypeReference && reference.getRoleInParent() == CtRole.SUPER_TYPE) {
-            ITree superType = builder.createNode("SUPER_TYPE", reference.toString());
-            superType.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, reference);
-            reference.putMetadata(SpoonGumTreeBuilder.GUMTREE_NODE, superType);
-            builder.addSiblingNode(superType);
-        } else {
-            super.scanCtReference(reference);
-        }
-    }
-
 }

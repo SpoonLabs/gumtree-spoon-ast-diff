@@ -1771,7 +1771,7 @@ public class AstComparatorTest {
 		result.debugInformation();
 
 		assertEquals(1, actions.size());
-		assertTrue(result.containsOperation(OperationKind.Update, "SUPER_TYPE", "SuperClass1"));
+		assertTrue(result.containsOperation(OperationKind.Update, "TypeReference", "SuperClass1"));
 	}
 
 	@Test
