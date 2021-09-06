@@ -3,7 +3,6 @@ package gumtree.spoon.builder;
 import com.github.gumtreediff.tree.ITree;
 import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.declaration.CtModifiable;
-import spoon.reflect.declaration.CtVariable;
 import spoon.reflect.declaration.ModifierKind;
 import spoon.reflect.path.CtRole;
 import spoon.reflect.reference.CtReference;
@@ -62,23 +61,6 @@ public class NodeCreator extends CtInheritanceScanner {
 		if (simpleName == null)
 			return "";
 		return simpleName.replace("Ct", "").replace("Impl", "");
-	}
-
-	@Override
-	public <T> void scanCtVariable(CtVariable<T> e) {
-		CtTypeReference<T> type = e.getType();
-		if (type != null) {
-			ITree variableType = builder.createNode("VARIABLE_TYPE", type.getQualifiedName());
-			variableType.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, type);
-			type.putMetadata(SpoonGumTreeBuilder.GUMTREE_NODE, variableType);
-			for (CtTypeReference<?> typeArgument: type.getActualTypeArguments()) {
-				ITree arg = builder.createNode(getClassName(typeArgument.getClass().getSimpleName()), typeArgument.getQualifiedName());
-				arg.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, typeArgument);
-				typeArgument.putMetadata(SpoonGumTreeBuilder.GUMTREE_NODE, arg);
-				variableType.addChild(arg);
-			}
-			builder.addSiblingNode(variableType);
-		}
 	}
 
 	@Override

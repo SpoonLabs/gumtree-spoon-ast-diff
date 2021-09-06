@@ -11,6 +11,7 @@ import spoon.reflect.code.CtStatementList;
 import spoon.reflect.declaration.CtElement;
 import spoon.reflect.path.CtRole;
 import spoon.reflect.reference.CtReference;
+import spoon.reflect.reference.CtTypeReference;
 import spoon.reflect.visitor.CtScanner;
 
 public class TreeScanner extends CtScanner {
@@ -77,6 +78,10 @@ public class TreeScanner extends CtScanner {
 		}
 
 		if (element instanceof CtReference && element.getRoleInParent() == CtRole.SUPER_TYPE) {
+			return false;
+		}
+
+		if (element instanceof CtTypeReference && element.getRoleInParent() == CtRole.TYPE_ARGUMENT) {
 			return false;
 		}
 
