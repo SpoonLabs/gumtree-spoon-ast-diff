@@ -199,8 +199,8 @@ public class DiffTest {
 
 	@Test
 	public void test_diffOfGenericTypeReference_builtInTypeToBuiltInType() throws Exception {
-		File left = new File("src/test/resources/examples/diffOfGenericTypeReferences/builtInTypeToBuiltInType/left.java");
-		File right = new File("src/test/resources/examples/diffOfGenericTypeReferences/builtInTypeToBuiltInType/right.java");
+		File left = new File("src/test/resources/examples/diffOfGenericTypeReferences/builtInTypeToBuiltInType/single/left.java");
+		File right = new File("src/test/resources/examples/diffOfGenericTypeReferences/builtInTypeToBuiltInType/single/right.java");
 
 		Diff diff = new AstComparator().compare(left, right);
 		assertEquals(2, diff.getRootOperations().size());
@@ -239,5 +239,26 @@ public class DiffTest {
 
 		assertEquals(1, diff.getRootOperations().size());
 		assertTrue(diff.containsOperation(OperationKind.Update, "Annotation"));
+	}
+
+	@Test
+	public void test_diffOfGenericTypeReference_multiple_builtInTypeToBuiltInType() throws Exception {
+		File left = new File("src/test/resources/examples/diffOfGenericTypeReferences/builtInTypeToBuiltInType/multiple/left.java");
+		File right = new File("src/test/resources/examples/diffOfGenericTypeReferences/builtInTypeToBuiltInType/multiple/right.java");
+
+		Diff diff = new AstComparator().compare(left, right);
+		assertEquals(2, diff.getRootOperations().size());
+		assertTrue(diff.containsOperation(OperationKind.Delete, "TypeReference"));
+		assertTrue(diff.containsOperation(OperationKind.Insert, "TypeReference"));
+	}
+
+	@Test
+	public void test_diffOfGenericTypeReference_nestedTypeParameter() throws Exception {
+		File left = new File("src/test/resources/examples/diffOfGenericTypeReferences/nestedTypeParameters/left.java");
+		File right = new File("src/test/resources/examples/diffOfGenericTypeReferences/nestedTypeParameters/right.java");
+
+		Diff diff = new AstComparator().compare(left, right);
+		assertEquals(1, diff.getRootOperations().size());
+		assertTrue(diff.containsOperation(OperationKind.Update, "TypeReference"));
 	}
 }
