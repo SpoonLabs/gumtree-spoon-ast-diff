@@ -895,7 +895,7 @@ public class AstComparatorTest {
 
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
-		assertEquals(3, actions.size());
+		assertEquals(1, actions.size());
 		assertTrue(result.containsOperation(OperationKind.Insert, "Method", "testClear"));
 	}
 
