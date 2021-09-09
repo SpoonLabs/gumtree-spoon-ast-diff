@@ -538,4 +538,32 @@ public class TreeTest {
 		assertEquals(superClass.getDepth(), klass.getDepth()+1);
 		assertEquals(0, superClass.getDescendants().size());
 	}
+
+	@Test
+	public void test_levelsOfNestingOfTypeArguments() throws Exception{
+		File nestedList = new File("src/test/resources/examples/diffOfGenericTypeReferences/multipleNesting/right.java");
+
+		AstComparator comparator = new AstComparator();
+		SpoonGumTreeBuilder scanner = new SpoonGumTreeBuilder();
+		ITree root = scanner.getTree(comparator.getCtType(nestedList));
+
+		String LIST_LABEL = "java.util.List";
+		String STRING_LABEL = "java.lang.String";
+		int listCounter = 0;
+		int stringCounter = 0;
+
+		ITree field = root.getChild(0).getChild(2);
+		for (ITree typeArgument: field.getDescendants()) {
+			if (typeArgument.getLabel().equals(LIST_LABEL)) {
+				++listCounter;
+			} else if (typeArgument.getLabel().equals(STRING_LABEL)) {
+				++stringCounter;
+			} else {
+				throw new Exception("Test case should only have a nested list of string");
+			}
+		}
+
+		assertEquals("Not enough List containers", 4, listCounter);
+		assertEquals("Not enough String type arguments", 1, stringCounter);
+	}
 }
