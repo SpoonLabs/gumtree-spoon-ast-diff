@@ -240,4 +240,18 @@ public class DiffTest {
 		assertEquals(1, diff.getRootOperations().size());
 		assertTrue(diff.containsOperation(OperationKind.Update, "Annotation"));
 	}
+
+	@Test
+	public void test_diffOfGenericTypeReference_multipleNesting() throws Exception {
+		File left = new File("src/test/resources/examples/diffOfGenericTypeReferences/multipleNesting/left.java");
+		File right = new File("src/test/resources/examples/diffOfGenericTypeReferences/multipleNesting/right.java");
+
+		Diff diff = new AstComparator().compare(left, right);
+
+		diff.getRootOperations();
+
+		assertEquals(2, diff.getRootOperations().size());
+		assertTrue(diff.containsOperation(OperationKind.Move, "TypeReference"));
+		assertTrue(diff.containsOperation(OperationKind.Insert, "TypeReference"));
+	}
 }
