@@ -114,6 +114,9 @@ public class TreeScanner extends CtScanner {
 		if (element instanceof CtBlock) {
 			nodeTypeName = element.getRoleInParent().toString();
 		}
+		if (element.getRoleInParent() == CtRole.SUPER_TYPE) {
+			nodeTypeName = "SUPER_TYPE";
+		}
 		return nodeTypeName;
 	}
 

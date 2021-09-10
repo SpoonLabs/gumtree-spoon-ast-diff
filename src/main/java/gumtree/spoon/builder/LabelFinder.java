@@ -152,4 +152,11 @@ class LabelFinder extends CtInheritanceScanner {
 	public <T extends Annotation> void visitCtAnnotation(CtAnnotation<T> annotation) {
 		label = annotation.toString();
 	}
+
+	@Override
+	public <T> void visitCtTypeReference(CtTypeReference<T> e) {
+		if (e.getRoleInParent() == CtRole.SUPER_TYPE) {
+			label = e.getQualifiedName();
+		}
+	}
 }
