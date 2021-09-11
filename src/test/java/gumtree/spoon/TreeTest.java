@@ -31,6 +31,7 @@ import spoon.compiler.SpoonResourceHelper;
 import spoon.reflect.code.CtStatement;
 import spoon.reflect.cu.SourcePosition;
 import spoon.reflect.cu.position.NoSourcePosition;
+import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.declaration.CtType;
@@ -524,5 +525,17 @@ public class TreeTest {
 
 		ITree annotationNode = root.getChild(0).getChild(0).getChild(2);
 		assertEquals("@java.lang.Override", annotationNode.getLabel());
+	}
+
+	@Test
+	public void test_nestingLevelOfSuperType() {
+		CtClass<?> spoonClass = Launcher.parseClass("class Main extends SuperClass");
+		ITree root = new SpoonGumTreeBuilder().getTree(spoonClass);
+		ITree klass = root.getChild(0);
+		ITree superClass = klass.getChild(0);
+
+		assertEquals("SuperClass", superClass.getLabel());
+		assertEquals(superClass.getDepth(), klass.getDepth()+1);
+		assertEquals(0, superClass.getDescendants().size());
 	}
 }
