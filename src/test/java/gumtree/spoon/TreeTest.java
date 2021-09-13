@@ -552,7 +552,7 @@ public class TreeTest {
 		int listCounter = 0;
 		int stringCounter = 0;
 
-		ITree field = root.getChild(0).getChild(2);
+		ITree field = root.getChild(0).getChild(3);
 		for (ITree typeArgument: field.getDescendants()) {
 			if (typeArgument.getLabel().equals(LIST_LABEL)) {
 				++listCounter;
