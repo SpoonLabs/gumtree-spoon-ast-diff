@@ -1535,7 +1535,7 @@ public class AstComparatorTest {
 		// https://github.com/GumTreeDiff/gumtree/issues/120
 		CtClass c1 = Launcher.parseClass(" class BehaviorCall implements Call{\n"
 				+ "final AtomicReference failureRef = new AtomicReference<>();\n"
-				+ "final CountDownLatch latch = new CountDownLatch(1);\n" + "\n" + " enqueue(new Callback<T>() {\n"
+				+ "final CountDownLatch latch = new CountDownLatch(1);\n" + "\n" + " enqueue(new Callback() {\n"
 				+ "  @Override public void onResponse(Response<T> response) {\n" + "     responseRef.set(response);\n"
 				+ "     latch.countDown();\n" + "   }\n" + "}\n" + ")\n" + "\n" + "}");
 
@@ -1726,7 +1726,7 @@ public class AstComparatorTest {
 
 		CtClass c1a = Launcher.parseClass(" class BehaviorCall implements Call{\n"
 				+ "final AtomicReference failureRef = new AtomicReference<>();\n"
-				+ "final CountDownLatch latch = new CountDownLatch(1);\n" + "\n" + " enqueue(new Callback<T>() {\n"
+				+ "final CountDownLatch latch = new CountDownLatch(1);\n" + "\n" + " enqueue(new Callback() {\n"
 				+ "  @Override public void onResponse(Response<T> response) {\n" + "     responseRef.set(response);\n"
 				+ "     latch.countDown();\n" + "   }\n" + "}\n" + ")\n" + "\n" + "}");
 
