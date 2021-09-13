@@ -6,6 +6,7 @@ import spoon.reflect.declaration.CtModifiable;
 import spoon.reflect.declaration.CtVariable;
 import spoon.reflect.declaration.ModifierKind;
 import spoon.reflect.path.CtRole;
+import spoon.reflect.reference.CtActualTypeContainer;
 import spoon.reflect.reference.CtTypeReference;
 import spoon.reflect.visitor.CtInheritanceScanner;
 
@@ -70,19 +71,30 @@ public class NodeCreator extends CtInheritanceScanner {
 			ITree variableType = builder.createNode("VARIABLE_TYPE", type.getQualifiedName());
 			variableType.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, type);
 			type.putMetadata(SpoonGumTreeBuilder.GUMTREE_NODE, variableType);
-			parseNestedTypeReferences(type, variableType);
+			computeTreeOfTypeReferences(type, variableType);
 			builder.addSiblingNode(variableType);
 		}
 	}
 
-	private void parseNestedTypeReferences(CtTypeReference<?> type, ITree parentType) {
-		for (CtTypeReference<?> ctTypeArgument: type.getActualTypeArguments()) {
-			ITree iTreeTypeArgument = builder.createNode(getClassName(ctTypeArgument.getClass().getSimpleName()), ctTypeArgument.getQualifiedName());
-			iTreeTypeArgument.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, ctTypeArgument);
-			ctTypeArgument.putMetadata(SpoonGumTreeBuilder.GUMTREE_NODE, iTreeTypeArgument);
-			parentType.addChild(iTreeTypeArgument);
+	@Override
+	public void scanCtActualTypeContainer(CtActualTypeContainer reference) {
+		for (CtTypeReference<?> ctTypeArgument: reference.getActualTypeArguments()) {
+			ITree typeArgument = builder.createNode(getClassName(ctTypeArgument.getClass().getSimpleName()), ctTypeArgument.getQualifiedName());
+			typeArgument.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, ctTypeArgument);
+			ctTypeArgument.putMetadata(SpoonGumTreeBuilder.GUMTREE_NODE, typeArgument);
+			computeTreeOfTypeReferences(ctTypeArgument, typeArgument);
+			builder.addSiblingNode(typeArgument);
+		}
+	}
 
-			parseNestedTypeReferences(ctTypeArgument, iTreeTypeArgument);
+	/** Creates a tree of nested type references where each nested type reference is a child of its container. */
+	private void computeTreeOfTypeReferences(CtTypeReference<?> type, ITree parentType) {
+		for (CtTypeReference<?> ctTypeArgument: type.getActualTypeArguments()) {
+			ITree typeArgument = builder.createNode(getClassName(ctTypeArgument.getClass().getSimpleName()), ctTypeArgument.getQualifiedName());
+			typeArgument.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, ctTypeArgument);
+			ctTypeArgument.putMetadata(SpoonGumTreeBuilder.GUMTREE_NODE, typeArgument);
+			parentType.addChild(typeArgument);
+			computeTreeOfTypeReferences(ctTypeArgument, typeArgument);
 		}
 	}
 
