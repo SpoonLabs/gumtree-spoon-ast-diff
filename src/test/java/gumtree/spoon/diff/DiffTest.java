@@ -250,7 +250,8 @@ public class DiffTest {
 
 		diff.getRootOperations();
 
-		assertEquals(2, diff.getRootOperations().size());
+		assertEquals(3, diff.getRootOperations().size());
+		assertTrue(diff.containsOperation(OperationKind.Update, "TypeParameterReference", "A"));
 		assertTrue(diff.containsOperation(OperationKind.Move, "TypeReference"));
 		assertTrue(diff.containsOperation(OperationKind.Insert, "TypeReference"));
 	}
