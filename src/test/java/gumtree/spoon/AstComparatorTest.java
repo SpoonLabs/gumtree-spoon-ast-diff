@@ -1551,8 +1551,8 @@ public class AstComparatorTest {
 		result.debugInformation();
 
 		assertEquals(2, actions.size());
+		assertTrue(result.containsOperation(OperationKind.Delete, "TYPE_ARGUMENT", "T"));
 		assertTrue(result.containsOperation(OperationKind.Insert, "Parameter", "call"));
-		assertTrue(result.containsOperation(OperationKind.Delete, "TypeReference", "T"));
 	}
 
 	@Test
@@ -1742,7 +1742,7 @@ public class AstComparatorTest {
 		resulta.debugInformation();
 
 		assertEquals(2, actions.size());
-		assertTrue(resulta.containsOperation(OperationKind.Delete, "TypeReference", "T"));
+		assertTrue(resulta.containsOperation(OperationKind.Delete, "TYPE_ARGUMENT", "T"));
 		assertTrue(resulta.containsOperation(OperationKind.Insert, "Parameter", "call"));
 
 		DiffImpl idiff = (DiffImpl) resulta;
@@ -1783,7 +1783,7 @@ public class AstComparatorTest {
 		result.debugInformation();
 
 		assertEquals(1, actions.size());
-		assertTrue(result.containsOperation(OperationKind.Update, "TypeReference", "One"));
+		assertTrue(result.containsOperation(OperationKind.Update, "TYPE_ARGUMENT", "One"));
 	}
 
 	@Test
@@ -1798,7 +1798,7 @@ public class AstComparatorTest {
 		result.debugInformation();
 
 		assertEquals(1, actions.size());
-		assertTrue(result.containsOperation(OperationKind.Insert, "TypeReference", "One"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "TYPE_ARGUMENT", "One"));
 	}
 
 	@Test

@@ -79,7 +79,7 @@ public class NodeCreator extends CtInheritanceScanner {
 	@Override
 	public void scanCtActualTypeContainer(CtActualTypeContainer reference) {
 		for (CtTypeReference<?> ctTypeArgument: reference.getActualTypeArguments()) {
-			ITree typeArgument = builder.createNode(getClassName(ctTypeArgument.getClass().getSimpleName()), ctTypeArgument.getQualifiedName());
+			ITree typeArgument = builder.createNode("TYPE_ARGUMENT", ctTypeArgument.getQualifiedName());
 			typeArgument.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, ctTypeArgument);
 			ctTypeArgument.putMetadata(SpoonGumTreeBuilder.GUMTREE_NODE, typeArgument);
 			computeTreeOfTypeReferences(ctTypeArgument, typeArgument);
@@ -90,7 +90,7 @@ public class NodeCreator extends CtInheritanceScanner {
 	/** Creates a tree of nested type references where each nested type reference is a child of its container. */
 	private void computeTreeOfTypeReferences(CtTypeReference<?> type, ITree parentType) {
 		for (CtTypeReference<?> ctTypeArgument: type.getActualTypeArguments()) {
-			ITree typeArgument = builder.createNode(getClassName(ctTypeArgument.getClass().getSimpleName()), ctTypeArgument.getQualifiedName());
+			ITree typeArgument = builder.createNode("TYPE_ARGUMENT", ctTypeArgument.getQualifiedName());
 			typeArgument.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, ctTypeArgument);
 			ctTypeArgument.putMetadata(SpoonGumTreeBuilder.GUMTREE_NODE, typeArgument);
 			parentType.addChild(typeArgument);

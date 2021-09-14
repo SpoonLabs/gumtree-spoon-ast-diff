@@ -203,9 +203,8 @@ public class DiffTest {
 		File right = new File("src/test/resources/examples/diffOfGenericTypeReferences/builtInTypeToBuiltInType/right.java");
 
 		Diff diff = new AstComparator().compare(left, right);
-		assertEquals(2, diff.getRootOperations().size());
-		assertTrue(diff.containsOperation(OperationKind.Delete, "TypeReference"));
-		assertTrue(diff.containsOperation(OperationKind.Insert, "WildcardReference"));
+		assertEquals(1, diff.getRootOperations().size());
+		assertTrue(diff.containsOperation(OperationKind.Update, "TYPE_ARGUMENT"));
 	}
 
 	@Test
@@ -214,9 +213,8 @@ public class DiffTest {
 		File right = new File("src/test/resources/examples/diffOfGenericTypeReferences/builtInTypeToTypeParameter/right.java");
 
 		Diff diff = new AstComparator().compare(left, right);
-		assertEquals(2, diff.getRootOperations().size());
-		assertTrue(diff.containsOperation(OperationKind.Delete, "TypeReference"));
-		assertTrue(diff.containsOperation(OperationKind.Insert, "TypeParameterReference"));
+		assertEquals(1, diff.getRootOperations().size());
+		assertTrue(diff.containsOperation(OperationKind.Update, "TYPE_ARGUMENT"));
 	}
 
 	@Test
@@ -225,9 +223,8 @@ public class DiffTest {
 		File right = new File("src/test/resources/examples/diffOfGenericTypeReferences/typeParameterToBuiltInType/right.java");
 
 		Diff diff = new AstComparator().compare(left, right);
-		assertEquals(2, diff.getRootOperations().size());
-		assertTrue(diff.containsOperation(OperationKind.Insert, "TypeReference"));
-		assertTrue(diff.containsOperation(OperationKind.Delete, "TypeParameterReference"));
+		assertEquals(1, diff.getRootOperations().size());
+		assertTrue(diff.containsOperation(OperationKind.Update, "TYPE_ARGUMENT"));
 	}
 
 	@Test
@@ -249,8 +246,8 @@ public class DiffTest {
 		Diff diff = new AstComparator().compare(left, right);
 
 		assertEquals(3, diff.getRootOperations().size());
-		assertTrue(diff.containsOperation(OperationKind.Update, "TypeParameterReference", "A"));
-		assertTrue(diff.containsOperation(OperationKind.Move, "TypeReference"));
-		assertTrue(diff.containsOperation(OperationKind.Insert, "TypeReference"));
+		assertTrue(diff.containsOperation(OperationKind.Update, "TYPE_ARGUMENT", "A"));
+		assertTrue(diff.containsOperation(OperationKind.Move, "TYPE_ARGUMENT"));
+		assertTrue(diff.containsOperation(OperationKind.Insert, "TYPE_ARGUMENT"));
 	}
 }
