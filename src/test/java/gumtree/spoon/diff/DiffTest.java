@@ -250,4 +250,30 @@ public class DiffTest {
 		assertTrue(diff.containsOperation(OperationKind.Move, "TYPE_ARGUMENT"));
 		assertTrue(diff.containsOperation(OperationKind.Insert, "TYPE_ARGUMENT"));
 	}
+
+	@Test
+	public void test_diffOfSuperInterfaces_withoutGenericTypes() throws Exception {
+		File left = new File("src/test/resources/examples/superInterfaces/withoutGenericTypes/left.java");
+		File right = new File("src/test/resources/examples/superInterfaces/withoutGenericTypes/right.java");
+
+		Diff diff = new AstComparator().compare(left, right);
+
+		assertTrue(diff.containsOperation(OperationKind.Insert, "INTERFACE", "A"));
+		assertTrue(diff.containsOperation(OperationKind.Insert, "INTERFACE", "C"));
+	}
+
+	@Test
+	public void test_diffOfSuperInterfaces_nestedTypes() throws Exception {
+		File left = new File("src/test/resources/examples/superInterfaces/nestedTypes/left.java");
+		File right = new File("src/test/resources/examples/superInterfaces/nestedTypes/right.java");
+
+		Diff diff = new AstComparator().compare(left, right);
+
+		assertEquals(3, diff.getRootOperations().size());
+		assertTrue(diff.containsOperation(OperationKind.Insert, "TYPE_ARGUMENT", "T"));
+		// outer list is inserted
+		assertTrue(diff.containsOperation(OperationKind.Insert, "TYPE_ARGUMENT", "java.util.List"));
+		// initial list is nested inside the above inserted list
+		assertTrue(diff.containsOperation(OperationKind.Move, "TYPE_ARGUMENT", "java.util.List"));
+	}
 }
