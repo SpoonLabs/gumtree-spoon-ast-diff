@@ -1,1 +1,0 @@
-class WithoutGenericTypes implements B { }
