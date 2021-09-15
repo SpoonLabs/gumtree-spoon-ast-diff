@@ -275,7 +275,7 @@ public class DiffTest {
 
 		Diff diff = new AstComparator().compare(left, right);
 
-		assertTrue(diff.containsOperation(OperationKind.Insert, "INTERFACE", "A"));
+		assertTrue(diff.containsOperation(OperationKind.Delete, "INTERFACE", "A"));
 		assertTrue(diff.containsOperation(OperationKind.Insert, "INTERFACE", "D"));
 		assertTrue(diff.containsOperation(OperationKind.Insert, "TYPE_ARGUMENT", "T"));
 		// outer list is inserted
