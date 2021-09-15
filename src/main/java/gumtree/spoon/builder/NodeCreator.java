@@ -124,6 +124,7 @@ public class NodeCreator extends CtInheritanceScanner {
 			ITree returnType = builder.createNode("RETURN_TYPE", type.getQualifiedName());
 			returnType.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, type);
 			type.putMetadata(SpoonGumTreeBuilder.GUMTREE_NODE, returnType);
+			computeTreeOfTypeReferences(type, returnType);
 			builder.addSiblingNode(returnType);
 		}
 
