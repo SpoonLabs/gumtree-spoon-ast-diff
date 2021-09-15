@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeTrue;
 
 import java.io.File;
 import java.io.FileReader;
@@ -1551,10 +1550,9 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 
-		assertEquals(1, actions.size());
+		assertEquals(2, actions.size());
+		assertTrue(result.containsOperation(OperationKind.Delete, "TYPE_ARGUMENT", "T"));
 		assertTrue(result.containsOperation(OperationKind.Insert, "Parameter", "call"));
-		// assertTrue(result.containsOperation(OperationKind.Update, "SUPER_TYPE",
-		// "Callback<T>"));
 	}
 
 	@Test
@@ -1743,11 +1741,9 @@ public class AstComparatorTest {
 		List<Operation> actions = resulta.getRootOperations();
 		resulta.debugInformation();
 
-		assertEquals(1, actions.size());
-
+		assertEquals(2, actions.size());
+		assertTrue(resulta.containsOperation(OperationKind.Delete, "TYPE_ARGUMENT", "T"));
 		assertTrue(resulta.containsOperation(OperationKind.Insert, "Parameter", "call"));
-		// assertTrue(resulta.containsOperation(OperationKind.Update, "SUPER_TYPE",
-		// "Callback<T>"));
 
 		DiffImpl idiff = (DiffImpl) resulta;
 
@@ -1777,9 +1773,6 @@ public class AstComparatorTest {
 
 	@Test
 	public void testExtendsGenerics1() throws Exception {
-		// ToDo: Generic type is not being parsed for which #173 is already opened.
-		assumeTrue(false);
-
 		CtClass c1a = Launcher.parseClass("class Main extends SuperClass<One> { }");
 		CtClass c2a = Launcher.parseClass("class Main extends SuperClass<Two> { }");
 
@@ -1790,14 +1783,11 @@ public class AstComparatorTest {
 		result.debugInformation();
 
 		assertEquals(1, actions.size());
-		assertTrue(result.containsOperation(OperationKind.Update, "SUPER_TYPE", "SuperClass<One>"));
+		assertTrue(result.containsOperation(OperationKind.Update, "TYPE_ARGUMENT", "One"));
 	}
 
 	@Test
 	public void testExtendsGenerics2() throws Exception {
-		// ToDo: Generic type is not being parsed for which #173 is already opened.
-		assumeTrue(false);
-
 		CtClass c1a = Launcher.parseClass("class Main extends SuperClass { }");
 		CtClass c2a = Launcher.parseClass("class Main extends SuperClass<One> { }");
 
@@ -1808,7 +1798,7 @@ public class AstComparatorTest {
 		result.debugInformation();
 
 		assertEquals(1, actions.size());
-		assertTrue(result.containsOperation(OperationKind.Update, "SUPER_TYPE", "SuperClass"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "TYPE_ARGUMENT", "One"));
 	}
 
 	@Test

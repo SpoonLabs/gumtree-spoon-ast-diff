@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
@@ -537,5 +538,25 @@ public class TreeTest {
 		assertEquals("SuperClass", superClass.getLabel());
 		assertEquals(superClass.getDepth(), klass.getDepth()+1);
 		assertEquals(0, superClass.getDescendants().size());
+	}
+
+	@Test
+	public void test_levelsOfNestingOfTypeArguments() throws Exception{
+		File nestedList = new File("src/test/resources/examples/diffOfGenericTypeReferences/multipleNesting/right.java");
+
+		AstComparator comparator = new AstComparator();
+		SpoonGumTreeBuilder scanner = new SpoonGumTreeBuilder();
+		ITree root = scanner.getTree(comparator.getCtType(nestedList));
+		String listLabel = "java.util.List";
+		String stringLabel = "java.lang.String";
+
+		ITree field = root.getChild(0).getChild(3);
+		List<String> childLabels = field.getDescendants().stream().map(ITree::getLabel).collect(Collectors.toList());
+		long listLabelsCount = childLabels.stream().filter(listLabel::equals).count();
+		long stringLabelsCount = childLabels.stream().filter(stringLabel::equals).count();
+
+		assertEquals("Not enough List containers", 4, listLabelsCount);
+		assertEquals("Not enough String type arguments", 1, stringLabelsCount);
+		assertEquals("There should only be list and string labels", childLabels.size(), listLabelsCount + stringLabelsCount);
 	}
 }
