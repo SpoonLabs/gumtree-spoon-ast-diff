@@ -559,4 +559,13 @@ public class TreeTest {
 		assertEquals("Not enough String type arguments", 1, stringLabelsCount);
 		assertEquals("There should only be list and string labels", childLabels.size(), listLabelsCount + stringLabelsCount);
 	}
+
+	@Test
+	public void test_superInterfacesShouldBeDescendantsOfClassNode() {
+		CtClass<?> spoonClass = Launcher.parseClass("class Example implements A, B, C { }");
+		ITree root = new SpoonGumTreeBuilder().getTree(spoonClass);
+		ITree superInterfaces = root.getChild(0).getChild(0);
+
+		assertEquals(3, superInterfaces.getDescendants().size());
+	}
 }
