@@ -155,8 +155,6 @@ class LabelFinder extends CtInheritanceScanner {
 
 	@Override
 	public <T> void visitCtTypeReference(CtTypeReference<T> e) {
-		if (e.getRoleInParent() == CtRole.SUPER_TYPE) {
 			label = e.getQualifiedName();
-		}
 	}
 }

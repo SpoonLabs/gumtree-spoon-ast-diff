@@ -3,6 +3,7 @@ package gumtree.spoon.builder;
 import com.github.gumtreediff.tree.ITree;
 import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.declaration.CtModifiable;
+import spoon.reflect.declaration.CtTypeInformation;
 import spoon.reflect.declaration.CtVariable;
 import spoon.reflect.declaration.ModifierKind;
 import spoon.reflect.path.CtRole;
@@ -85,6 +86,23 @@ public class NodeCreator extends CtInheritanceScanner {
 			computeTreeOfTypeReferences(ctTypeArgument, typeArgument);
 			builder.addSiblingNode(typeArgument);
 		}
+	}
+
+	@Override
+	public <T> void scanCtTypeInformation(CtTypeInformation typeReference) {
+		if (typeReference.getSuperInterfaces().isEmpty()) {
+			return;
+		}
+
+		ITree superInterfaceRoot = builder.createNode("SUPER_INTERFACES", "SuperInterfaces");
+		for (CtTypeReference<?> superInterface: typeReference.getSuperInterfaces()) {
+			ITree superInterfaceNode = builder.createNode("INTERFACE", superInterface.getQualifiedName());
+			superInterfaceNode.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, superInterface);
+			superInterface.putMetadata(SpoonGumTreeBuilder.GUMTREE_NODE, superInterfaceNode);
+			superInterfaceRoot.addChild(superInterfaceNode);
+			computeTreeOfTypeReferences(superInterface, superInterfaceNode);
+		}
+		builder.addSiblingNode(superInterfaceRoot);
 	}
 
 	/** Creates a tree of nested type references where each nested type reference is a child of its container. */
