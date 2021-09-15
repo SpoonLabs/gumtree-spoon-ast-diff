@@ -562,9 +562,10 @@ public class TreeTest {
 
 	@Test
 	public void test_superInterfacesShouldBeDescendantsOfClassNode() {
-		CtClass klass = Launcher.parseClass("class Example implements A, B, C { }");
-		ITree root = new SpoonGumTreeBuilder().getTree(klass);
+		CtClass<?> spoonClass = Launcher.parseClass("class Example implements A, B, C { }");
+		ITree root = new SpoonGumTreeBuilder().getTree(spoonClass);
+		ITree superInterfaces = root.getChild(0).getChild(0);
 
-		assertEquals(3, root.getChild(0).getDescendants().size());
+		assertEquals(3, superInterfaces.getDescendants().size());
 	}
 }
