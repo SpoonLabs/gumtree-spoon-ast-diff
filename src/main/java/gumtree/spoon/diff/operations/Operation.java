@@ -6,7 +6,6 @@ import com.github.gumtreediff.actions.model.Update;
 
 import gumtree.spoon.builder.SpoonGumTreeBuilder;
 import spoon.reflect.cu.position.NoSourcePosition;
-import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtPackage;
 import spoon.reflect.declaration.CtType;
@@ -69,11 +68,11 @@ public abstract class Operation<T extends Action> {
 		}
 		if (action instanceof Move) {
 			CtElement elementDest = (CtElement) action.getNode().getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT_DEST);
-			position = " from " + element.getParent(CtClass.class).getQualifiedName();
+			position = " from " + element.getParent(CtType.class).getQualifiedName();
 			if (element.getPosition() != null && !(element.getPosition() instanceof NoSourcePosition)) {
 				position += ":" + element.getPosition().getLine();
 			}
-			position += " to " + elementDest.getParent(CtClass.class).getQualifiedName();
+			position += " to " + elementDest.getParent(CtType.class).getQualifiedName();
 			if (elementDest.getPosition() != null && !(elementDest.getPosition() instanceof NoSourcePosition)) {
 				position += ":" + elementDest.getPosition().getLine();
 			}
