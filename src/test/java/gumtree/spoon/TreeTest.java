@@ -568,4 +568,17 @@ public class TreeTest {
 
 		assertEquals(3, superInterfaces.getDescendants().size());
 	}
+
+	@Test
+	public void test_nestedReturnTypeOfMethodShouldGetParsed() throws Exception {
+		File file = new File("src/test/resources/examples/NestedReturnType.java");
+		AstComparator comparator = new AstComparator();
+		SpoonGumTreeBuilder scanner = new SpoonGumTreeBuilder();
+		ITree root = scanner.getTree(comparator.getCtType(file));
+		ITree method = root.getDescendants().stream().filter(iTree -> iTree.getLabel().equals("getIntegers")).findFirst().get();
+
+		ITree returnType = method.getChild(0);
+		assertEquals(1, returnType.getDescendants().size());
+		assertEquals("java.lang.Integer", returnType.getChild(0).getLabel());
+	}
 }
