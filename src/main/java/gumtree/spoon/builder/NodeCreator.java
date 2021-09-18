@@ -1,6 +1,7 @@
 package gumtree.spoon.builder;
 
 import com.github.gumtreediff.tree.ITree;
+import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.declaration.CtModifiable;
 import spoon.reflect.declaration.CtTypeInformation;
@@ -94,7 +95,13 @@ public class NodeCreator extends CtInheritanceScanner {
 			return;
 		}
 
-		ITree superInterfaceRoot = builder.createNode("SUPER_INTERFACES", "SuperInterfaces");
+		// create the root super interface node whose children will be *actual* spoon nodes of interfaces
+		String typeLabel = "SuperInterfaces";
+		ITree superInterfaceRoot = builder.createNode("SUPER_INTERFACES", typeLabel);
+		String virtualNodeDescription = typeLabel + "_" + typeReference.getQualifiedName();
+		superInterfaceRoot.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, new CtVirtualElement(virtualNodeDescription, (CtElement) typeReference, typeReference.getSuperInterfaces(), CtRole.INTERFACE));
+
+		// attach each super interface to the root created above
 		for (CtTypeReference<?> superInterface: typeReference.getSuperInterfaces()) {
 			ITree superInterfaceNode = builder.createNode("INTERFACE", superInterface.getQualifiedName());
 			superInterfaceNode.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, superInterface);
