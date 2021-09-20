@@ -1,5 +1,6 @@
 package gumtree.spoon.diff;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -8,6 +9,7 @@ import java.util.List;
 
 import org.junit.Test;
 
+import gumtree.spoon.builder.CtVirtualElement;
 import gumtree.spoon.AstComparator;
 import gumtree.spoon.diff.operations.Operation;
 import gumtree.spoon.diff.operations.OperationKind;
@@ -282,5 +284,21 @@ public class DiffTest {
 		assertTrue(diff.containsOperation(OperationKind.Insert, "TYPE_ARGUMENT", "java.util.List"));
 		// initial list is nested inside the above inserted list
 		assertTrue(diff.containsOperation(OperationKind.Move, "TYPE_ARGUMENT", "java.util.List"));
+	}
+
+	@Test
+	public void test_diffOfSuperInterfaces_insertionOfRootNodeOfInterface() throws Exception {
+		File left = new File("src/test/resources/examples/superInterfaces/insertion/left.java");
+		File right = new File("src/test/resources/examples/superInterfaces/insertion/right.java");
+
+		Diff diff = new AstComparator().compare(left, right);
+
+		// assert that only the root of super interfaces is inserted
+		assertEquals(1, diff.getRootOperations().size());
+		assertTrue(diff.containsOperation(OperationKind.Insert, "SUPER_INTERFACES", "SuperInterfaces"));
+
+		// verify children of the inserted root node
+		CtVirtualElement superInterfaceRoot = (CtVirtualElement) diff.getRootOperations().get(0).getSrcNode();
+		assertArrayEquals(new String[]{"A", "B"}, superInterfaceRoot.getChildren().stream().map(Object::toString).toArray());
 	}
 }
