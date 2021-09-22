@@ -1526,7 +1526,7 @@ public class AstComparatorTest {
 		result.debugInformation();
 
 		assertEquals(1, actions.size());
-		assertTrue(result.containsOperation(OperationKind.Insert, "THROWS", "java.lang.Exception"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "THROWN_TYPES", "ThrownTypes"));
 	}
 
 	@Test
