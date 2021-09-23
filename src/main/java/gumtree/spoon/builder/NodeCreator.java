@@ -96,9 +96,8 @@ public class NodeCreator extends CtInheritanceScanner {
 		}
 
 		// create the root super interface node whose children will be *actual* spoon nodes of interfaces
-		String typeLabel = "SuperInterfaces";
-		ITree superInterfaceRoot = builder.createNode("SUPER_INTERFACES", typeLabel);
-		String virtualNodeDescription = typeLabel + "_" + typeReference.getQualifiedName();
+		ITree superInterfaceRoot = builder.createNode("SUPER_INTERFACES", "");
+		String virtualNodeDescription = "SuperInterfaces_" + typeReference.getQualifiedName();
 		superInterfaceRoot.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, new CtVirtualElement(virtualNodeDescription, (CtElement) typeReference, typeReference.getSuperInterfaces(), CtRole.INTERFACE));
 
 		// attach each super interface to the root created above
