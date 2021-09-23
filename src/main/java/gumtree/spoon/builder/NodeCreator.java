@@ -136,9 +136,8 @@ public class NodeCreator extends CtInheritanceScanner {
 		}
 
 		if (!e.getThrownTypes().isEmpty()) {
-			String typeLabel = "ThrownTypes";
-			ITree thrownTypeRoot = builder.createNode("THROWN_TYPES", typeLabel);
-			String virtualNodeDescription = typeLabel + "_" + e.getSimpleName();
+			ITree thrownTypeRoot = builder.createNode("THROWN_TYPES", "");
+			String virtualNodeDescription = "ThrownTypes_" + e.getSimpleName();
 			thrownTypeRoot.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, new CtVirtualElement(virtualNodeDescription, e, e.getThrownTypes(), CtRole.THROWN));
 
 			for (CtTypeReference<? extends Throwable> thrownType : e.getThrownTypes()) {

@@ -312,7 +312,7 @@ public class DiffTest {
 
 		// assert that only the root of throwables is inserted
 		assertEquals(1, diff.getRootOperations().size());
-		assertTrue(diff.containsOperation(OperationKind.Insert, "THROWN_TYPES", "ThrownTypes"));
+		assertTrue(diff.containsOperation(OperationKind.Insert, "THROWN_TYPES"));
 
 		// verify children of the inserted root node
 		CtVirtualElement thrownTypeRoot = (CtVirtualElement) diff.getRootOperations().get(0).getSrcNode();
