@@ -1,5 +1,5 @@
 name: Build project and execute tests
-on: [pull_request]
+on: [push, pull_request]
 
 jobs:
   package:
