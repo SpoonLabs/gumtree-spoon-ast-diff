@@ -7,7 +7,7 @@
       "type": "Class",
       "children": [
         {
-          "label": "SuperInterfaces",
+          "label": "",
           "type": "SUPER_INTERFACES",
           "children": [
             {
@@ -43,7 +43,7 @@
           "type": "SUPER_TYPE",
           "children": [
             {
-              "label": "SuperInterfaces",
+              "label": "",
               "type": "SUPER_INTERFACES",
               "children": [
                 {
