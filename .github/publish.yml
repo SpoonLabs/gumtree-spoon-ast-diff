@@ -1,4 +1,4 @@
-name: Deploy latest build
+name: Publish latest build
 
 on:
   push:
