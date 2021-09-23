@@ -1,5 +1,6 @@
 package gumtree.spoon.diff;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -300,5 +301,25 @@ public class DiffTest {
 		// verify children of the inserted root node
 		CtVirtualElement superInterfaceRoot = (CtVirtualElement) diff.getRootOperations().get(0).getSrcNode();
 		assertArrayEquals(new String[]{"A", "B"}, superInterfaceRoot.getChildren().stream().map(Object::toString).toArray());
+	}
+
+	@Test
+	public void test_diffOfThrownTypes_insertionOfRootNodeOfThrowable() throws Exception {
+		File left = new File("src/test/resources/examples/thrownTypes/left.java");
+		File right = new File("src/test/resources/examples/thrownTypes/right.java");
+
+		Diff diff = new AstComparator().compare(left, right);
+
+		// assert that only the root of throwables is inserted
+		assertEquals(1, diff.getRootOperations().size());
+		assertTrue(diff.containsOperation(OperationKind.Insert, "THROWN_TYPES"));
+
+		// verify children of the inserted root node
+		CtVirtualElement thrownTypeRoot = (CtVirtualElement) diff.getRootOperations().get(0).getSrcNode();
+		assertNotNull(thrownTypeRoot);
+		assertArrayEquals(new String[] {
+				"java.lang.ClassNotFoundException",
+				"java.lang.ClassCastException"
+		}, thrownTypeRoot.getChildren().stream().map(Object::toString).toArray());
 	}
 }

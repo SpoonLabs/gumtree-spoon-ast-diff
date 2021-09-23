@@ -135,13 +135,19 @@ public class NodeCreator extends CtInheritanceScanner {
 			builder.addSiblingNode(returnType);
 		}
 
-		for (CtTypeReference thrown : e.getThrownTypes()) {
-			ITree thrownType = builder.createNode("THROWS", thrown.getQualifiedName());
-			thrownType.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, thrown);
-			type.putMetadata(SpoonGumTreeBuilder.GUMTREE_NODE, thrownType);
-			builder.addSiblingNode(thrownType);
-		}
+		if (!e.getThrownTypes().isEmpty()) {
+			ITree thrownTypeRoot = builder.createNode("THROWN_TYPES", "");
+			String virtualNodeDescription = "ThrownTypes_" + e.getSimpleName();
+			thrownTypeRoot.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, new CtVirtualElement(virtualNodeDescription, e, e.getThrownTypes(), CtRole.THROWN));
 
+			for (CtTypeReference<? extends Throwable> thrownType : e.getThrownTypes()) {
+				ITree thrownNode = builder.createNode("THROWN", thrownType.getQualifiedName());
+				thrownNode.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, thrownType);
+				thrownType.putMetadata(SpoonGumTreeBuilder.GUMTREE_NODE, thrownNode);
+				thrownTypeRoot.addChild(thrownNode);
+			}
+			builder.addSiblingNode(thrownTypeRoot);
+		}
 		super.visitCtMethod(e);
 	}
 }
