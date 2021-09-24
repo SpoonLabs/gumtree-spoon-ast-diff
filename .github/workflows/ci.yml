@@ -2,7 +2,7 @@ name: CI
 on: push
 
 jobs:
-  package:
+  compile:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -12,8 +12,6 @@ jobs:
         java-version: 11
     - name: Compile source code
       run: mvn compile
-    - name: Build project
-      run: mvn -B package -DskipTests
 
   test:
     runs-on: ubuntu-latest
