@@ -6,35 +6,19 @@
 
 set -e
 
-SLUG="SpoonLabs/gumtree-spoon-ast-diff"
-JDK="oraclejdk11"
-BRANCH="master"
+echo "Deploying ..."
+# made with "travis encrypt-file .buildscript/codesigning.asc -r SpoonLabs/gumtree-spoon-ast-diff --add"
+openssl aes-256-cbc -K $encrypted_9809c3ea697e_key -iv $encrypted_9809c3ea697e_iv -in .buildscript/codesigning.asc.enc -out codesigning.asc -d
+gpg --fast-import codesigning.asc
 
-set -e
+# getting the previous version on Maven Central
+# for some reasons, some versions don't get index by search.maven.org/solrsearch/, and it break the build
+# so we have to roll our own: https://gist.github.com/monperrus/9ee373e2500e40b634f8daf707f6ad2a
+# PREVIOUS_MAVEN_CENTRAL_VERSION=`curl "http://search.maven.org/solrsearch/select?q=a:gumtree-spoon-ast-diff+g:fr.inria.gforge.spoon.labs&rows=20&wt=json" | jq -r .response.docs[0].latestVersion | egrep -o "[0-9]+$"`
+PREVIOUS_MAVEN_CENTRAL_VERSION=`curl "https://www.monperrus.net/martin/last-version-maven.py?groupId=fr.inria.gforge.spoon.labs&artifactId=gumtree-spoon-ast-diff" | egrep -o "[0-9]+$"`
 
-if [ "$TRAVIS_REPO_SLUG" != "$SLUG" ]; then
-  echo "Skipping deployment: wrong repository. Expected '$SLUG' but was '$TRAVIS_REPO_SLUG'."
-elif [ "$TRAVIS_JDK_VERSION" != "$JDK" ]; then
-  echo "Skipping deployment: wrong JDK. Expected '$JDK' but was '$TRAVIS_JDK_VERSION'."
-elif [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
-  echo "Skipping deployment: was pull request."
-elif [ "$TRAVIS_BRANCH" != "$BRANCH" ]; then
-  echo "Skipping deployment: wrong branch. Expected '$BRANCH' but was '$TRAVIS_BRANCH'."
-else
-  echo "Deploying ..."
-  # made with "travis encrypt-file .buildscript/codesigning.asc -r SpoonLabs/gumtree-spoon-ast-diff --add"
-  openssl aes-256-cbc -K $encrypted_9809c3ea697e_key -iv $encrypted_9809c3ea697e_iv -in .buildscript/codesigning.asc.enc -out codesigning.asc -d
-  gpg --fast-import codesigning.asc
+# and incrementing it
+mvn versions:set -DnewVersion=1.$((PREVIOUS_MAVEN_CENTRAL_VERSION+1))
 
-  # getting the previous version on Maven Central
-  # for some reasons, some versions don't get index by search.maven.org/solrsearch/, and it break the build
-  # so we have to roll our own: https://gist.github.com/monperrus/9ee373e2500e40b634f8daf707f6ad2a
-  # PREVIOUS_MAVEN_CENTRAL_VERSION=`curl "http://search.maven.org/solrsearch/select?q=a:gumtree-spoon-ast-diff+g:fr.inria.gforge.spoon.labs&rows=20&wt=json" | jq -r .response.docs[0].latestVersion | egrep -o "[0-9]+$"`
-  PREVIOUS_MAVEN_CENTRAL_VERSION=`curl "https://www.monperrus.net/martin/last-version-maven.py?groupId=fr.inria.gforge.spoon.labs&artifactId=gumtree-spoon-ast-diff" | egrep -o "[0-9]+$"`
-  
-  # and incrementing it
-  mvn versions:set -DnewVersion=1.$((PREVIOUS_MAVEN_CENTRAL_VERSION+1))
-
-  mvn -Prelease deploy --settings .buildscript/settings.xml -Dmaven.test.skip=true
-  echo "Well deployed!"
-fi
+mvn -Prelease deploy --settings .buildscript/settings.xml -Dmaven.test.skip=true
+echo "Well deployed!"
