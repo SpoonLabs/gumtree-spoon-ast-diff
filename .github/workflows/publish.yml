@@ -28,4 +28,5 @@ jobs:
       env:
         CI_DEPLOY_USERNAME: ${{ secrets.CI_DEPLOY_USERNAME }}
         CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
+        SPOONBOT_PARAPHRASE: ${{ secrets.SPOONBOT_PARAPHRASE }}
       run: ./.buildscript/deploy_to_maven.sh
