@@ -25,4 +25,7 @@ jobs:
       with:
         java-version: 11
     - name: Start deployment
+      env:
+        CI_DEPLOY_USERNAME: ${{ secrets.CI_DEPLOY_USERNAME }}
+        CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
       run: ./.buildscript/deploy_to_maven.sh

@@ -1,14 +1,9 @@
 <settings>
   <servers>
-    <server>
-      <id>ossrh-snapshot</id>
-      <username>${env.CI_DEPLOY_USERNAME}</username>
-      <password>${env.CI_DEPLOY_PASSWORD}</password>
-    </server>
-    <server>
-        <id>ossrh</id>
-        <username>${env.CI_DEPLOY_USERNAME}</username>
-        <password>${env.CI_DEPLOY_PASSWORD}</password>
-    </server>
-</servers>
+      <server>
+          <id>ossrh</id>
+          <username>${env.CI_DEPLOY_USERNAME}</username>
+          <password>${env.CI_DEPLOY_PASSWORD}</password>
+      </server>
+  </servers>
 </settings>
