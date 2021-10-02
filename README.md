@@ -1,4 +1,5 @@
-[![Build Status](https://travis-ci.org/SpoonLabs/gumtree-spoon-ast-diff.svg?branch=master)](https://travis-ci.org/SpoonLabs/gumtree-spoon-ast-diff)
+[![Build Status](https://github.com/SpoonLabs/gumtree-spoon-ast-diff/actions/workflows/ci.yml/badge.svg)](https://github.com/SpoonLabs/gumtree-spoon-ast-diff/actions/workflows/ci.yml)
+[![Latest Deployment Status](https://github.com/SpoonLabs/gumtree-spoon-ast-diff/actions/workflows/publish.yml/badge.svg?branch=master)](https://github.com/SpoonLabs/gumtree-spoon-ast-diff/actions/workflows/publish.yml)
 
 Gumtree Spoon AST Diff
 ======================
