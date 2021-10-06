@@ -96,6 +96,7 @@ public class ActionClassifier {
 	}
 
 	public List<Action> getUpdateActions() {
+		// new method
 		return srcUpdTrees.stream().map(t -> originalActionsSrc.get(t)).collect(Collectors.toList());
 	}
 
