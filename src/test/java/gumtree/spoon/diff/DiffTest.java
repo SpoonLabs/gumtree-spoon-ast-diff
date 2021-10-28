@@ -296,7 +296,7 @@ public class DiffTest {
 
 		// assert that only the root of super interfaces is inserted
 		assertEquals(1, diff.getRootOperations().size());
-		assertTrue(diff.containsOperation(OperationKind.Insert, "SUPER_INTERFACES", "SuperInterfaces"));
+		assertTrue(diff.containsOperation(OperationKind.Insert, "SUPER_INTERFACES"));
 
 		// verify children of the inserted root node
 		CtVirtualElement superInterfaceRoot = (CtVirtualElement) diff.getRootOperations().get(0).getSrcNode();
