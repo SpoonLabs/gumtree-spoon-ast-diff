@@ -7,7 +7,10 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.github.gumtreediff.actions.ActionGenerator;
+import com.github.gumtreediff.actions.ChawatheScriptGenerator;
+import com.github.gumtreediff.actions.EditScript;
+import com.github.gumtreediff.actions.EditScriptGenerator;
+import com.github.gumtreediff.actions.SimplifiedChawatheScriptGenerator;
 import com.github.gumtreediff.actions.model.Action;
 import com.github.gumtreediff.actions.model.Delete;
 import com.github.gumtreediff.actions.model.Insert;
@@ -16,7 +19,7 @@ import com.github.gumtreediff.actions.model.Update;
 import com.github.gumtreediff.matchers.CompositeMatchers;
 import com.github.gumtreediff.matchers.MappingStore;
 import com.github.gumtreediff.matchers.Matcher;
-import com.github.gumtreediff.tree.ITree;
+import com.github.gumtreediff.tree.Tree;
 import com.github.gumtreediff.tree.TreeContext;
 
 import gumtree.spoon.builder.SpoonGumTreeBuilder;
@@ -49,26 +52,30 @@ public class DiffImpl implements Diff {
 	 */
 	private final TreeContext context;
 
-	public DiffImpl(TreeContext context, ITree rootSpoonLeft, ITree rootSpoonRight) {
+	public DiffImpl(TreeContext context, Tree rootSpoonLeft, Tree rootSpoonRight) {
 		if (context == null) {
 			throw new IllegalArgumentException();
 		}
-		final MappingStore mappingsComp = new MappingStore();
+		final MappingStore mappingsComp = new MappingStore(rootSpoonLeft, rootSpoonRight);
 		this.context = context;
 
-		final Matcher matcher = new CompositeMatchers.ClassicGumtree(rootSpoonLeft, rootSpoonRight, mappingsComp);
-		matcher.match();
+		final Matcher matcher = new CompositeMatchers.ClassicGumtree();
+		MappingStore mappings = matcher.match(rootSpoonLeft, rootSpoonRight, mappingsComp);
+		// all actions
 
-		final ActionGenerator actionGenerator = new ActionGenerator(rootSpoonLeft, rootSpoonRight,
-				matcher.getMappings());
-		actionGenerator.generate();
+		EditScriptGenerator actionGenerator = new ChawatheScriptGenerator();
 
-		ActionClassifier actionClassifier = new ActionClassifier(matcher.getMappingsAsSet(),
-				actionGenerator.getActions());
-		// Bugfix: the Action classifier must be executed *BEFORE* the convertToSpoon
-		// because it writes meta-data on the trees
-		this.rootOperations = convertToSpoon(actionClassifier.getRootActions());
-		this.allOperations = convertToSpoon(actionGenerator.getActions());
+		EditScript edComplete = actionGenerator.computeActions(mappings);
+
+		this.allOperations = convertToSpoon(edComplete.asList());
+
+		// roots
+
+		EditScriptGenerator actionGeneratorSimplified = new SimplifiedChawatheScriptGenerator();
+
+		EditScript edSimplified = actionGeneratorSimplified.computeActions(mappings);
+
+		this.rootOperations = convertToSpoon(edSimplified.asList());
 
 		this._mappingsComp = mappingsComp;
 
@@ -87,7 +94,7 @@ public class DiffImpl implements Diff {
 
 	private List<Operation> convertToSpoon(List<Action> actions) {
 		List<Operation> collect = actions.stream().map(action -> {
-			action.getNode().setMetadata("type", context.getTypeLabel(action.getNode()));
+			action.getNode().setMetadata("type", action.getNode().getType().name);
 			if (action instanceof Insert) {
 				return new InsertOperation((Insert) action);
 			} else if (action instanceof Delete) {
@@ -135,7 +142,7 @@ public class DiffImpl implements Diff {
 			CtElement el = operation.getNode();
 			if (operation instanceof InsertOperation) {
 				// we take the corresponding node in the source tree
-				el = (CtElement) _mappingsComp.getSrc(operation.getAction().getNode().getParent())
+				el = (CtElement) _mappingsComp.getSrcForDst(operation.getAction().getNode().getParent())
 						.getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT);
 			}
 			copy.add(el);
@@ -177,7 +184,7 @@ public class DiffImpl implements Diff {
 	public boolean containsOperation(OperationKind kind, String nodeKind) {
 		return rootOperations.stream() //
 				.anyMatch(operation -> operation.getAction().getClass().getSimpleName().equals(kind.name()) //
-						&& context.getTypeLabel(operation.getAction().getNode()).equals(nodeKind));
+						&& operation.getAction().getNode().getType().name.equals(nodeKind));
 	}
 
 	@Override
@@ -190,7 +197,7 @@ public class DiffImpl implements Diff {
 			String nodeLabel) {
 		return operations.stream()
 				.anyMatch(operation -> operation.getAction().getClass().getSimpleName().equals(kind.name()) //
-						&& context.getTypeLabel(operation.getAction().getNode()).equals(nodeKind)
+						&& operation.getAction().getNode().getType().name.equals(nodeKind)
 						&& operation.getAction().getNode().getLabel().equals(nodeLabel));
 	}
 
@@ -199,12 +206,11 @@ public class DiffImpl implements Diff {
 		if (kind != OperationKind.Update) {
 			throw new IllegalArgumentException();
 		}
-		return getRootOperations().stream()
-				.anyMatch(operation -> operation instanceof UpdateOperation //
-						&& ((UpdateOperation) operation).getAction().getNode().getLabel().equals(nodeLabel)
-						&& ((UpdateOperation)operation).getAction().getValue().equals(newLabel)
+		return getRootOperations().stream().anyMatch(operation -> operation instanceof UpdateOperation //
+				&& ((UpdateOperation) operation).getAction().getNode().getLabel().equals(nodeLabel)
+				&& ((UpdateOperation) operation).getAction().getValue().equals(newLabel)
 
-				);
+		);
 	}
 
 	@Override
@@ -219,13 +225,14 @@ public class DiffImpl implements Diff {
 	private String toDebugString(List<Operation> ops) {
 		String result = "";
 		for (Operation operation : ops) {
-			ITree node = operation.getAction().getNode();
+			Tree node = operation.getAction().getNode();
 			final CtElement nodeElement = operation.getNode();
-			String nodeType = context.getTypeLabel(node.getType());
+			String nodeType = node.getType().name;
 			if (nodeElement != null) {
 				nodeType += "(" + nodeElement.getClass().getSimpleName() + ")";
 			}
-			result += "OperationKind." + operation.getAction().getClass().getSimpleName() + ", \"" + nodeType + "\", \"" + node.getLabel()+ "\"";
+			result += "OperationKind." + operation.getAction().getClass().getSimpleName() + ", \"" + nodeType + "\", \""
+					+ node.getLabel() + "\"";
 
 			if (operation instanceof UpdateOperation) {
 				// adding the new value for update

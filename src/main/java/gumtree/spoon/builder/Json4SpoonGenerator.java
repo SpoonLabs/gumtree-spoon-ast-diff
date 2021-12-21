@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.github.gumtreediff.tree.ITree;
+import com.github.gumtreediff.tree.Tree;
 import com.github.gumtreediff.tree.TreeContext;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -32,7 +32,7 @@ public class Json4SpoonGenerator {
 	@SuppressWarnings("rawtypes")
 	public JsonObject getJSONasJsonObject(CtElement element) {
 		SpoonGumTreeBuilder builder = new SpoonGumTreeBuilder();
-		ITree generatedTree = builder.getTree(element);
+		Tree generatedTree = builder.getTree(element);
 
 		TreeContext tcontext = builder.getTreeContext();
 		return this.getJSONasJsonObject(tcontext, generatedTree);
@@ -40,7 +40,7 @@ public class Json4SpoonGenerator {
 
 	public String getJSONasString(CtElement element) {
 		SpoonGumTreeBuilder builder = new SpoonGumTreeBuilder();
-		ITree generatedTree = builder.getTree(element);
+		Tree generatedTree = builder.getTree(element);
 
 		TreeContext tcontext = builder.getTreeContext();
 
@@ -48,15 +48,15 @@ public class Json4SpoonGenerator {
 		return gson.toJson(this.getJSONasJsonObject(tcontext, generatedTree)) + "\n";
 	}
 
-	public JsonObject getJSONasJsonObject(TreeContext context, ITree tree) {
+	public JsonObject getJSONasJsonObject(TreeContext context, Tree tree) {
 		JsonObject o = new JsonObject();
 		o.addProperty(JSON_PROPERTIES.label.toString(), tree.getLabel());
-		o.addProperty(JSON_PROPERTIES.type.toString(), context.getTypeLabel(tree));
+		o.addProperty(JSON_PROPERTIES.type.toString(), tree.getType().name);
 
 		JsonArray nodeChildens = new JsonArray();
 		o.add(JSON_PROPERTIES.children.toString(), nodeChildens);
 
-		for (ITree tch : tree.getChildren()) {
+		for (Tree tch : tree.getChildren()) {
 			JsonObject childJSon = getJSONasJsonObject(context, tch);
 			if (childJSon != null)
 				nodeChildens.add(childJSon);
@@ -73,7 +73,7 @@ public class Json4SpoonGenerator {
 	 * @param operations
 	 * @return
 	 */
-	public JsonObject getJSONwithOperations(TreeContext context, ITree tree, List<Operation> operations) {
+	public JsonObject getJSONwithOperations(TreeContext context, Tree tree, List<Operation> operations) {
 
 		OperationNodePainter opNodePainter = new OperationNodePainter(operations);
 		Collection<NodePainter> painters = new ArrayList<NodePainter>();
@@ -82,11 +82,11 @@ public class Json4SpoonGenerator {
 	}
 
 	@SuppressWarnings("unused")
-	public JsonObject getJSONwithCustorLabels(TreeContext context, ITree tree, Collection<NodePainter> nodePainters) {
+	public JsonObject getJSONwithCustorLabels(TreeContext context, Tree tree, Collection<NodePainter> nodePainters) {
 
 		JsonObject o = new JsonObject();
 		o.addProperty(JSON_PROPERTIES.label.toString(), tree.getLabel());
-		o.addProperty(JSON_PROPERTIES.type.toString(), context.getTypeLabel(tree));
+		o.addProperty(JSON_PROPERTIES.type.toString(), tree.getType().name);
 		for (NodePainter nodePainter : nodePainters) {
 			nodePainter.paint(tree, o);
 		}
@@ -94,7 +94,7 @@ public class Json4SpoonGenerator {
 		JsonArray nodeChildens = new JsonArray();
 		o.add(JSON_PROPERTIES.children.toString(), nodeChildens);
 
-		for (ITree tch : tree.getChildren()) {
+		for (Tree tch : tree.getChildren()) {
 			JsonObject childJSon = getJSONwithCustorLabels(context, tch, nodePainters);
 			if (childJSon != null)
 				nodeChildens.add(childJSon);

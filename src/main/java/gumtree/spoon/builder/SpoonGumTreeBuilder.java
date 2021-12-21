@@ -17,9 +17,11 @@
 
 package gumtree.spoon.builder;
 
-import com.github.gumtreediff.tree.ITree;
+import static com.github.gumtreediff.tree.TypeSet.type;
+
+import com.github.gumtreediff.tree.Tree;
 import com.github.gumtreediff.tree.TreeContext;
-import com.github.gumtreediff.tree.TreeUtils;
+import com.github.gumtreediff.tree.Type;
 
 import spoon.reflect.declaration.CtElement;
 
@@ -35,13 +37,12 @@ public class SpoonGumTreeBuilder {
 
 	private final TreeContext treeContext = new TreeContext();
 
-	public ITree getTree(CtElement element) {
-		final ITree root = treeContext.createTree(-1, "", "root");
+	public Tree getTree(CtElement element) {
+		Type type = type("root");
+		final Tree root = treeContext.createTree(type, "");
 		new TreeScanner(treeContext, root).scan(element);
 
-		root.refresh();
-		TreeUtils.postOrderNumbering(root);
-		TreeUtils.computeHeight(root);
+		// root.refresh();
 		return root;
 	}
 

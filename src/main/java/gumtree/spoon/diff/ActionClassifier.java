@@ -15,7 +15,7 @@ import com.github.gumtreediff.actions.model.Move;
 import com.github.gumtreediff.actions.model.Update;
 import com.github.gumtreediff.matchers.Mapping;
 import com.github.gumtreediff.matchers.MappingStore;
-import com.github.gumtreediff.tree.ITree;
+import com.github.gumtreediff.tree.Tree;
 
 import gumtree.spoon.builder.SpoonGumTreeBuilder;
 import gumtree.spoon.diff.operations.DeleteOperation;
@@ -28,24 +28,33 @@ import gumtree.spoon.diff.operations.Operation;
  *
  * @author Matias Martinez, matias.martinez@inria.fr
  */
+@Deprecated
 public class ActionClassifier {
 	// /
 	// ROOT CLASSIFIER
 	// /
-	private List<ITree> srcUpdTrees = new ArrayList<>();
-	private List<ITree> dstUpdTrees = new ArrayList<>();
-	private List<ITree> srcMvTrees = new ArrayList<>();
-	private List<ITree> dstMvTrees = new ArrayList<>();
-	private List<ITree> srcDelTrees = new ArrayList<>();
-	private List<ITree> dstAddTrees = new ArrayList<>();
-	private Map<ITree, Action> originalActionsSrc = new HashMap<>();
-	private Map<ITree, Action> originalActionsDst = new HashMap<>();
+	private List<Tree> srcUpdTrees = new ArrayList<>();
+	private List<Tree> dstUpdTrees = new ArrayList<>();
+	private List<Tree> srcMvTrees = new ArrayList<>();
+	private List<Tree> dstMvTrees = new ArrayList<>();
+	private List<Tree> srcDelTrees = new ArrayList<>();
+	private List<Tree> dstAddTrees = new ArrayList<>();
+	private Map<Tree, Action> originalActionsSrc = new HashMap<>();
+	private Map<Tree, Action> originalActionsDst = new HashMap<>();
 
 	public ActionClassifier(Set<Mapping> rawMappings, List<Action> actions) {
 		clean();
-		MappingStore mappings = new MappingStore(rawMappings);
+
+		// TODO: retrieve the parents
+		MappingStore mappings = new MappingStore(null, null);
+
+		for (Mapping mapping : rawMappings) {
+
+			mappings.addMapping(mapping.first, mapping.second);
+		}
+
 		for (Action action : actions) {
-			final ITree original = action.getNode();
+			final Tree original = action.getNode();
 			if (action instanceof Delete) {
 				srcDelTrees.add(original);
 				originalActionsSrc.put(original, action);
@@ -53,14 +62,14 @@ public class ActionClassifier {
 				dstAddTrees.add(original);
 				originalActionsDst.put(original, action);
 			} else if (action instanceof Update) {
-				ITree dest = mappings.getDst(original);
+				Tree dest = mappings.getDstForSrc(original);
 				original.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT_DEST,
 						dest.getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT));
 				srcUpdTrees.add(original);
 				dstUpdTrees.add(dest);
 				originalActionsSrc.put(original, action);
 			} else if (action instanceof Move) {
-				ITree dest = mappings.getDst(original);
+				Tree dest = mappings.getDstForSrc(original);
 				original.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT_DEST,
 						dest.getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT));
 				srcMvTrees.add(original);
@@ -125,9 +134,9 @@ public class ActionClassifier {
 	public static List<Operation> replaceMove(MappingStore mapping, List<Operation> ops, boolean all) {
 		List<Operation> newOps = new ArrayList<>();
 
-		List<ITree> dels = ops.stream().filter(e -> e instanceof DeleteOperation).map(e -> e.getAction().getNode())
+		List<Tree> dels = ops.stream().filter(e -> e instanceof DeleteOperation).map(e -> e.getAction().getNode())
 				.collect(Collectors.toList());
-		List<ITree> inss = ops.stream().filter(e -> e instanceof InsertOperation).map(e -> e.getAction().getNode())
+		List<Tree> inss = ops.stream().filter(e -> e instanceof InsertOperation).map(e -> e.getAction().getNode())
 				.collect(Collectors.toList());
 
 		for (Operation operation : ops) {
@@ -135,7 +144,7 @@ public class ActionClassifier {
 			if (operation instanceof MoveOperation) {
 
 				MoveOperation movOp = (MoveOperation) operation;
-				ITree node = movOp.getAction().getNode();
+				Tree node = movOp.getAction().getNode();
 
 				// Create the delete
 
@@ -149,9 +158,10 @@ public class ActionClassifier {
 				}
 
 				// Now the insert
-				ITree dstNode = mapping.getDst(node);
-				ITree parentInAction = movOp.getAction().getParent();
-				ITree parent = (mapping.hasSrc(parentInAction)) ? mapping.getDst(parentInAction) : parentInAction;
+				Tree dstNode = mapping.getDstForSrc(node);
+				Tree parentInAction = movOp.getAction().getParent();
+				Tree parent = (mapping.isDstMapped(parentInAction)) ? mapping.getDstForSrc(parentInAction)
+						: parentInAction;
 				int pos = movOp.getPosition();
 
 				Insert insertAc = new Insert(dstNode, parent, pos);
@@ -171,7 +181,7 @@ public class ActionClassifier {
 		return newOps;
 	}
 
-	public static boolean inParent(List<ITree> trees, ITree parent) {
+	public static boolean inParent(List<Tree> trees, Tree parent) {
 		if (parent == null) {
 			return false;
 		}
