@@ -15,6 +15,8 @@ import com.github.gumtreediff.actions.model.Action;
 import com.github.gumtreediff.actions.model.Delete;
 import com.github.gumtreediff.actions.model.Insert;
 import com.github.gumtreediff.actions.model.Move;
+import com.github.gumtreediff.actions.model.TreeDelete;
+import com.github.gumtreediff.actions.model.TreeInsert;
 import com.github.gumtreediff.actions.model.Update;
 import com.github.gumtreediff.matchers.CompositeMatchers;
 import com.github.gumtreediff.matchers.MappingStore;
@@ -24,7 +26,9 @@ import com.github.gumtreediff.tree.TreeContext;
 
 import gumtree.spoon.builder.SpoonGumTreeBuilder;
 import gumtree.spoon.diff.operations.DeleteOperation;
+import gumtree.spoon.diff.operations.DeleteTreeOperation;
 import gumtree.spoon.diff.operations.InsertOperation;
+import gumtree.spoon.diff.operations.InsertTreeOperation;
 import gumtree.spoon.diff.operations.MoveOperation;
 import gumtree.spoon.diff.operations.Operation;
 import gumtree.spoon.diff.operations.OperationKind;
@@ -103,6 +107,10 @@ public class DiffImpl implements Diff {
 				return new UpdateOperation((Update) action);
 			} else if (action instanceof Move) {
 				return new MoveOperation((Move) action);
+			} else if (action instanceof TreeInsert) {
+				return new InsertTreeOperation((TreeInsert) action);
+			} else if (action instanceof TreeDelete) {
+				return new DeleteTreeOperation((TreeDelete) action);
 			} else {
 				throw new IllegalArgumentException("Please support the new type " + action.getClass());
 			}
