@@ -19,6 +19,7 @@ import com.github.gumtreediff.actions.model.TreeDelete;
 import com.github.gumtreediff.actions.model.TreeInsert;
 import com.github.gumtreediff.actions.model.Update;
 import com.github.gumtreediff.matchers.CompositeMatchers;
+import com.github.gumtreediff.matchers.GumtreeProperties;
 import com.github.gumtreediff.matchers.MappingStore;
 import com.github.gumtreediff.matchers.Matcher;
 import com.github.gumtreediff.tree.Tree;
@@ -42,27 +43,38 @@ public class DiffImpl implements Diff {
 	/**
 	 * Actions over all tree nodes (CtElements)
 	 */
-	private final List<Operation> allOperations;
+	private List<Operation> allOperations;
 	/**
 	 * Actions over the changes roots.
 	 */
-	private final List<Operation> rootOperations;
+	private List<Operation> rootOperations;
 
 	/**
 	 * Actions over the changes roots.
 	 */
-	private final List<Operation> simplifiedOperations;
+	private List<Operation> simplifiedOperations;
 
 	/**
 	 * the mapping of this diff
 	 */
-	private final MappingStore _mappingsComp;
+	private MappingStore _mappingsComp;
 	/**
 	 * Context of the spoon diff.
 	 */
-	private final TreeContext context;
+	private TreeContext context;
+
+	private GumtreeProperties properties = null;
+
+	public DiffImpl(TreeContext context, Tree rootSpoonLeft, Tree rootSpoonRight, GumtreeProperties properties) {
+		this.properties = properties;
+		computeDiff(context, rootSpoonLeft, rootSpoonRight);
+	}
 
 	public DiffImpl(TreeContext context, Tree rootSpoonLeft, Tree rootSpoonRight) {
+		computeDiff(context, rootSpoonLeft, rootSpoonRight);
+	}
+
+	public void computeDiff(TreeContext context, Tree rootSpoonLeft, Tree rootSpoonRight) {
 		if (context == null) {
 			throw new IllegalArgumentException();
 		}
@@ -70,7 +82,11 @@ public class DiffImpl implements Diff {
 		this.context = context;
 
 		final Matcher matcher = new CompositeMatchers.ClassicGumtree();
+
+		if (properties != null)
+			matcher.configure(properties);
 		MappingStore mappings = matcher.match(rootSpoonLeft, rootSpoonRight, mappingsComp);
+
 		// all actions
 
 		EditScriptGenerator actionGenerator = new ChawatheScriptGenerator();

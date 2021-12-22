@@ -16,9 +16,10 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.github.gumtreediff.actions.model.Move;
+import com.github.gumtreediff.matchers.ConfigurationOptions;
+import com.github.gumtreediff.matchers.GumtreeProperties;
 import com.github.gumtreediff.matchers.Mapping;
 
-import gumtree.spoon.builder.NodeCreator;
 import gumtree.spoon.builder.SpoonGumTreeBuilder;
 import gumtree.spoon.diff.ActionClassifier;
 import gumtree.spoon.diff.Diff;
@@ -563,7 +564,14 @@ public class AstComparatorTest {
 		// src/test/resources/examples/t_221343/right_Server_1.187.java
 		File fl = new File("src/test/resources/examples/t_221343/left_Server_1.186.java");
 		File fr = new File("src/test/resources/examples/t_221343/right_Server_1.187.java");
-		Diff result = diff.compare(fl, fr);
+
+		GumtreeProperties properties = new GumtreeProperties();
+
+		properties = new GumtreeProperties();
+		// Using min = 1, the imports and package declaration are mapped.
+		properties.tryConfigure(ConfigurationOptions.st_minprio, 0);
+
+		Diff result = diff.compare(fl, fr, properties);
 
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
