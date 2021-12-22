@@ -71,7 +71,7 @@ public class DiffImpl implements Diff {
 
 		EditScript edComplete = actionGenerator.computeActions(mappings);
 
-		this.allOperations = convertToSpoon(edComplete.asList());
+		this.allOperations = convertToSpoon(edComplete.asList(), mappings);
 
 		// roots
 
@@ -79,7 +79,7 @@ public class DiffImpl implements Diff {
 
 		EditScript edSimplified = actionGeneratorSimplified.computeActions(mappings);
 
-		this.rootOperations = convertToSpoon(edSimplified.asList());
+		this.rootOperations = convertToSpoon(edSimplified.asList(), mappings);
 
 		this._mappingsComp = mappingsComp;
 
@@ -96,18 +96,26 @@ public class DiffImpl implements Diff {
 		}
 	}
 
-	private List<Operation> convertToSpoon(List<Action> actions) {
+	private List<Operation> convertToSpoon(List<Action> actions, MappingStore mappings) {
 		List<Operation> collect = actions.stream().map(action -> {
+
 			action.getNode().setMetadata("type", action.getNode().getType().name);
+			final Tree original = action.getNode();
+
 			if (action instanceof Insert) {
 				return new InsertOperation((Insert) action);
 			} else if (action instanceof Delete) {
 				return new DeleteOperation((Delete) action);
 			} else if (action instanceof Update) {
-				return new UpdateOperation((Update) action);
+				setSpoonDestinationInTree(mappings, original);
+				UpdateOperation updateOperation = new UpdateOperation((Update) action);
+				return updateOperation;
 			} else if (action instanceof Move) {
-				return new MoveOperation((Move) action);
+				setSpoonDestinationInTree(mappings, original);
+				MoveOperation moveOperation = new MoveOperation((Move) action);
+				return moveOperation;
 			} else if (action instanceof TreeInsert) {
+				// here? setSpoonDestinationInTree(mappings, original);
 				return new InsertTreeOperation((TreeInsert) action);
 			} else if (action instanceof TreeDelete) {
 				return new DeleteTreeOperation((TreeDelete) action);
@@ -116,6 +124,11 @@ public class DiffImpl implements Diff {
 			}
 		}).collect(Collectors.toList());
 		return collect;
+	}
+
+	public void setSpoonDestinationInTree(MappingStore mappings, final Tree original) {
+		Tree dest = mappings.getDstForSrc(original);
+		original.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT_DEST, dest.getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT));
 	}
 
 	@Override
