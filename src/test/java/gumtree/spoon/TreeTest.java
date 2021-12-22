@@ -14,6 +14,8 @@ import org.junit.Test;
 
 import com.github.gumtreediff.io.TreeIoUtils;
 import com.github.gumtreediff.io.TreeIoUtils.TreeSerializer;
+import com.github.gumtreediff.matchers.ConfigurationOptions;
+import com.github.gumtreediff.matchers.GumtreeProperties;
 import com.github.gumtreediff.tree.Tree;
 import com.github.gumtreediff.tree.TreeContext;
 import com.google.gson.JsonObject;
@@ -367,7 +369,12 @@ public class TreeTest {
 
 		assertNotNull(astRight);
 
-		DiffImpl diffC = (DiffImpl) diff.compare(astLeft, astRight);
+		GumtreeProperties properties = new GumtreeProperties();
+		properties = new GumtreeProperties();
+		// Using min = 1, failing
+		properties.tryConfigure(ConfigurationOptions.st_minprio, 0);
+
+		DiffImpl diffC = (DiffImpl) diff.compare(astLeft, astRight, properties);
 
 		TreeContext context = diffC.getContext();
 
@@ -383,7 +390,7 @@ public class TreeTest {
 
 		assertTrue(jsonOb.has(JSON_PROPERTIES.op.toString()));
 
-		assertEquals("\"INS\"", jsonOb.get(JSON_PROPERTIES.op.toString()).toString());
+		assertEquals("\"insert-node\"", jsonOb.get(JSON_PROPERTIES.op.toString()).toString());
 	}
 
 	@Test
@@ -410,7 +417,12 @@ public class TreeTest {
 
 		AstComparator diff = new AstComparator();
 
-		DiffImpl diffC = (DiffImpl) diff.compare(fl, fr);
+		GumtreeProperties properties = new GumtreeProperties();
+		properties = new GumtreeProperties();
+		// Using min = 1, failing
+		properties.tryConfigure(ConfigurationOptions.st_minprio, 0);
+
+		DiffImpl diffC = (DiffImpl) diff.compare(fl, fr, properties);
 
 		List<Operation> ops = diffC.getAllOperations();
 
@@ -442,7 +454,12 @@ public class TreeTest {
 
 		AstComparator diff = new AstComparator();
 
-		DiffImpl diffC = (DiffImpl) diff.compare(fl, fr);
+		GumtreeProperties properties = new GumtreeProperties();
+		properties = new GumtreeProperties();
+		// Using min = 1, failing
+		properties.tryConfigure(ConfigurationOptions.st_minprio, 0);
+
+		DiffImpl diffC = (DiffImpl) diff.compare(fl, fr, properties);
 
 		List<Operation> ops = diffC.getAllOperations();
 		assertEquals(1, ops.size());

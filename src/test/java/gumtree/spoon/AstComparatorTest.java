@@ -1650,7 +1650,12 @@ public class AstComparatorTest {
 		AstComparator diff = new AstComparator();
 		File fl = new File("src/test/resources/examples/vs/06b994/VerificationHost/VerificationHost_s.java");
 		File fr = new File("src/test/resources/examples/vs/06b994/VerificationHost/VerificationHost_t.java");
-		Diff result = diff.compare(fl, fr);
+		GumtreeProperties properties = new GumtreeProperties();
+		properties = new GumtreeProperties();
+		// Using min = 1, failing
+		properties.tryConfigure(ConfigurationOptions.st_minprio, 0);
+
+		Diff result = diff.compare(fl, fr, properties);
 
 		List<Operation> actions = result.getRootOperations();
 		assertNotNull(actions);
@@ -1978,7 +1983,12 @@ public class AstComparatorTest {
 				+ "};";
 
 		AstComparator diff = new AstComparator();
-		Diff editScript = diff.compare(c1, c2);
+		GumtreeProperties properties = new GumtreeProperties();
+		properties = new GumtreeProperties();
+		// Using min = 1, failing
+		properties.tryConfigure(ConfigurationOptions.st_minprio, 0);
+
+		Diff editScript = diff.compare(c1, c2, properties);
 
 		assertEquals(1, editScript.getRootOperations().size());
 
