@@ -47,6 +47,12 @@ public class DiffImpl implements Diff {
 	 * Actions over the changes roots.
 	 */
 	private final List<Operation> rootOperations;
+
+	/**
+	 * Actions over the changes roots.
+	 */
+	private final List<Operation> simplifiedOperations;
+
 	/**
 	 * the mapping of this diff
 	 */
@@ -73,13 +79,19 @@ public class DiffImpl implements Diff {
 
 		this.allOperations = convertToSpoon(edComplete.asList(), mappings);
 
-		// roots
+		// Simplified
 
 		EditScriptGenerator actionGeneratorSimplified = new SimplifiedChawatheScriptGenerator();
 
 		EditScript edSimplified = actionGeneratorSimplified.computeActions(mappings);
 
-		this.rootOperations = convertToSpoon(edSimplified.asList(), mappings);
+		this.simplifiedOperations = convertToSpoon(edSimplified.asList(), mappings);
+
+		// Roots
+
+		ActionClassifier actionClassifier = new ActionClassifier(mappings, edComplete.asList());
+
+		this.rootOperations = convertToSpoon(actionClassifier.getRootActions(), mappings);
 
 		this._mappingsComp = mappingsComp;
 
@@ -163,8 +175,9 @@ public class DiffImpl implements Diff {
 			CtElement el = operation.getNode();
 			if (operation instanceof InsertOperation) {
 				// we take the corresponding node in the source tree
-				el = (CtElement) _mappingsComp.getSrcForDst(operation.getAction().getNode().getParent())
-						.getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT);
+				Tree parentTree = operation.getAction().getNode().getParent();
+				Tree mappedSrcParent = _mappingsComp.getSrcForDst(parentTree);
+				el = (CtElement) mappedSrcParent.getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT);
 			}
 			copy.add(el);
 		}

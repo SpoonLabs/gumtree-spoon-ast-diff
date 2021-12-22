@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.github.gumtreediff.actions.model.Action;
@@ -13,11 +12,9 @@ import com.github.gumtreediff.actions.model.Delete;
 import com.github.gumtreediff.actions.model.Insert;
 import com.github.gumtreediff.actions.model.Move;
 import com.github.gumtreediff.actions.model.Update;
-import com.github.gumtreediff.matchers.Mapping;
 import com.github.gumtreediff.matchers.MappingStore;
 import com.github.gumtreediff.tree.Tree;
 
-import gumtree.spoon.builder.SpoonGumTreeBuilder;
 import gumtree.spoon.diff.operations.DeleteOperation;
 import gumtree.spoon.diff.operations.InsertOperation;
 import gumtree.spoon.diff.operations.MoveOperation;
@@ -28,7 +25,7 @@ import gumtree.spoon.diff.operations.Operation;
  *
  * @author Matias Martinez, matias.martinez@inria.fr
  */
-@Deprecated
+
 public class ActionClassifier {
 	// /
 	// ROOT CLASSIFIER
@@ -42,16 +39,8 @@ public class ActionClassifier {
 	private Map<Tree, Action> originalActionsSrc = new HashMap<>();
 	private Map<Tree, Action> originalActionsDst = new HashMap<>();
 
-	public ActionClassifier(Set<Mapping> rawMappings, List<Action> actions) {
+	public ActionClassifier(MappingStore mappings, List<Action> actions) {
 		clean();
-
-		// TODO: retrieve the parents
-		MappingStore mappings = new MappingStore(null, null);
-
-		for (Mapping mapping : rawMappings) {
-
-			mappings.addMapping(mapping.first, mapping.second);
-		}
 
 		for (Action action : actions) {
 			final Tree original = action.getNode();
@@ -63,15 +52,11 @@ public class ActionClassifier {
 				originalActionsDst.put(original, action);
 			} else if (action instanceof Update) {
 				Tree dest = mappings.getDstForSrc(original);
-				original.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT_DEST,
-						dest.getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT));
 				srcUpdTrees.add(original);
 				dstUpdTrees.add(dest);
 				originalActionsSrc.put(original, action);
 			} else if (action instanceof Move) {
 				Tree dest = mappings.getDstForSrc(original);
-				original.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT_DEST,
-						dest.getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT));
 				srcMvTrees.add(original);
 				dstMvTrees.add(dest);
 				originalActionsDst.put(dest, action);
