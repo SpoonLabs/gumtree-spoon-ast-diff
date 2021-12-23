@@ -320,4 +320,11 @@ public class DiffImpl implements Diff {
 	public MappingStore getMappingsComp() {
 		return _mappingsComp;
 	}
+
+	@Override
+	public boolean containsOperations(List<Operation> operations, OperationKind kind, String nodeKind) {
+		return operations.stream() //
+				.anyMatch(operation -> operation.getAction().getClass().getSimpleName().equals(kind.name()) //
+						&& operation.getAction().getNode().getType().name.equals(nodeKind));
+	}
 }
