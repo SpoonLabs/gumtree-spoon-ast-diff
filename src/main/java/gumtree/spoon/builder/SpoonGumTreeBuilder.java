@@ -41,8 +41,6 @@ public class SpoonGumTreeBuilder {
 		Type type = type("root");
 		final Tree root = treeContext.createTree(type, "");
 		new TreeScanner(treeContext, root).scan(element);
-
-		// root.refresh();
 		return root;
 	}
 

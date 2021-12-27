@@ -59,10 +59,7 @@ public class AstComparatorTest {
 
 	@Test
 	public void propertiesCorrectlySet() {
-		new AstComparator(); // just to run the static code of the class
-
-		// assertEquals(0.6, AbstractBottomUpMatcher.SIM_THRESHOLD, 1e-6);
-		// assertEquals(1, AbstractSubtreeMatcher.MIN_HEIGHT);
+		new AstComparator();
 	}
 
 	@Test
@@ -748,7 +745,7 @@ public class AstComparatorTest {
 		GumtreeProperties properties = new GumtreeProperties();
 
 		properties = new GumtreeProperties();
-		// Using min = 1, failing
+
 		properties.tryConfigure(ConfigurationOptions.st_minprio, 0);
 
 		Diff result = diff.compare(fl, fr, properties);
@@ -773,7 +770,7 @@ public class AstComparatorTest {
 
 		GumtreeProperties properties = new GumtreeProperties();
 		properties = new GumtreeProperties();
-		// Using min = 1, failing
+
 		properties.tryConfigure(ConfigurationOptions.st_minprio, 0);
 
 		Diff result = diff.compare(fl, fr, properties);
@@ -845,7 +842,7 @@ public class AstComparatorTest {
 
 		GumtreeProperties properties = new GumtreeProperties();
 		properties = new GumtreeProperties();
-		// Using min = 1, failing
+
 		properties.tryConfigure(ConfigurationOptions.st_minprio, 0);
 
 		Diff result = diff.compare(fl, fr, properties);
@@ -1144,7 +1141,7 @@ public class AstComparatorTest {
 
 		GumtreeProperties properties = new GumtreeProperties();
 		properties = new GumtreeProperties();
-		// Using min = 1, failing
+
 		properties.tryConfigure(ConfigurationOptions.st_minprio, 1);
 
 		Diff result = diff.compare(fl, fr, properties);
@@ -1155,11 +1152,9 @@ public class AstComparatorTest {
 		assertTrue(result.containsOperations(actions, OperationKind.Delete, "Assignment"));
 		assertTrue(result.containsOperations(actions, OperationKind.Insert, "Invocation")); // , "setMaxFieldLength"
 
-		// assertTrue(result.containsOperation(OperationKind.Delete, "Assignment"));
-		// assertTrue(result.containsOperation(OperationKind.Insert, "Invocation",
-		// "setMaxFieldLength"));
-		// assertTrue(result.containsOperation(OperationKind.Move, "FieldRead",
-		// "writer"));
+		assertTrue(result.containsOperation(OperationKind.Delete, "Assignment"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "Invocation", "setMaxFieldLength"));
+		assertTrue(result.containsOperation(OperationKind.Move, "FieldRead", "writer"));
 	}
 
 	@Test
@@ -1246,7 +1241,7 @@ public class AstComparatorTest {
 		File fr = new File("src/test/resources/examples/t_226145/right_ScarabRequestTool_1.91.java");
 		GumtreeProperties properties = new GumtreeProperties();
 		properties = new GumtreeProperties();
-		// Using min = 1, failing
+
 		properties.tryConfigure(ConfigurationOptions.st_minprio, 0);
 
 		Diff result = diff.compare(fl, fr, properties);
@@ -1281,7 +1276,7 @@ public class AstComparatorTest {
 		File fr = new File("src/test/resources/examples/t_226480/right_ScarabRequestTool_1.114.java");
 		GumtreeProperties properties = new GumtreeProperties();
 		properties = new GumtreeProperties();
-		// Using min = 1, failing
+
 		properties.tryConfigure(ConfigurationOptions.st_minprio, 0);
 
 		Diff result = diff.compare(fl, fr, properties);
@@ -1368,7 +1363,7 @@ public class AstComparatorTest {
 		File fr = new File("src/test/resources/examples/t_226963/right_Issue_1.141.java");
 		GumtreeProperties properties = new GumtreeProperties();
 		properties = new GumtreeProperties();
-		// Using min = 1, failing
+
 		properties.tryConfigure(ConfigurationOptions.st_minprio, 0);
 
 		Diff result = diff.compare(fl, fr, properties);
@@ -1387,7 +1382,7 @@ public class AstComparatorTest {
 		File fr = new File("src/test/resources/examples/t_227005/right_AttributeValue_1.57.java");
 		GumtreeProperties properties = new GumtreeProperties();
 		properties = new GumtreeProperties();
-		// Using min = 1, failing
+
 		properties.tryConfigure(ConfigurationOptions.st_minprio, 0);
 
 		Diff result = diff.compare(fl, fr, properties);
@@ -1461,7 +1456,7 @@ public class AstComparatorTest {
 		File fr = new File("src/test/resources/examples/t_227985/right_IssueSearch_1.66.java");
 		GumtreeProperties properties = new GumtreeProperties();
 		properties = new GumtreeProperties();
-		// Using min = 1, failing
+
 		properties.tryConfigure(ConfigurationOptions.st_minprio, 0);
 
 		Diff result = diff.compare(fl, fr, properties);
@@ -1555,7 +1550,7 @@ public class AstComparatorTest {
 		File fr = new File("src/test/resources/examples/issue31/patched.java");
 		GumtreeProperties properties = new GumtreeProperties();
 		properties = new GumtreeProperties();
-		// Using min = 1, failing
+
 		properties.tryConfigure(ConfigurationOptions.st_minprio, 0);
 
 		Diff result = diff.compare(fl, fr, properties);
@@ -1666,7 +1661,7 @@ public class AstComparatorTest {
 		File fr = new File("src/test/resources/examples/vs/06b994/VerificationHost/VerificationHost_t.java");
 		GumtreeProperties properties = new GumtreeProperties();
 		properties = new GumtreeProperties();
-		// Using min = 1, failing
+
 		properties.tryConfigure(ConfigurationOptions.st_minprio, 0);
 
 		Diff result = diff.compare(fl, fr, properties);
@@ -1687,7 +1682,7 @@ public class AstComparatorTest {
 		File fr = new File("src/test/resources/examples/vs/06b994/TestUtilityService/TestUtilityService_t.java");
 		GumtreeProperties properties = new GumtreeProperties();
 		properties = new GumtreeProperties();
-		// Using min = 1, failing
+
 		properties.tryConfigure(ConfigurationOptions.st_minprio, 0);
 
 		Diff result = diff.compare(fl, fr, properties);
@@ -1909,7 +1904,7 @@ public class AstComparatorTest {
 		File fr = new File("src/test/resources/examples/d4j/Math_34/ListPopulation/Math_34_ListPopulation_t.java");
 		GumtreeProperties properties = new GumtreeProperties();
 		properties = new GumtreeProperties();
-		// Using min = 1, failing
+
 		properties.tryConfigure(ConfigurationOptions.st_minprio, 0);
 
 		Diff result = diff.compare(fl, fr, properties);
@@ -1999,7 +1994,7 @@ public class AstComparatorTest {
 		AstComparator diff = new AstComparator();
 		GumtreeProperties properties = new GumtreeProperties();
 		properties = new GumtreeProperties();
-		// Using min = 1, failing
+
 		properties.tryConfigure(ConfigurationOptions.st_minprio, 0);
 
 		Diff editScript = diff.compare(c1, c2, properties);
