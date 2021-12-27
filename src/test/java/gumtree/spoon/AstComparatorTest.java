@@ -1131,7 +1131,7 @@ public class AstComparatorTest {
 	}
 
 	@Test
-	@Ignore
+	@Ignore("Edit script generated is too complex. Ignoring in order to upgrade to GT3")
 	public void test_t_225391() throws Exception {
 		AstComparator diff = new AstComparator();
 		// meld src/test/resources/examples/t_225391/left_IndexHTML_1.4.java
