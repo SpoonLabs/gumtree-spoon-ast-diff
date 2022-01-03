@@ -1,9 +1,12 @@
 package gumtree.spoon.builder;
 
+import static com.github.gumtreediff.tree.TypeSet.type;
+
 import java.util.Stack;
 
-import com.github.gumtreediff.tree.ITree;
+import com.github.gumtreediff.tree.Tree;
 import com.github.gumtreediff.tree.TreeContext;
+import com.github.gumtreediff.tree.Type;
 
 import spoon.reflect.code.CtBlock;
 import spoon.reflect.code.CtCase;
@@ -16,10 +19,10 @@ import spoon.reflect.visitor.CtScanner;
 public class TreeScanner extends CtScanner {
 	public static final String NOTYPE = "<notype>";
 	private final TreeContext treeContext;
-	private final Stack<ITree> nodes = new Stack<>();
+	private final Stack<Tree> nodes = new Stack<>();
 	boolean nolabel = false;
 
-	TreeScanner(TreeContext treeContext, ITree root) {
+	TreeScanner(TreeContext treeContext, Tree root) {
 		this.treeContext = treeContext;
 		nodes.push(root);
 		nolabel = isNoLabelMode();
@@ -91,16 +94,16 @@ public class TreeScanner extends CtScanner {
 		super.exit(element);
 	}
 
-	private void pushNodeToTree(ITree node) {
-		ITree parent = nodes.peek();
+	private void pushNodeToTree(Tree node) {
+		Tree parent = nodes.peek();
 		if (parent != null) { // happens when nodes.push(null)
 			parent.addChild(node);
 		}
 		nodes.push(node);
 	}
 
-	void addSiblingNode(ITree node) {
-		ITree parent = nodes.peek();
+	void addSiblingNode(Tree node) {
+		Tree parent = nodes.peek();
 		if (parent != null) { // happens when nodes.push(null)
 			parent.addChild(node);
 		}
@@ -120,9 +123,9 @@ public class TreeScanner extends CtScanner {
 		return nodeTypeName;
 	}
 
-	private ITree createNode(String nodeTypeName, CtElement element, String label) {
+	private Tree createNode(String nodeTypeName, CtElement element, String label) {
 
-		ITree newNode = createNode(nodeTypeName, label);
+		Tree newNode = createNode(nodeTypeName, label);
 		newNode.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, element);
 		element.putMetadata(SpoonGumTreeBuilder.GUMTREE_NODE, newNode);
 		return newNode;
@@ -133,7 +136,10 @@ public class TreeScanner extends CtScanner {
 		return simpleName.substring(2, simpleName.length() - 4);
 	}
 
-	public ITree createNode(String typeClass, String label) {
-		return treeContext.createTree(typeClass.hashCode(), label, typeClass);
+	public Tree createNode(String typeClass, String label) {
+
+		Type type = type(typeClass);
+
+		return treeContext.createTree(type, label);
 	}
 }

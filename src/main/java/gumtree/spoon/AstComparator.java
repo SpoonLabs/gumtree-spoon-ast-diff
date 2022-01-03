@@ -3,6 +3,8 @@ package gumtree.spoon;
 import java.io.File;
 import java.util.Map;
 
+import com.github.gumtreediff.matchers.GumtreeProperties;
+
 import gumtree.spoon.builder.SpoonGumTreeBuilder;
 import gumtree.spoon.diff.Diff;
 import gumtree.spoon.diff.DiffImpl;
@@ -102,6 +104,28 @@ public class AstComparator {
 	}
 
 	/**
+	 * compares two java files
+	 */
+	public Diff compare(File f1, File f2, GumtreeProperties properties) throws Exception {
+		return this.compare(getCtType(f1), getCtType(f2), properties);
+	}
+
+	/**
+	 * compares two snippets
+	 */
+	public Diff compare(String left, String right, GumtreeProperties properties) {
+		return compare(getCtType(left), getCtType(right), properties);
+	}
+
+	/**
+	 * compares two snippets that come from the files given as argument
+	 */
+	public Diff compare(String left, String right, String filenameLeft, String filenameRight,
+			GumtreeProperties properties) {
+		return compare(getCtType(left, filenameLeft), getCtType(right, filenameRight), properties);
+	}
+
+	/**
 	 * compares two snippets that come from the files given as argument
 	 */
 	public Diff compare(String left, String right, String filenameLeft, String filenameRight) {
@@ -114,6 +138,14 @@ public class AstComparator {
 	public Diff compare(CtElement left, CtElement right) {
 		final SpoonGumTreeBuilder scanner = new SpoonGumTreeBuilder();
 		return new DiffImpl(scanner.getTreeContext(), scanner.getTree(left), scanner.getTree(right));
+	}
+
+	/**
+	 * compares two AST nodes
+	 */
+	public Diff compare(CtElement left, CtElement right, GumtreeProperties properties) {
+		final SpoonGumTreeBuilder scanner = new SpoonGumTreeBuilder();
+		return new DiffImpl(scanner.getTreeContext(), scanner.getTree(left), scanner.getTree(right), properties);
 	}
 
 	public CtType getCtType(File file) throws Exception {

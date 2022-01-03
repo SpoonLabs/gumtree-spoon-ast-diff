@@ -1,6 +1,6 @@
 package gumtree.spoon.builder.jsonsupport;
 
-import com.github.gumtreediff.tree.ITree;
+import com.github.gumtreediff.tree.Tree;
 import com.google.gson.JsonObject;
 
 /**
@@ -10,5 +10,5 @@ import com.google.gson.JsonObject;
  */
 public interface NodePainter {
 
-	public void paint(ITree tree, JsonObject jsontree);
+	public void paint(Tree tree, JsonObject jsontree);
 }

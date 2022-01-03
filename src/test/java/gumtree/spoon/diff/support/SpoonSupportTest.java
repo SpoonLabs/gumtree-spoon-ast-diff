@@ -7,13 +7,17 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import gumtree.spoon.builder.CtVirtualElement;
-import gumtree.spoon.builder.CtWrapper;
+import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.junit.Test;
 
-import com.github.gumtreediff.tree.ITree;
+import com.github.gumtreediff.tree.Tree;
 
 import gumtree.spoon.AstComparator;
+import gumtree.spoon.builder.CtVirtualElement;
+import gumtree.spoon.builder.CtWrapper;
 import gumtree.spoon.builder.SpoonGumTreeBuilder;
 import gumtree.spoon.diff.Diff;
 import gumtree.spoon.diff.operations.DeleteOperation;
@@ -24,10 +28,6 @@ import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.declaration.ModifierKind;
 import spoon.reflect.path.CtRole;
 import spoon.reflect.reference.CtTypeReference;
-
-import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
 
 public class SpoonSupportTest {
 
@@ -164,7 +164,7 @@ public class SpoonSupportTest {
 		assertNotNull(op.getSrcNode());
 		assertEquals("x = 10", op.getSrcNode().toString());
 
-		ITree tree = (ITree) op.getSrcNode().getMetadata(SpoonGumTreeBuilder.GUMTREE_NODE);
+		Tree tree = (Tree) op.getSrcNode().getMetadata(SpoonGumTreeBuilder.GUMTREE_NODE);
 		assertNotNull(tree);
 
 		assertEquals("=", tree.getLabel());
@@ -224,7 +224,6 @@ public class SpoonSupportTest {
 		expectedModifiers.add(ModifierKind.PUBLIC);
 		expectedModifiers.add(ModifierKind.ABSTRACT);
 		expectedModifiers.add(ModifierKind.FINAL);
-
 
 		assertEquals(3, modifiers.size());
 		assertTrue(modifiers.containsAll(expectedModifiers));
