@@ -140,7 +140,7 @@ class LabelFinder extends CtInheritanceScanner {
 
 	@Override
 	public <T extends Annotation> void visitCtAnnotation(CtAnnotation<T> annotation) {
-		label = annotation.toString();
+		label = annotation.getType().getQualifiedName();
 	}
 
 	@Override

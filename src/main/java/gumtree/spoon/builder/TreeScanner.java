@@ -10,7 +10,9 @@ import com.github.gumtreediff.tree.Type;
 
 import spoon.reflect.code.CtBlock;
 import spoon.reflect.code.CtCase;
+import spoon.reflect.code.CtLiteral;
 import spoon.reflect.code.CtStatementList;
+import spoon.reflect.declaration.CtAnnotation;
 import spoon.reflect.declaration.CtElement;
 import spoon.reflect.path.CtRole;
 import spoon.reflect.reference.CtReference;
@@ -81,6 +83,11 @@ public class TreeScanner extends CtScanner {
 
 		if (element instanceof CtReference && element.getRoleInParent() == CtRole.SUPER_TYPE) {
 			return false;
+		}
+
+		// We need to ignore the literal in the annotation value because we store them in CtWrapper
+		if (element instanceof CtLiteral<?> && element.getParent() instanceof CtAnnotation) {
+			return true;
 		}
 
 		return element.isImplicit() || element instanceof CtReference;

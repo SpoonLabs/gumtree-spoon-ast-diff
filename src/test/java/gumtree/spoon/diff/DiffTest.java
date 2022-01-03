@@ -322,4 +322,16 @@ public class DiffTest {
 				"java.lang.ClassCastException"
 		}, thrownTypeRoot.getChildren().stream().map(Object::toString).toArray());
 	}
+
+	@Test
+	public void test_diffOfAnnotations_insertionOfValues() throws Exception {
+		File left = new File("src/test/resources/examples/annotationValues/insert/left.java");
+		File right = new File("src/test/resources/examples/annotationValues/insert/right.java");
+
+		Diff diff = new AstComparator().compare(left, right);
+
+		assertEquals(2, diff.getRootOperations().size());
+		assertTrue(diff.containsOperation(OperationKind.Insert, "ANNOTATION_VALUE", "type=\"int\""));
+		assertTrue(diff.containsOperation(OperationKind.Insert, "ANNOTATION_VALUE", "value=\"41\""));
+	}
 }
