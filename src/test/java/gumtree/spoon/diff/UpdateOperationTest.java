@@ -59,6 +59,12 @@ public class UpdateOperationTest {
                     CtRole.MODIFIER,
                     "Access modifier",
                 },
+                {
+                    "public class A { void x() throws IOException { } }",
+                    "public class A { void x() throws SQLException { } }",
+                    CtRole.NAME,
+                    "Thrown type",
+                },
         });
     }
 

@@ -153,6 +153,7 @@ public class NodeCreator extends CtInheritanceScanner {
 			for (CtTypeReference<? extends Throwable> thrownType : e.getThrownTypes()) {
 				Tree thrownNode = builder.createNode("THROWN", thrownType.getQualifiedName());
 				thrownNode.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, thrownType);
+				thrownNode.setMetadata(SpoonGumTreeBuilder.ROLE_OF_LABEL_IN_ELEMENT, CtRole.NAME);
 				thrownType.putMetadata(SpoonGumTreeBuilder.GUMTREE_NODE, thrownNode);
 				thrownTypeRoot.addChild(thrownNode);
 			}
