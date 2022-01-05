@@ -35,6 +35,10 @@ public class SpoonGumTreeBuilder {
 	public static final String SPOON_OBJECT_DEST = "spoon_object_dest";
 	public static final String GUMTREE_NODE = "gtnode";
 
+	// property to know what part of metamodel has been updated since labels
+	// of GT nodes do not carry over to spoon
+	public static final String ROLE_OF_LABEL_IN_ELEMENT = "role_of_label";
+
 	private final TreeContext treeContext = new TreeContext();
 
 	public Tree getTree(CtElement element) {

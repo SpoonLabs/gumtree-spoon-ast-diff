@@ -25,6 +25,11 @@ public interface Diff {
 	List<Operation> getAllOperations();
 
 	/**
+	 * lists all update operations.
+	 */
+	List<Operation> getUpdateOperations();
+
+	/**
 	 * lists all operations sub the given parent operation.
 	 */
 	List<Operation> getOperationChildren(Operation operationParent, List<Operation> rootOperations);

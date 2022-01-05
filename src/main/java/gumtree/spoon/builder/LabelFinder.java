@@ -29,10 +29,12 @@ import java.lang.annotation.Annotation;
 
 class LabelFinder extends CtInheritanceScanner {
 	public String label = "";
+	public CtRole role = null;
 
 	@Override
 	public void scanCtNamedElement(CtNamedElement e) {
 		label = e.getSimpleName();
+		role = CtRole.NAME;
 	}
 
 	@Override
@@ -49,8 +51,8 @@ class LabelFinder extends CtInheritanceScanner {
 			// label = (decl != null ? decl.getQualifiedName() : "") + "#" +
 			// invocation.getExecutable().getSimpleName();
 			label = invocation.getExecutable().getSimpleName();
-
 		}
+		role = CtRole.EXECUTABLE_REF;
 	}
 
 	@Override
@@ -63,6 +65,7 @@ class LabelFinder extends CtInheritanceScanner {
 	@Override
 	public <T> void visitCtLiteral(CtLiteral<T> literal) {
 		label = literal.toString();
+		role = CtRole.VALUE;
 	}
 
 	@Override
@@ -119,6 +122,7 @@ class LabelFinder extends CtInheritanceScanner {
 	@Override
 	public <T> void visitCtBinaryOperator(CtBinaryOperator<T> operator) {
 		label = operator.getKind().toString();
+		role = CtRole.OPERATOR_KIND;
 	}
 
 	@Override
@@ -155,6 +159,6 @@ class LabelFinder extends CtInheritanceScanner {
 
 	@Override
 	public <T> void visitCtTypeReference(CtTypeReference<T> e) {
-			label = e.getQualifiedName();
+		label = e.getQualifiedName();
 	}
 }

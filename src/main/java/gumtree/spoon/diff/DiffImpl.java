@@ -50,6 +50,11 @@ public class DiffImpl implements Diff {
 	private List<Operation> rootOperations;
 
 	/**
+	 * Actions over changed metamodel elements.
+	 */
+	private List<Operation> updateOperations;
+
+	/**
 	 * Actions over the changes roots.
 	 */
 	private List<Operation> simplifiedOperations;
@@ -108,6 +113,7 @@ public class DiffImpl implements Diff {
 		ActionClassifier actionClassifier = new ActionClassifier(mappings, edComplete.asList());
 
 		this.rootOperations = convertToSpoon(actionClassifier.getRootActions(), mappings);
+		this.updateOperations = convertToSpoon(actionClassifier.getUpdateActions(), mappings);
 
 		this._mappingsComp = mappingsComp;
 
@@ -122,6 +128,11 @@ public class DiffImpl implements Diff {
 				}
 			}
 		}
+	}
+
+	@Override
+	public List<Operation> getUpdateOperations() {
+		return Collections.unmodifiableList(updateOperations);
 	}
 
 	private List<Operation> convertToSpoon(List<Action> actions, MappingStore mappings) {

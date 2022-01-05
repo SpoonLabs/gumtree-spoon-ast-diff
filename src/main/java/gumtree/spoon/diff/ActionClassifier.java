@@ -68,16 +68,15 @@ public class ActionClassifier {
 	 * This method retrieves ONLY the ROOT actions
 	 */
 	public List<Action> getRootActions() {
-		final List<Action> rootActions = srcUpdTrees.stream().map(t -> originalActionsSrc.get(t))
-				.collect(Collectors.toList());
+		final List<Action> rootActions = new ArrayList<>();
 
 		rootActions.addAll(srcDelTrees.stream() //
-				.filter(t -> !srcDelTrees.contains(t.getParent()) && !srcUpdTrees.contains(t.getParent())) //
+				.filter(t -> !srcDelTrees.contains(t.getParent())) //
 				.map(t -> originalActionsSrc.get(t)) //
 				.collect(Collectors.toList()));
 
 		rootActions.addAll(dstAddTrees.stream() //
-				.filter(t -> !dstAddTrees.contains(t.getParent()) && !dstUpdTrees.contains(t.getParent())) //
+				.filter(t -> !dstAddTrees.contains(t.getParent())) //
 				.map(t -> originalActionsDst.get(t)) //
 				.collect(Collectors.toList()));
 
@@ -88,6 +87,10 @@ public class ActionClassifier {
 
 		rootActions.removeAll(Collections.singleton(null));
 		return rootActions;
+	}
+
+	public List<Action> getUpdateActions() {
+		return srcUpdTrees.stream().map(t -> originalActionsSrc.get(t)).collect(Collectors.toList());
 	}
 
 	private void clean() {

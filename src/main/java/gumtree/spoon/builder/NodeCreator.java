@@ -41,6 +41,7 @@ public class NodeCreator extends CtInheritanceScanner {
 		// We create a virtual node
 		modifiers.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT,
 				new CtVirtualElement(type, m, m.getModifiers(), CtRole.MODIFIER));
+		modifiers.setMetadata(SpoonGumTreeBuilder.ROLE_OF_LABEL_IN_ELEMENT, CtRole.MODIFIER);
 
 		// ensuring an order (instead of hashset)
 		// otherwise some flaky tests in CI
@@ -57,6 +58,7 @@ public class NodeCreator extends CtInheritanceScanner {
 			modifiers.addChild(modifier);
 			// We wrap the modifier (which is not a ctelement)
 			modifier.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, new CtWrapper(kind, m, CtRole.MODIFIER));
+			modifier.setMetadata(SpoonGumTreeBuilder.ROLE_OF_LABEL_IN_ELEMENT, CtRole.MODIFIER);
 		}
 		builder.addSiblingNode(modifiers);
 
@@ -136,6 +138,7 @@ public class NodeCreator extends CtInheritanceScanner {
 		if (type != null) {
 			Tree returnType = builder.createNode("RETURN_TYPE", type.getQualifiedName());
 			returnType.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, type);
+			returnType.setMetadata(SpoonGumTreeBuilder.ROLE_OF_LABEL_IN_ELEMENT, CtRole.NAME);
 			type.putMetadata(SpoonGumTreeBuilder.GUMTREE_NODE, returnType);
 			computeTreeOfTypeReferences(type, returnType);
 			builder.addSiblingNode(returnType);

@@ -36,16 +36,22 @@ public class TreeScanner extends CtScanner {
 		}
 
 		String label = null;
+		CtRole roleOfLabelInElement = null;
 		String nodeTypeName = getNodeType(element);
 
 		if (nolabel)
 			label = nodeTypeName;
+			// no need to know role here because it is only required for update operations
+			// since labels are not looked up for, there won't be any update operations
 		else {
 			LabelFinder lf = new LabelFinder();
 			lf.scan(element);
 			label = lf.label;
+			roleOfLabelInElement = lf.role;
 		}
-		pushNodeToTree(createNode(nodeTypeName, element, label));
+		Tree newNode = createNode(nodeTypeName, element, label);
+		newNode.setMetadata(SpoonGumTreeBuilder.ROLE_OF_LABEL_IN_ELEMENT, roleOfLabelInElement);
+		pushNodeToTree(newNode);
 
 		int depthBefore = nodes.size();
 
