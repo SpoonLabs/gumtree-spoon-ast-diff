@@ -65,6 +65,12 @@ public class UpdateOperationTest {
                     CtRole.NAME,
                     "Thrown type",
                 },
+                {
+                    "public class A<T> { }",
+                    "public class A<R> { }",
+                    CtRole.NAME,
+                    "Name of type parameter"
+                },
         });
     }
 
