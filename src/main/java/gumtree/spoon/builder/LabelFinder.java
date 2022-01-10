@@ -160,5 +160,6 @@ class LabelFinder extends CtInheritanceScanner {
 	@Override
 	public <T> void visitCtTypeReference(CtTypeReference<T> e) {
 		label = e.getQualifiedName();
+		role = CtRole.NAME;
 	}
 }
