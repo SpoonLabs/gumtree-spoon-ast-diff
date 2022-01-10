@@ -1,6 +1,7 @@
 package gumtree.spoon.diff;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -94,13 +95,12 @@ public class DiffTest {
 		File fr = new File("src/test/resources/examples/roots/test9/right_QuickNotepad_1.14.java");
 		Diff result = diff.compare(fl, fr);
 
-		List<Operation> actionsRoot = result.getRootOperations();
-		assertEquals(2, actionsRoot.size());
-		assertEquals("testArea != null", actionsRoot.get(0).getSrcNode().toString());
-		assertEquals("testArea == null", actionsRoot.get(0).getDstNode().toString());
-		assertTrue(result.containsOperation(OperationKind.Update, "BinaryOperator"));
+		assertEquals(1, result.getUpdateOperations().size());
+		assertTrue(result.containsUpdateOperation("BinaryOperator", CtRole.OPERATOR_KIND, "NE", "EQ"));
+
+		assertEquals(1, result.getRootOperations().size());
 		assertTrue(result.containsOperation(OperationKind.Insert, "Return"));
-		assertEquals(null, actionsRoot.get(1).getDstNode());
+		assertNull(result.getRootOperations().get(0).getDstNode());
 	}
 
 	/**
