@@ -66,21 +66,18 @@ public class SpoonSupportTest {
 
 		AstComparator diff = new AstComparator();
 		Diff editScript = diff.compare(c1, c2);
-		assertEquals(1, editScript.getRootOperations().size());
+		assertThat(editScript.getUpdateOperations().size(), equalTo(1));
 
-		Operation op = editScript.getRootOperations().get(0);
-		assertTrue(op instanceof UpdateOperation);
+		UpdateOperation op = (UpdateOperation) editScript.getUpdateOperations().get(0);
+		assertTrue(editScript.containsUpdateOperation("Literal", CtRole.VALUE, "1", "10"));
 
-		assertNotNull(op.getSrcNode());
-		assertEquals("1", op.getSrcNode().toString());
-
-		CtMethod methodSrc = op.getSrcNode().getParent(CtMethod.class);
+		CtMethod<?> methodSrc = op.getSrcNode().getParent(CtMethod.class);
 		assertNotNull(methodSrc);
 		assertEquals(2, methodSrc.getBody().getStatements().size());
 		assertEquals("return 1", methodSrc.getBody().getStatements().get(1).toString());
 
 		SpoonSupport support = new SpoonSupport();
-		CtMethod methodTgt = (CtMethod) support.getMappedElement(editScript, methodSrc, true);
+		CtMethod<?> methodTgt = (CtMethod<?>) support.getMappedElement(editScript, methodSrc, true);
 
 		assertNotNull(methodTgt);
 		assertEquals("foo0", methodTgt.getSimpleName());
