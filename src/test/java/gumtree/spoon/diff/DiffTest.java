@@ -241,8 +241,8 @@ public class DiffTest {
 
 		Diff diff = new AstComparator().compare(left, right);
 
-		assertEquals(1, diff.getRootOperations().size());
-		assertTrue(diff.containsOperation(OperationKind.Update, "Annotation"));
+		assertEquals(1, diff.getUpdateOperations().size());
+		assertTrue(diff.containsUpdateOperation("Annotation", CtRole.ANNOTATION_TYPE, "@java.lang.Override", "@java.lang.Deprecated"));
 	}
 
 	@Test

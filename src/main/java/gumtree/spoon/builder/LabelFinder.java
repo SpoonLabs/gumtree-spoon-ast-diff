@@ -155,6 +155,7 @@ class LabelFinder extends CtInheritanceScanner {
 	@Override
 	public <T extends Annotation> void visitCtAnnotation(CtAnnotation<T> annotation) {
 		label = annotation.toString();
+		role = CtRole.ANNOTATION_TYPE;
 	}
 
 	@Override
