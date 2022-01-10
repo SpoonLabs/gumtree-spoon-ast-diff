@@ -8,7 +8,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import gumtree.spoon.builder.CtVirtualElement;
@@ -17,6 +16,7 @@ import gumtree.spoon.diff.operations.Operation;
 import gumtree.spoon.diff.operations.OperationKind;
 import spoon.Launcher;
 import spoon.reflect.declaration.CtClass;
+import spoon.reflect.path.CtRole;
 
 /**
  * Test Spoon Diff
@@ -201,15 +201,15 @@ public class DiffTest {
 
 	}
 
-	@Ignore("Unsure about the role to attach in case of CtTypeReference -> CtWildcardReference")
 	@Test
 	public void test_diffOfGenericTypeReference_builtInTypeToBuiltInType() throws Exception {
 		File left = new File("src/test/resources/examples/diffOfGenericTypeReferences/builtInTypeToBuiltInType/left.java");
 		File right = new File("src/test/resources/examples/diffOfGenericTypeReferences/builtInTypeToBuiltInType/right.java");
 
 		Diff diff = new AstComparator().compare(left, right);
-		assertEquals(1, diff.getRootOperations().size());
-		assertTrue(diff.containsOperation(OperationKind.Update, "TYPE_ARGUMENT"));
+		assertEquals(2, diff.getRootOperations().size());
+		assertTrue(diff.containsOperation(OperationKind.Delete, "TypeReference", "java.lang.String"));
+		assertTrue(diff.containsOperation(OperationKind.Insert, "WildcardReference", "?"));
 	}
 
 	@Test
@@ -218,8 +218,9 @@ public class DiffTest {
 		File right = new File("src/test/resources/examples/diffOfGenericTypeReferences/builtInTypeToTypeParameter/right.java");
 
 		Diff diff = new AstComparator().compare(left, right);
-		assertEquals(1, diff.getRootOperations().size());
-		assertTrue(diff.containsOperation(OperationKind.Update, "TYPE_ARGUMENT"));
+		assertEquals(2, diff.getRootOperations().size());
+		assertTrue(diff.containsOperation(OperationKind.Delete, "TypeReference", "java.lang.String"));
+		assertTrue(diff.containsOperation(OperationKind.Insert, "TypeParameterReference", "B"));
 	}
 
 	@Test
@@ -228,8 +229,9 @@ public class DiffTest {
 		File right = new File("src/test/resources/examples/diffOfGenericTypeReferences/typeParameterToBuiltInType/right.java");
 
 		Diff diff = new AstComparator().compare(left, right);
-		assertEquals(1, diff.getRootOperations().size());
-		assertTrue(diff.containsOperation(OperationKind.Update, "TYPE_ARGUMENT"));
+		assertEquals(2, diff.getRootOperations().size());
+		assertTrue(diff.containsOperation(OperationKind.Delete, "TypeParameterReference", "A"));
+		assertTrue(diff.containsOperation(OperationKind.Insert, "TypeReference", "java.lang.Integer"));
 	}
 
 	@Test
@@ -251,9 +253,9 @@ public class DiffTest {
 		Diff diff = new AstComparator().compare(left, right);
 
 		assertEquals(3, diff.getRootOperations().size());
-		assertTrue(diff.containsOperation(OperationKind.Update, "TYPE_ARGUMENT", "A"));
-		assertTrue(diff.containsOperation(OperationKind.Move, "TYPE_ARGUMENT"));
-		assertTrue(diff.containsOperation(OperationKind.Insert, "TYPE_ARGUMENT"));
+		assertTrue(diff.containsOperation(OperationKind.Update, "TypeReference", "A"));
+		assertTrue(diff.containsOperation(OperationKind.Move, "TypeReference"));
+		assertTrue(diff.containsOperation(OperationKind.Insert, "TypeReference"));
 	}
 
 	@Test
@@ -265,11 +267,11 @@ public class DiffTest {
 
 		assertTrue(diff.containsOperation(OperationKind.Insert, "INTERFACE", "A"));
 		assertTrue(diff.containsOperation(OperationKind.Insert, "INTERFACE", "D"));
-		assertTrue(diff.containsOperation(OperationKind.Insert, "TYPE_ARGUMENT", "T"));
+		assertTrue(diff.containsOperation(OperationKind.Insert, "TypeParameterReference", "T"));
 		// outer list is inserted
-		assertTrue(diff.containsOperation(OperationKind.Insert, "TYPE_ARGUMENT", "java.util.List"));
+		assertTrue(diff.containsOperation(OperationKind.Insert, "TypeReference", "java.util.List"));
 		// initial list is nested inside the above inserted list
-		assertTrue(diff.containsOperation(OperationKind.Move, "TYPE_ARGUMENT", "java.util.List"));
+		assertTrue(diff.containsOperation(OperationKind.Move, "TypeReference", "java.util.List"));
 
 	}
 
@@ -282,11 +284,11 @@ public class DiffTest {
 
 		assertTrue(diff.containsOperation(OperationKind.Delete, "INTERFACE", "A"));
 		assertTrue(diff.containsOperation(OperationKind.Insert, "INTERFACE", "D"));
-		assertTrue(diff.containsOperation(OperationKind.Insert, "TYPE_ARGUMENT", "T"));
+		assertTrue(diff.containsOperation(OperationKind.Insert, "TypeParameterReference", "T"));
 		// outer list is inserted
-		assertTrue(diff.containsOperation(OperationKind.Insert, "TYPE_ARGUMENT", "java.util.List"));
+		assertTrue(diff.containsOperation(OperationKind.Insert, "TypeReference", "java.util.List"));
 		// initial list is nested inside the above inserted list
-		assertTrue(diff.containsOperation(OperationKind.Move, "TYPE_ARGUMENT", "java.util.List"));
+		assertTrue(diff.containsOperation(OperationKind.Move, "TypeReference", "java.util.List"));
 	}
 
 	@Test
