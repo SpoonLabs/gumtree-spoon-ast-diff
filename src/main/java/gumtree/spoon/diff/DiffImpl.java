@@ -35,6 +35,7 @@ import gumtree.spoon.diff.operations.Operation;
 import gumtree.spoon.diff.operations.OperationKind;
 import gumtree.spoon.diff.operations.UpdateOperation;
 import spoon.reflect.declaration.CtElement;
+import spoon.reflect.path.CtRole;
 
 /**
  * @author Matias Martinez, matias.martinez@inria.fr
@@ -268,6 +269,17 @@ public class DiffImpl implements Diff {
 			throw new IllegalArgumentException();
 		}
 		return getRootOperations().stream().anyMatch(operation -> operation instanceof UpdateOperation //
+				&& ((UpdateOperation) operation).getAction().getNode().getLabel().equals(nodeLabel)
+				&& ((UpdateOperation) operation).getAction().getValue().equals(newLabel)
+
+		);
+	}
+
+	@Override
+	public boolean containsUpdateOperation(String nodeKind, CtRole updatedRole, String nodeLabel, String newLabel) {
+		return getUpdateOperations().stream().anyMatch(operation -> operation instanceof UpdateOperation //
+				&& operation.getAction().getNode().getType().name.equals(nodeKind)
+				&& ((UpdateOperation) operation).getUpdatedRole() == updatedRole
 				&& ((UpdateOperation) operation).getAction().getNode().getLabel().equals(nodeLabel)
 				&& ((UpdateOperation) operation).getAction().getValue().equals(newLabel)
 

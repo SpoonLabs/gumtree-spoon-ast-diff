@@ -7,6 +7,7 @@ import com.github.gumtreediff.matchers.MappingStore;
 import gumtree.spoon.diff.operations.Operation;
 import gumtree.spoon.diff.operations.OperationKind;
 import spoon.reflect.declaration.CtElement;
+import spoon.reflect.path.CtRole;
 
 /**
  * represents a diff between two Spoon ASTs
@@ -64,6 +65,11 @@ public interface Diff {
 	 * Useful for update operation
 	 */
 	boolean containsOperations(OperationKind kind, String nodeKind, String nodeLabel, String newLabel);
+
+	/**
+	 * Checks for existence of update operation on a particular node
+	 */
+	boolean containsUpdateOperation(String nodeKind, CtRole updatedRole, String nodeLabel, String newLabel);
 
 	/**
 	 * low level if you want to test on all operations and not only root operations
