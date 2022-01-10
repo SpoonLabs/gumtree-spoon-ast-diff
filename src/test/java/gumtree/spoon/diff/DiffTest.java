@@ -8,6 +8,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import gumtree.spoon.builder.CtVirtualElement;
@@ -200,6 +201,7 @@ public class DiffTest {
 
 	}
 
+	@Ignore("Unsure about the role to attach in case of CtTypeReference -> CtWildcardReference")
 	@Test
 	public void test_diffOfGenericTypeReference_builtInTypeToBuiltInType() throws Exception {
 		File left = new File("src/test/resources/examples/diffOfGenericTypeReferences/builtInTypeToBuiltInType/left.java");
