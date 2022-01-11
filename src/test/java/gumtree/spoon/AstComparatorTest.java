@@ -1831,11 +1831,12 @@ public class AstComparatorTest {
 		AstComparator diff = new AstComparator();
 		Diff result = diff.compare(c1a, c2a);
 
-		List<Operation> actions = result.getRootOperations();
+		List<Operation> actions = result.getUpdateOperations();
 		result.debugInformation();
 
 		assertEquals(1, actions.size());
-		assertTrue(result.containsOperation(OperationKind.Update, "TYPE_ARGUMENT", "One"));
+		// ToDo: Change `TYPE_ARGUMENT` to `TypeReference`
+		assertTrue(result.containsUpdateOperation("TYPE_ARGUMENT", CtRole.NAME, "One", "Two"));
 	}
 
 	@Test

@@ -88,6 +88,7 @@ public class NodeCreator extends CtInheritanceScanner {
 			Tree typeArgument = builder.createNode("TYPE_ARGUMENT", ctTypeArgument.getQualifiedName());
 			typeArgument.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, ctTypeArgument);
 			ctTypeArgument.putMetadata(SpoonGumTreeBuilder.GUMTREE_NODE, typeArgument);
+			typeArgument.setMetadata(SpoonGumTreeBuilder.ROLE_OF_LABEL_IN_ELEMENT, CtRole.NAME);
 			computeTreeOfTypeReferences(ctTypeArgument, typeArgument);
 			builder.addSiblingNode(typeArgument);
 		}
