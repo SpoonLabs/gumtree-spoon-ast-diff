@@ -461,8 +461,7 @@ public class AstComparatorTest {
 		Diff result = diff.compare(fl, fr);
 
 		List<Operation> actions = result.getRootOperations();
-		// result.debugInformation();
-		assertEquals(2, actions.size());
+		assertEquals(1, actions.size());
 		assertTrue(result.containsOperation(OperationKind.Delete, "Invocation", "setFocusTraversalPolicyProvider"));
 	}
 
