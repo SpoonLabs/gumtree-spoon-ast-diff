@@ -571,10 +571,10 @@ public class AstComparatorTest {
 
 		Diff result = diff.compare(fl, fr, properties);
 
-		List<Operation> actions = result.getRootOperations();
+		List<Operation> actions = result.getUpdateOperations();
 		result.debugInformation();
-		assertEquals(actions.size(), 1);
-		assertTrue(result.containsOperation(OperationKind.Update, "Invocation", "removeElement"));
+		assertEquals(1, actions.size());
+		assertTrue(result.containsUpdateOperation("Invocation", CtRole.EXECUTABLE_REF, "removeElement", "removeElementAt"));
 	}
 
 	@Test
