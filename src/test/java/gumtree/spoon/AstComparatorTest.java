@@ -364,29 +364,6 @@ public class AstComparatorTest {
 	@Test
 	public void test_t_209184() throws Exception {
 		AstComparator diff = new AstComparator();
-		// meld
-		// src/test/resources/examples/t_209184/left_ActionCollaborationDiagram_1.28.java
-		// src/test/resources/examples/t_209184/right_ActionCollaborationDiagram_1.29.java
-		File fl = new File("src/test/resources/examples/t_209184/left_ActionCollaborationDiagram_1.28.java");
-		File fr = new File("src/test/resources/examples/t_209184/right_ActionCollaborationDiagram_1.29.java");
-		Diff result = diff.compare(fl, fr);
-
-		List<Operation> actions = result.getRootOperations();
-		// result.debugInformation();
-		assertEquals(1, actions.size());
-		assertTrue(result.containsOperation(OperationKind.Update, "Invocation", "getTarget"));
-
-		UpdateOperation updateOp = (UpdateOperation) actions.get(0);
-		CtElement dst = updateOp.getDstNode();
-		assertNotNull(dst);
-		assertTrue(CtInvocation.class.isInstance(dst));
-		assertEquals(((CtInvocation) dst).getExecutable().toString(), "getModelTarget()");
-
-	}
-
-	@Test
-	public void test_t_209184_buggy_allopsNPE() throws Exception {
-		AstComparator diff = new AstComparator();
 		File fl = new File("src/test/resources/examples/t_209184/left_ActionCollaborationDiagram_1.28.java");
 		File fr = new File("src/test/resources/examples/t_209184/right_ActionCollaborationDiagram_1.29.java");
 		Diff result = diff.compare(fl, fr);
