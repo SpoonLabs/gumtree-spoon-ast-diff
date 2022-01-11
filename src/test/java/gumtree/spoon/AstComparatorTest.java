@@ -379,30 +379,35 @@ public class AstComparatorTest {
 	@Test
 	public void test_t_211903() throws Exception {
 		AstComparator diff = new AstComparator();
-		// meld src/test/resources/examples/t_211903/left_MemberFilePersister_1.4.java
-		// src/test/resources/examples/t_211903/right_MemberFilePersister_1.5.java
 		File fl = new File("src/test/resources/examples/t_211903/left_MemberFilePersister_1.4.java");
 		File fr = new File("src/test/resources/examples/t_211903/right_MemberFilePersister_1.5.java");
 		Diff result = diff.compare(fl, fr);
 
-		// result.debugInformation();
-
 		CtElement ancestor = result.commonAncestor();
-		assertTrue(ancestor instanceof CtConstructorCall);
+		assertThat(ancestor, instanceOf(CtConstructorCall.class));
 		assertEquals(88, ancestor.getPosition().getLine());
 
-		List<Operation> actions = result.getRootOperations();
-		// result.debugInformation();
-		assertTrue(
-				result.containsOperation(OperationKind.Update, "ConstructorCall", "java.io.FileReader(java.io.File)"));
-		assertTrue(result.containsOperation(OperationKind.Insert, "ConstructorCall",
+		List<Operation> updateOperations = result.getUpdateOperations();
+		assertEquals(1, updateOperations.size());
+		assertTrue(result.containsUpdateOperation(
+				"ConstructorCall",
+				CtRole.EXECUTABLE_REF,
+				"java.io.FileReader(java.io.File)",
+				"java.io.FileInputStream(java.io.File)"));
+
+		List<Operation> rootOperations = result.getRootOperations();
+		assertEquals(2, rootOperations.size());
+		assertTrue(result.containsOperation(
+				OperationKind.Insert,
+				"ConstructorCall",
 				"java.io.InputStreamReader(java.io.InputStream,java.lang.String)"));
+		assertTrue(result.containsOperation(OperationKind.Move, "ConstructorCall", "java.io.FileReader(java.io.File)"));
 
 		// additional checks on low-level actions
 		assertTrue(result.containsOperations(result.getAllOperations(), OperationKind.Insert, "Literal", "\"UTF-8\""));
 
 		// the change is in the local variable declaration
-		CtElement elem = actions.get(0).getNode();
+		CtElement elem = rootOperations.get(0).getSrcNode();
 		assertNotNull(elem);
 		assertNotNull(elem.getParent(CtLocalVariable.class));
 	}

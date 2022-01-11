@@ -59,6 +59,7 @@ class LabelFinder extends CtInheritanceScanner {
 	public <T> void visitCtConstructorCall(CtConstructorCall<T> ctConstructorCall) {
 		if (ctConstructorCall.getExecutable() != null) {
 			label = ctConstructorCall.getExecutable().getSignature();
+			role = CtRole.EXECUTABLE_REF;
 		}
 	}
 
