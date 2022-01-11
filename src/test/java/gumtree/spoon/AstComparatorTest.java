@@ -586,13 +586,10 @@ public class AstComparatorTest {
 		File fr = new File("src/test/resources/examples/t_221422/right_Server_1.228.java");
 		Diff result = diff.compare(fl, fr);
 
-		List<Operation> actions = result.getRootOperations();
+		List<Operation> actions = result.getUpdateOperations();
 		result.debugInformation();
 		assertEquals(actions.size(), 1);
-		// as of Spoon 7.1, the generics are resolved in the signature
-		// assertTrue(
-		// result.containsOperation(OperationKind.Update, "Invocation",
-		// "java.util.Vector#add(java.lang.Object)"));
+		assertTrue(result.containsUpdateOperation("Invocation", CtRole.EXECUTABLE_REF, "add", "addElement"));
 	}
 
 	@Test
