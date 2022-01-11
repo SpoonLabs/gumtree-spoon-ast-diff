@@ -1941,17 +1941,10 @@ public class AstComparatorTest {
 
 		Diff diffOut = r.compare(s, t);
 		System.out.println("Output: " + diffOut);
-		Assert.assertEquals(1, diffOut.getRootOperations().size());
-		Operation op = diffOut.getRootOperations().get(0);
-		// Assert.assertTrue(op.getSrcNode().getComments().size() > 0);
+		assertEquals(1, diffOut.getUpdateOperations().size());
 
-		List<Operation> allop = diffOut.getAllOperations();
-		boolean hasComment = false;
-		for (Operation operation : allop) {
-			hasComment = hasComment || (operation.getSrcNode() instanceof CtComment);
-		}
-		assertTrue(hasComment);
-
+		UpdateOperation updateOperation = (UpdateOperation) diffOut.getUpdateOperations().get(0);
+		assertThat(updateOperation.getSrcNode(), instanceOf(CtComment.class));
 	}
 
 	@Test

@@ -150,6 +150,7 @@ class LabelFinder extends CtInheritanceScanner {
 	@Override
 	public void visitCtComment(CtComment comment) {
 		label = comment.getContent();
+		role = CtRole.COMMENT_CONTENT;
 	}
 
 	@Override
