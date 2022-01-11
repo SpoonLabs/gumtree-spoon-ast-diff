@@ -507,10 +507,10 @@ public class AstComparatorTest {
 		File fr = new File("src/test/resources/examples/t_221295/right_Board_1.6.java");
 		Diff result = diff.compare(fl, fr);
 
-		List<Operation> actions = result.getRootOperations();
+		List<Operation> actions = result.getUpdateOperations();
 		result.debugInformation();
-		assertEquals(actions.size(), 1);
-		assertTrue(result.containsOperation(OperationKind.Update, "BinaryOperator", "GT"));
+		assertEquals(1, actions.size());
+		assertTrue(result.containsUpdateOperation("BinaryOperator", CtRole.OPERATOR_KIND, "GT", "GE"));
 
 		CtElement elem = actions.get(0).getNode();
 		assertNotNull(elem);
