@@ -621,10 +621,10 @@ public class AstComparatorTest {
 		File fr = new File("src/test/resources/examples/t_222361/right_CommonSettingsDialog_1.23.java");
 		Diff result = diff.compare(fl, fr);
 
-		List<Operation> actions = result.getRootOperations();
+		List<Operation> actions = result.getUpdateOperations();
 		result.debugInformation();
-		assertEquals(actions.size(), 1);
-		assertTrue(result.containsOperation(OperationKind.Update, "Literal", "\"By holding down CTL and dragging.\""));
+		assertEquals(1, actions.size());
+		assertTrue(result.containsUpdateOperation("Literal", CtRole.VALUE, "\"By holding down CTL and dragging.\"", "\"By holding down CTRL and dragging.\""));
 	}
 
 	@Test
