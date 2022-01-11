@@ -1,5 +1,8 @@
 package gumtree.spoon;
 
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
+import static org.hamcrest.core.IsNot.not;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -510,23 +513,19 @@ public class TreeTest {
 	}
 
 	@Test
-	public void test_bug_Possition_from_String() {
+	public void test_bug_Position_from_String() {
 		String c1 = "" + "class X {\n" + "public void foo() {\n" + " int x = 0;\n" + "}" + "};";
 
 		String c2 = "" + "class X {\n" + "public void foo() {\n" + " int x = 1;\n" + "}" + "};";
 
 		AstComparator diff = new AstComparator();
 		Diff editScript = diff.compare(c1, c2);
-		assertTrue(editScript.getRootOperations().size() == 1);
+		assertEquals(1, editScript.getUpdateOperations().size());
 
-		List<Operation> rootOperations = editScript.getRootOperations();
+		List<Operation> updateOperations = editScript.getUpdateOperations();
 
-		assertEquals(1, rootOperations.size());
-
-		SourcePosition position = rootOperations.get(0).getSrcNode().getPosition();
-		assertTrue(!(position instanceof NoSourcePosition));
-
-		assertTrue(position.getLine() > 0);
+		SourcePosition position = updateOperations.get(0).getSrcNode().getPosition();
+		assertThat(position, not(instanceOf(NoSourcePosition.class)));
 		assertEquals(3, position.getLine());
 
 	}
