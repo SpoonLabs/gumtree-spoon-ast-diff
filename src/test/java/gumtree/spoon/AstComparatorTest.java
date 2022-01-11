@@ -1,5 +1,7 @@
 package gumtree.spoon;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -45,6 +47,7 @@ import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtType;
 import spoon.reflect.factory.Factory;
+import spoon.reflect.path.CtRole;
 import spoon.support.compiler.VirtualFile;
 import spoon.support.compiler.jdt.JDTBasedSpoonCompiler;
 import spoon.support.compiler.jdt.JDTSnippetCompiler;
@@ -390,15 +393,10 @@ public class AstComparatorTest {
 
 		List<Operation> actions = result.getAllOperations();
 		assertEquals(1, actions.size());
-		// assertTrue(result.containsOperation(OperationKind.Update, "Invocation",
-		// "#getTarget()"));
-		assertTrue(result.containsOperation(OperationKind.Update, "Invocation", "getTarget"));
+		assertTrue(result.containsUpdateOperation("Invocation", CtRole.EXECUTABLE_REF, "getTarget", "getModelTarget"));
 
-		UpdateOperation updateOp = (UpdateOperation) actions.get(0);
-		CtElement dst = updateOp.getDstNode();
-		assertNotNull(dst);
-		assertTrue(CtInvocation.class.isInstance(dst));
-		assertEquals(((CtInvocation) dst).getExecutable().toString(), "getModelTarget()");
+		UpdateOperation updateOperation = (UpdateOperation) actions.get(0);
+		assertThat(updateOperation.getDstNode(), instanceOf(CtInvocation.class));
 	}
 
 	@Test
