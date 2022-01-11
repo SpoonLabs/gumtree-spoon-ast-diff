@@ -1840,11 +1840,11 @@ public class AstComparatorTest {
 		AstComparator diff = new AstComparator();
 		Diff result = diff.compare(c1a, c2a);
 
-		List<Operation> actions = result.getRootOperations();
+		List<Operation> updateOperations = result.getUpdateOperations();
 		result.debugInformation();
 
-		assertEquals(1, actions.size());
-		assertTrue(result.containsOperation(OperationKind.Update, "SUPER_TYPE", "SuperClass1"));
+		assertEquals(1, updateOperations.size());
+		assertTrue(result.containsUpdateOperation("SUPER_TYPE", CtRole.NAME, "SuperClass1", "SuperClass2"));
 	}
 
 	@Test
