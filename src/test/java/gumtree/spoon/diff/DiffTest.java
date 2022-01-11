@@ -252,8 +252,10 @@ public class DiffTest {
 
 		Diff diff = new AstComparator().compare(left, right);
 
-		assertEquals(3, diff.getRootOperations().size());
-		assertTrue(diff.containsOperation(OperationKind.Update, "TypeReference", "A"));
+		assertEquals(1, diff.getUpdateOperations().size());
+		assertTrue(diff.containsUpdateOperation("TypeParameterReference", CtRole.NAME, "A", "B"));
+
+		assertEquals(2, diff.getRootOperations().size());
 		assertTrue(diff.containsOperation(OperationKind.Move, "TypeReference"));
 		assertTrue(diff.containsOperation(OperationKind.Insert, "TypeReference"));
 	}
