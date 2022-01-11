@@ -549,12 +549,10 @@ public class AstComparatorTest {
 
 		Diff result = diff.compare(fl, fr, properties);
 
-		List<Operation> actions = result.getRootOperations();
+		List<Operation> actions = result.getUpdateOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
-		// assertTrue(result.containsOperation(OperationKind.Update, "Invocation",
-		// "java.util.Vector#remove(int)"));
-		assertTrue(result.containsOperation(OperationKind.Update, "Invocation", "remove"));
+		assertTrue(result.containsUpdateOperation("Invocation", CtRole.EXECUTABLE_REF, "remove", "removeElement"));
 	}
 
 	@Test
