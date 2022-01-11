@@ -116,9 +116,9 @@ public class AstComparatorTest {
 		File fr = new File("src/test/resources/examples/test2/CommandLine2.java");
 
 		Diff result = diff.compare(fl, fr);
-		List<Operation> actions = result.getRootOperations();
-		assertEquals(actions.size(), 1);
-		assertTrue(result.containsOperation(OperationKind.Update, "Literal"/* "PAR-Literal" */));
+		List<Operation> actions = result.getUpdateOperations();
+		assertEquals(1, actions.size());
+		assertTrue(result.containsUpdateOperation("Literal", CtRole.VALUE, "1", "1000000"));
 	}
 
 	@Test
