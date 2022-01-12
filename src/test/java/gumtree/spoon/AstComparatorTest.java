@@ -1013,10 +1013,10 @@ public class AstComparatorTest {
 		File fr = new File("src/test/resources/examples/t_286696/right_IrmiPRODelegate_1.3.java");
 		Diff result = diff.compare(fl, fr);
 
-		List<Operation> actions = result.getRootOperations();
+		List<Operation> actions = result.getUpdateOperations();
 		result.debugInformation();
-		assertEquals(actions.size(), 1);
-		assertTrue(result.containsOperation(OperationKind.Update, "FieldRead", "SERVER_JRMP_PORT"));
+		assertEquals(1, actions.size());
+		assertTrue(result.containsUpdateOperation("FieldRead", CtRole.VARIABLE, "SERVER_JRMP_PORT", "SERVER_IRMI_PORT"));
 	}
 
 	@Test
