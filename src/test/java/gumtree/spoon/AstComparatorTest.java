@@ -286,10 +286,9 @@ public class AstComparatorTest {
 		File fr = new File("src/test/resources/examples/test9/right.java");
 		Diff result = diff.compare(fl, fr);
 
-		List<Operation> actions = result.getRootOperations();
-		// result.debugInformation();
+		List<Operation> actions = result.getUpdateOperations();
 		assertEquals(1, actions.size());
-		assertTrue(actions.toString(), result.containsOperation(OperationKind.Update, "VARIABLE_TYPE", "boolean"));
+		assertTrue(result.containsUpdateOperation("VARIABLE_TYPE", CtRole.NAME, "boolean", "int"));
 	}
 
 	@Test
