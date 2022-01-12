@@ -879,10 +879,10 @@ public class AstComparatorTest {
 		File fr = new File("src/test/resources/examples/t_224798/right_SegmentsReader_1.5.java");
 		Diff result = diff.compare(fl, fr);
 
-		List<Operation> actions = result.getRootOperations();
+		List<Operation> actions = result.getUpdateOperations();
 		result.debugInformation();
-		assertEquals(actions.size(), 1);
-		assertTrue(result.containsOperation(OperationKind.Update, "Invocation", "delete"));
+		assertEquals(1, actions.size());
+		assertTrue(result.containsUpdateOperation("Invocation", CtRole.EXECUTABLE_REF, "delete", "doDelete"));
 	}
 
 	@Test
