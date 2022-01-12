@@ -780,10 +780,10 @@ public class AstComparatorTest {
 		File fr = new File("src/test/resources/examples/t_223542/right_BoardView1_1.215.java");
 		Diff result = diff.compare(fl, fr);
 
-		List<Operation> actions = result.getRootOperations();
+		List<Operation> actions = result.getUpdateOperations();
 		result.debugInformation();
-		assertEquals(actions.size(), 1);
-		assertTrue(result.containsOperation(OperationKind.Update, "FieldRead", "MOVE_VTOL_RUN"));
+		assertEquals(1, actions.size());
+		assertTrue(result.containsUpdateOperation("FieldRead", CtRole.VARIABLE, "MOVE_VTOL_RUN", "MOVE_VTOL_WALK"));
 	}
 
 	@Test

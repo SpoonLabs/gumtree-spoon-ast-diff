@@ -40,6 +40,7 @@ class LabelFinder extends CtInheritanceScanner {
 	@Override
 	public <T> void scanCtVariableAccess(CtVariableAccess<T> variableAccess) {
 		label = variableAccess.getVariable().getSimpleName();
+		role = CtRole.VARIABLE;
 	}
 
 	@Override
