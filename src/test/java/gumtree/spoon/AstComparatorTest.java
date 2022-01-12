@@ -85,7 +85,8 @@ public class AstComparatorTest {
 
 		AstComparator diff = new AstComparator();
 		Diff editScript = diff.compare(c1, c2);
-		assertTrue(editScript.getRootOperations().size() == 1);
+		assertEquals(1, editScript.getUpdateOperations().size());
+		assertTrue(editScript.containsUpdateOperation("Method", CtRole.NAME, "foo0", "foo1"));
 	}
 
 	@Test
