@@ -146,6 +146,7 @@ class LabelFinder extends CtInheritanceScanner {
 	public <T> void visitCtTypeAccess(CtTypeAccess<T> typeAccess) {
 		if (typeAccess.getAccessedType() != null) {
 			label = typeAccess.getAccessedType().getQualifiedName();
+			role = CtRole.ACCESSED_TYPE;
 		}
 	}
 

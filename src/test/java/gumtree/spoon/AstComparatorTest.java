@@ -1234,10 +1234,10 @@ public class AstComparatorTest {
 		File fr = new File("src/test/resources/examples/t_226330/right_ActivityRule_1.5.java");
 		Diff result = diff.compare(fl, fr);
 
-		List<Operation> actions = result.getRootOperations();
+		List<Operation> actions = result.getUpdateOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(result.containsOperation(OperationKind.Update, "TypeAccess", "DBImport.STATE_DB_INSERTION"));
+		assertTrue(result.containsUpdateOperation("TypeAccess", CtRole.ACCESSED_TYPE, "DBImport.STATE_DB_INSERTION", "XMLImport.STATE_DB_INSERTION"));
 	}
 
 	@Test
