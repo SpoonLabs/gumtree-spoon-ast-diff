@@ -765,9 +765,10 @@ public class AstComparatorTest {
 
 		result.getRootOperations();
 		result.debugInformation();
-		List<Operation> actions = result.getRootOperations();
+		List<Operation> actions = result.getUpdateOperations();
 
-		assertEquals(actions.size(), 1);
+		assertEquals(0, result.getRootOperations().size());
+		assertEquals(1, actions.size());
 		assertTrue(result.containsOperation(OperationKind.Update, "ConstructorCall"));
 	}
 
