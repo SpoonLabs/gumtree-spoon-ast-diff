@@ -1499,11 +1499,11 @@ public class AstComparatorTest {
 		File fr = new File("src/test/resources/examples/t_228643/right_ScopePeer_1.4.java");
 		Diff result = diff.compare(fl, fr);
 
-		List<Operation> actions = result.getRootOperations();
+		List<Operation> actions = result.getUpdateOperations();
+		assertEquals(0, result.getRootOperations());
 		result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(
-				result.containsOperation(OperationKind.Update, "ConstructorCall", "org.apache.torque.util.Criteria()"));
+		assertTrue(result.containsUpdateOperation("ConstructorCall", CtRole.EXECUTABLE_REF,"org", "d"));
 	}
 
 	@Test
