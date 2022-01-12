@@ -229,9 +229,9 @@ public class AstComparatorTest {
 		File fl = new File("src/test/resources/examples/test5/left_LmiInitialContext_1.5.java");
 		File fr = new File("src/test/resources/examples/test5/right_LmiInitialContext_1.6.java");
 		Diff result = diff.compare(fl, fr);
-		List<Operation> actions = result.getRootOperations();
-		assertEquals(actions.size(), 1);
-		assertTrue(result.containsOperation(OperationKind.Update, "BinaryOperator", "AND"));
+		List<Operation> actions = result.getUpdateOperations();
+		assertEquals(1, actions.size());
+		assertTrue(result.containsUpdateOperation("BinaryOperator", CtRole.OPERATOR_KIND, "AND", "OR"));
 	}
 
 	@Test
