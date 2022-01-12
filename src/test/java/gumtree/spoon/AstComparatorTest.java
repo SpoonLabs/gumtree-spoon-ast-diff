@@ -1482,10 +1482,10 @@ public class AstComparatorTest {
 		File fr = new File("src/test/resources/examples/t_228325/right_ForgotPassword_1.11.java");
 		Diff result = diff.compare(fl, fr);
 
-		List<Operation> actions = result.getRootOperations();
+		List<Operation> actions = result.getUpdateOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(result.containsOperation(OperationKind.Update, "Literal", "\"ForgotPassword.vm\""));
+		assertTrue(result.containsUpdateOperation("Literal", CtRole.VALUE, "\"ForgotPassword.vm\"", "\"email/ForgotPassword.vm\""));
 	}
 
 	@Test
