@@ -1321,10 +1321,10 @@ public class AstComparatorTest {
 		File fr = new File("src/test/resources/examples/t_226926/right_ScarabUserManager_1.5.java");
 		Diff result = diff.compare(fl, fr);
 
-		List<Operation> actions = result.getRootOperations();
+		List<Operation> actions = result.getUpdateOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(result.containsOperation(OperationKind.Update, "Modifier", "public"));
+		assertTrue(result.containsUpdateOperation("Modifier", CtRole.MODIFIER, "public", "protected"));
 	}
 
 	@Test
