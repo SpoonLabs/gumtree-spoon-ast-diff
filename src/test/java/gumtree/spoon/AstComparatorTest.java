@@ -1139,10 +1139,10 @@ public class AstComparatorTest {
 		File fr = new File("src/test/resources/examples/t_225414/right_IndexWriter_1.42.java");
 		Diff result = diff.compare(fl, fr);
 
-		List<Operation> actions = result.getRootOperations();
+		List<Operation> actions = result.getUpdateOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(result.containsOperation(OperationKind.Update, "Invocation", "getMessage"));
+		assertTrue(result.containsUpdateOperation("Invocation", CtRole.EXECUTABLE_REF, "getMessage", "toString"));
 	}
 
 	@Test
