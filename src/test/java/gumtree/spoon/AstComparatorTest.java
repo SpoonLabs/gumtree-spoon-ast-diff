@@ -1340,10 +1340,10 @@ public class AstComparatorTest {
 		properties.tryConfigure(ConfigurationOptions.st_minprio, 0);
 
 		Diff result = diff.compare(fl, fr, properties);
-		List<Operation> actions = result.getRootOperations();
+		List<Operation> actions = result.getUpdateOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(result.containsOperation(OperationKind.Update, "Invocation", "addAscendingOrderByColumn"));
+		assertTrue(result.containsUpdateOperation("Invocation", CtRole.EXECUTABLE_REF, "addAscendingOrderByColumn", "addDescendingOrderByColumn"));
 	}
 
 	@Test
