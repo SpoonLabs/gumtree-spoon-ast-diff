@@ -939,10 +939,10 @@ public class AstComparatorTest {
 		File fr = new File("src/test/resources/examples/t_224882/right_Token_1.4.java");
 		Diff result = diff.compare(fl, fr);
 
-		List<Operation> actions = result.getRootOperations();
+		List<Operation> actions = result.getUpdateOperations();
 		result.debugInformation();
-		assertEquals(actions.size(), 1);
-		assertTrue(result.containsOperation(OperationKind.Update, "Literal", "\"Increment must be positive: \""));
+		assertEquals(1, actions.size());
+		assertTrue(result.containsUpdateOperation("Literal", CtRole.VALUE, "\"Increment must be positive: \"", "\"Increment must be zero or greater: \""));
 	}
 
 	@Test
