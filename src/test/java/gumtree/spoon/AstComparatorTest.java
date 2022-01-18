@@ -767,10 +767,14 @@ public class AstComparatorTest {
 
 		result.getRootOperations();
 		result.debugInformation();
-		List<Operation> actions = result.getRootOperations();
 
-		assertEquals(actions.size(), 1);
-		assertTrue(result.containsOperation(OperationKind.Update, "ConstructorCall"));
+		List<Operation> rootOperations = result.getRootOperations();
+		assertEquals(1, rootOperations.size());
+		assertTrue(result.containsOperation(OperationKind.Delete, "Literal", "\"UTF-8\""));
+
+		List<Operation> updateOperations = result.getUpdateOperations();
+		assertEquals(1, updateOperations.size());
+		assertTrue(result.containsUpdateOperation("ConstructorCall", CtRole.EXECUTABLE_REF, "java.io.FileInputStream(java.lang.String)", "java.io.FileInputStream(java.io.File)"));
 	}
 
 	@Test
