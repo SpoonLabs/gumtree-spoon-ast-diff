@@ -1007,9 +1007,15 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(result.containsOperation(OperationKind.Update, "NewClass"));
-		// the change is in a constructor call
-		assertTrue(result.changedNode() instanceof CtNewClass);
+		assertTrue(result.containsOperation(OperationKind.Insert, "FieldRead"));
+
+		List<Operation> updateOperations = result.getUpdateOperations();
+		assertEquals(1, updateOperations.size());
+		assertTrue(result.containsUpdateOperation(
+				"NewClass",
+				CtRole.EXECUTABLE_REF,
+				"org.apache.lucene.store.Lock$With()",
+				"org.apache.lucene.store.Lock$With(long)"));
 	}
 
 	@Test
