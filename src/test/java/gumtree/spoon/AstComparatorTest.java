@@ -1200,8 +1200,11 @@ public class AstComparatorTest {
 
 		List<Operation> actions = result.getRootOperations();
 		// result.debugInformation();
-		assertEquals(1, actions.size());
-		assertTrue(result.containsOperation(OperationKind.Update, "Invocation", "error"));
+		assertEquals(2, actions.size());
+
+		List<Operation> updateOperations = result.getUpdateOperations();
+		assertEquals(1, updateOperations.size());
+		assertTrue(result.containsUpdateOperation("Invocation", CtRole.EXECUTABLE_REF, "error", "printStackTrace"));
 	}
 
 	@Test
