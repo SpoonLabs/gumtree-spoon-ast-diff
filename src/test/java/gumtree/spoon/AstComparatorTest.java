@@ -641,12 +641,14 @@ public class AstComparatorTest {
 
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
-		assertEquals(3, actions.size());
+		assertEquals(2, actions.size());
 		assertEquals(229, ancestor.getPosition().getLine());
-
-		assertTrue(result.containsOperation(OperationKind.Update, "Invocation", "equals"));
 		assertTrue(result.containsOperation(OperationKind.Insert, "BinaryOperator", "NE"));
 		assertTrue(result.containsOperation(OperationKind.Move, "Invocation", "equals"));
+
+		List<Operation> updateOperations = result.getUpdateOperations();
+		assertEquals(1, updateOperations.size());
+		assertTrue(result.containsUpdateOperation("Invocation", CtRole.EXECUTABLE_REF, "equals", "indexOf"));
 
 		// updated the if condition
 		CtElement elem = actions.get(0).getNode();
