@@ -1168,10 +1168,10 @@ public class AstComparatorTest {
 		File fr = new File("src/test/resources/examples/t_225434/right_BufferedIndexInput_1.3.java");
 		Diff result = diff.compare(fl, fr);
 
-		List<Operation> actions = result.getRootOperations();
+		List<Operation> actions = result.getUpdateOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(result.containsOperation(OperationKind.Update, "BinaryOperator", "EQ"));
+		assertTrue(result.containsUpdateOperation("BinaryOperator", CtRole.OPERATOR_KIND, "EQ", "LE"));
 	}
 
 	@Test
