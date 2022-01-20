@@ -14,6 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import gumtree.spoon.builder.CtVirtualElement;
@@ -357,5 +358,19 @@ public class DiffTest {
 		List<?> actualValues = Arrays.asList(annotation.getChildren().toArray());
 		assertThat(new ArrayList<>(expectedValues.entrySet()), equalTo(actualValues));
 
+	}
+
+	// ToDo
+	@Ignore("Can be fixed after #154")
+	@Test
+	public void test_diffOfAnnotationValues_updateMethod() throws Exception {
+		File left = new File("src/test/resources/examples/annotationValues/updateMethod/left.java");
+		File right = new File("src/test/resources/examples/annotationValues/updateMethod/right.java");
+
+		Diff diff = new AstComparator().compare(left, right);
+
+		assertEquals(2, diff.getRootOperations().size());
+		assertTrue(diff.containsOperations(OperationKind.Update, "AnnotationMethod", "a", "b"));
+		assertTrue(diff.containsOperations(OperationKind.Update, "ANNOTATION_VALUE", "a=\"1\"", "b=\"1\""));
 	}
 }
