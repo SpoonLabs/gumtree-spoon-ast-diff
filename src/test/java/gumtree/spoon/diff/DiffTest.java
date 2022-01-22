@@ -1,13 +1,20 @@
 package gumtree.spoon.diff;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import gumtree.spoon.builder.CtVirtualElement;
@@ -15,6 +22,7 @@ import gumtree.spoon.AstComparator;
 import gumtree.spoon.diff.operations.Operation;
 import gumtree.spoon.diff.operations.OperationKind;
 import spoon.Launcher;
+import spoon.reflect.code.CtLiteral;
 import spoon.reflect.declaration.CtClass;
 
 /**
@@ -321,5 +329,48 @@ public class DiffTest {
 				"java.lang.ClassNotFoundException",
 				"java.lang.ClassCastException"
 		}, thrownTypeRoot.getChildren().stream().map(Object::toString).toArray());
+	}
+
+	@Test
+	public void test_diffOfAnnotations_insertionOfValues() throws Exception {
+		File left = new File("src/test/resources/examples/annotationValues/insert/left.java");
+		File right = new File("src/test/resources/examples/annotationValues/insert/right.java");
+
+		Diff diff = new AstComparator().compare(left, right);
+
+		assertEquals(2, diff.getRootOperations().size());
+		assertTrue(diff.containsOperation(OperationKind.Insert, "ANNOTATION_VALUE", "type=\"int\""));
+		assertTrue(diff.containsOperation(OperationKind.Insert, "ANNOTATION_VALUE", "value=\"41\""));
+	}
+
+	@Test
+	public void test_diffOfAnnotations_firstInsertOfValue() throws Exception {
+		File left = new File("src/test/resources/examples/annotationValues/firstInsert/left.java");
+		File right = new File("src/test/resources/examples/annotationValues/firstInsert/right.java");
+
+		Diff diff = new AstComparator().compare(left, right);
+
+		assertEquals(1, diff.getRootOperations().size());
+		Map<String, CtLiteral<?>> expectedValues = new LinkedHashMap<>();
+		expectedValues.put("since", new Launcher().getFactory().createLiteral("4.2"));
+
+		CtVirtualElement annotation = (CtVirtualElement) diff.getRootOperations().get(0).getSrcNode();
+		List<?> actualValues = Arrays.asList(annotation.getChildren().toArray());
+		assertThat(new ArrayList<>(expectedValues.entrySet()), equalTo(actualValues));
+
+	}
+
+	// ToDo
+	@Ignore("Can be fixed after #154")
+	@Test
+	public void test_diffOfAnnotationValues_updateMethod() throws Exception {
+		File left = new File("src/test/resources/examples/annotationValues/updateMethod/left.java");
+		File right = new File("src/test/resources/examples/annotationValues/updateMethod/right.java");
+
+		Diff diff = new AstComparator().compare(left, right);
+
+		assertEquals(2, diff.getRootOperations().size());
+		assertTrue(diff.containsOperations(OperationKind.Update, "AnnotationMethod", "a", "b"));
+		assertTrue(diff.containsOperations(OperationKind.Update, "ANNOTATION_VALUE", "a=\"1\"", "b=\"1\""));
 	}
 }

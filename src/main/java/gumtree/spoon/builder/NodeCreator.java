@@ -1,11 +1,15 @@
 package gumtree.spoon.builder;
 
+import java.lang.annotation.Annotation;
 import java.util.Comparator;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
 import com.github.gumtreediff.tree.Tree;
 
+import spoon.reflect.code.CtExpression;
+import spoon.reflect.declaration.CtAnnotation;
 import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.declaration.CtModifiable;
@@ -156,5 +160,25 @@ public class NodeCreator extends CtInheritanceScanner {
 			builder.addSiblingNode(thrownTypeRoot);
 		}
 		super.visitCtMethod(e);
+	}
+
+	@Override
+	public <A extends Annotation> void visitCtAnnotation(CtAnnotation<A> annotation) {
+		if (annotation.getValues().isEmpty()) {
+			return;
+		}
+
+		final String virtualNodeDescription = "AnnotationValues_" + getClassName(annotation.getClass().getSimpleName());
+		Tree annotationNode = builder.createNode(virtualNodeDescription, "");
+
+		annotationNode.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT,
+				new CtVirtualElement(virtualNodeDescription, annotation, annotation.getValues().entrySet(), CtRole.VALUE));
+
+		for (Map.Entry<String, CtExpression> entry: annotation.getValues().entrySet()) {
+			Tree annotationValueNode = builder.createNode("ANNOTATION_VALUE", entry.toString());
+			annotationNode.addChild(annotationValueNode);
+			annotationValueNode.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, new CtWrapper(entry, annotation, CtRole.VALUE));
+		}
+		builder.addSiblingNode(annotationNode);
 	}
 }

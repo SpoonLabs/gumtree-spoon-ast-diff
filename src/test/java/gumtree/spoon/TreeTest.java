@@ -542,7 +542,7 @@ public class TreeTest {
 		Tree root = scanner.getTree(spoonType);
 
 		Tree annotationNode = root.getChild(0).getChild(0).getChild(2);
-		assertEquals("@java.lang.Override", annotationNode.getLabel());
+		assertEquals("java.lang.Override", annotationNode.getLabel());
 	}
 
 	@Test
