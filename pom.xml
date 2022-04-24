@@ -137,7 +137,7 @@
           <!-- the following is required to have the same execution semantics as eclipse (hence all tests passing) -->
           <!-- the reason is that it switches Spoon in noclasspath or not for this particular file -->
           <useSystemClassLoader>false</useSystemClassLoader>
-          <forkCount>1</forkCount>
+          <forkCount>1.5C</forkCount>
         </configuration>
       </plugin>
 
