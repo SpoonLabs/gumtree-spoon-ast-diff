@@ -262,7 +262,7 @@
               ]
             },
             {
-              "label": "\u003cinit\u003e",
+              "label": "super",
               "type": "Invocation",
               "children": [
                 {

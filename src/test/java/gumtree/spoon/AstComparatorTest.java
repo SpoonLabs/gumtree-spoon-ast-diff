@@ -2136,4 +2136,18 @@ public class AstComparatorTest {
 		assertEquals(deleteOpt.get().getNode().toString(), moveOpt.get().getNode().toString());
 
 	}
+
+	@Test
+	public void thisAndSuperShouldResultInAnASTDiff() {
+		// arrange
+		String c3 = "class X { public  X() { this(); } }";
+		String c4 = "class X { public X() { super();} }";
+		AstComparator comparator = new AstComparator();
+
+		// act
+		Diff diff = comparator.compare(c3, c4);
+
+		// assert
+		assertTrue(diff.containsOperations(OperationKind.Update, "Invocation", "this", "super"));
+	}
 }
