@@ -2138,7 +2138,7 @@ public class AstComparatorTest {
 	}
 
 	@Test
-	public void thisAndSuperShouldResultInAnASTDiff() throws Exception {
+	public void thisAndSuperShouldResultInAnASTDiff() {
 		// arrange
 		String c3= " class X { public  X() { this(); } }";
 		String c4= " class X { public X() { super();} }";
