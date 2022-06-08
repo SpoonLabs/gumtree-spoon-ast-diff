@@ -21,6 +21,7 @@ import spoon.reflect.code.CtVariableAccess;
 import spoon.reflect.code.CtWhile;
 import spoon.reflect.declaration.CtAnnotation;
 import spoon.reflect.declaration.CtNamedElement;
+import spoon.reflect.declaration.CtType;
 import spoon.reflect.path.CtRole;
 import spoon.reflect.reference.CtTypeReference;
 import spoon.reflect.visitor.CtInheritanceScanner;
@@ -42,7 +43,16 @@ class LabelFinder extends CtInheritanceScanner {
 
 	@Override
 	public <T> void visitCtInvocation(CtInvocation<T> invocation) {
-		label = invocation.getExecutable().getSimpleName();
+		if (invocation.getExecutable().isConstructor()) {
+			CtType<?> parentType = invocation.getParent(CtType.class);
+			if (parentType.getQualifiedName().equals(invocation.getExecutable().getDeclaringType().getQualifiedName())) {
+				label = "this";
+			} else {
+				label = "super";
+			}
+		} else {
+			label = invocation.getExecutable().getSimpleName();
+		}
 	}
 
 	@Override
