@@ -373,4 +373,17 @@ public class DiffTest {
 		assertTrue(diff.containsOperations(OperationKind.Update, "AnnotationMethod", "a", "b"));
 		assertTrue(diff.containsOperations(OperationKind.Update, "ANNOTATION_VALUE", "a=\"1\"", "b=\"1\""));
 	}
+
+	@Test
+	public void typeCastsShouldBeReportedInASTDiff() throws Exception {
+		// arrange
+		File left = new File("src/test/resources/examples/typeCast/left.java");
+		File right = new File("src/test/resources/examples/typeCast/right.java");
+
+		// act
+		Diff diff = new AstComparator().compare(left, right);
+
+		// assert
+		assertTrue(diff.containsOperation(OperationKind.Insert, "TYPE_CAST", "double"));
+	}
 }

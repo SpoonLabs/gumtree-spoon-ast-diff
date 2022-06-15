@@ -2150,17 +2150,4 @@ public class AstComparatorTest {
 		// assert
 		assertTrue(diff.containsOperations(OperationKind.Update, "Invocation", "this", "super"));
 	}
-
-	@Test
-	public void typeCastsShouldBeReportedInASTDiff() throws Exception {
-		// arrange
-		File left = new File("src/test/resources/examples/type-cast/left.java");
-		File right = new File("src/test/resources/examples/type-cast/right.java");
-
-		// act
-		Diff diff = new AstComparator().compare(left, right);
-
-		// assert
-		assertTrue(diff.containsOperation(OperationKind.Insert, "TYPE_CAST", "double"));
-	}
 }
