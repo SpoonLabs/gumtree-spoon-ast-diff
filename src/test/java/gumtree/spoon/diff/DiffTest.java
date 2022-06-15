@@ -375,15 +375,31 @@ public class DiffTest {
 	}
 
 	@Test
-	public void typeCastsShouldBeReportedInASTDiff() throws Exception {
+	public void test_diffInTypeCasts_primitiveTypes() throws Exception {
 		// arrange
-		File left = new File("src/test/resources/examples/typeCast/left.java");
-		File right = new File("src/test/resources/examples/typeCast/right.java");
+		File left = new File("src/test/resources/examples/typeCast/primitiveType/left.java");
+		File right = new File("src/test/resources/examples/typeCast/primitiveType/right.java");
 
 		// act
 		Diff diff = new AstComparator().compare(left, right);
 
 		// assert
+		assertThat(diff.getRootOperations().size(), equalTo(1));
 		assertTrue(diff.containsOperation(OperationKind.Insert, "TYPE_CAST", "double"));
+	}
+
+	@Test
+	public void test_diffInTypeCasts_genericTypes() throws Exception {
+		// arrange
+		File left = new File("src/test/resources/examples/typeCast/genericType/left.java");
+		File right = new File("src/test/resources/examples/typeCast/genericType/right.java");
+
+		// act
+		Diff diff = new AstComparator().compare(left, right);
+
+		// assert
+		assertThat(diff.getRootOperations().size(), equalTo(1));
+		assertTrue(diff.containsOperation(OperationKind.Insert, "TYPE_CAST", "java.util.Map"));
+		assertThat(diff.getAllOperations().size(), equalTo(3));
 	}
 }
