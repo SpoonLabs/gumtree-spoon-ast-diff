@@ -9,13 +9,7 @@ import java.util.TreeSet;
 import com.github.gumtreediff.tree.Tree;
 
 import spoon.reflect.code.CtExpression;
-import spoon.reflect.declaration.CtAnnotation;
-import spoon.reflect.declaration.CtElement;
-import spoon.reflect.declaration.CtMethod;
-import spoon.reflect.declaration.CtModifiable;
-import spoon.reflect.declaration.CtTypeInformation;
-import spoon.reflect.declaration.CtVariable;
-import spoon.reflect.declaration.ModifierKind;
+import spoon.reflect.declaration.*;
 import spoon.reflect.path.CtRole;
 import spoon.reflect.reference.CtActualTypeContainer;
 import spoon.reflect.reference.CtTypeReference;
@@ -180,5 +174,20 @@ public class NodeCreator extends CtInheritanceScanner {
 			annotationValueNode.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, new CtWrapper(entry, annotation, CtRole.VALUE));
 		}
 		builder.addSiblingNode(annotationNode);
+	}
+
+	@Override
+	public <T> void scanCtTypedElement(CtTypedElement<T> e) {
+		if (e instanceof CtExpression) {
+			CtExpression<?> expression = (CtExpression<?>) e;
+
+			for (CtTypeReference<?> ctTypeCast : expression.getTypeCasts()) {
+				Tree typeCast = builder.createNode("TYPE_CAST", ctTypeCast.getQualifiedName());
+				typeCast.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, ctTypeCast);
+				ctTypeCast.putMetadata(SpoonGumTreeBuilder.GUMTREE_NODE, typeCast);
+				computeTreeOfTypeReferences(ctTypeCast, typeCast);
+				builder.addSiblingNode(typeCast);
+			}
+		}
 	}
 }
