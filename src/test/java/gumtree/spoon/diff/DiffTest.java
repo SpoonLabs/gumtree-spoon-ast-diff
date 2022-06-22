@@ -402,4 +402,19 @@ public class DiffTest {
 		assertTrue(diff.containsOperation(OperationKind.Insert, "TYPE_CAST", "java.util.Map"));
 		assertThat(diff.getAllOperations().size(), equalTo(3));
 	}
+
+	@Test
+	public void test_fineGrainedDiff_fieldReadUpdateInsideConstructorCall() throws Exception {
+		// arrange
+		File left = new File("src/test/resources/examples/patch1-Math-20-Elixir-plausible/left.java");
+		File right = new File("src/test/resources/examples/patch1-Math-20-Elixir-plausible/right.java");
+
+		// act
+		Diff diff = new AstComparator().compare(left, right);
+
+		// assert
+		assertThat(diff.getRootOperations().size(), equalTo(1));
+		assertTrue(diff.containsOperations(OperationKind.Update, "CtFieldRead", "DEFAULT_MAXITERATIONS", "DEFAULT_CHECKFEASABLECOUNT"));
+
+	}
 }
