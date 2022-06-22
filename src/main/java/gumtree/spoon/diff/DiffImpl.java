@@ -81,7 +81,7 @@ public class DiffImpl implements Diff {
 		final MappingStore mappingsComp = new MappingStore(rootSpoonLeft, rootSpoonRight);
 		this.context = context;
 
-		final Matcher matcher = new CompositeMatchers.ClassicGumtree();
+		final Matcher matcher = new CompositeMatchers.HybridGumtree();
 
 		if (properties != null)
 			matcher.configure(properties);
