@@ -14,6 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.github.gumtreediff.matchers.CompositeMatchers;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -410,7 +411,9 @@ public class DiffTest {
 		File right = new File("src/test/resources/examples/patch1-Math-20-Elixir-plausible/right.java");
 
 		// act
-		Diff diff = new AstComparator().compare(left, right);
+		DiffConfiguration configuration = new DiffConfiguration();
+		configuration.setMatcher(new CompositeMatchers.HybridGumtree());
+		Diff diff = new AstComparator().compare(left, right, configuration);
 
 		// assert
 		assertThat(diff.getRootOperations().size(), equalTo(1));
