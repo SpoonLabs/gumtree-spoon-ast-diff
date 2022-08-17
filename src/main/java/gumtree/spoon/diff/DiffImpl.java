@@ -65,8 +65,15 @@ public class DiffImpl implements Diff {
 
 	private GumtreeProperties properties = null;
 
+	private Matcher matcher = new CompositeMatchers.ClassicGumtree();
+
 	public DiffImpl(TreeContext context, Tree rootSpoonLeft, Tree rootSpoonRight, GumtreeProperties properties) {
 		this.properties = properties;
+		computeDiff(context, rootSpoonLeft, rootSpoonRight);
+	}
+
+	public DiffImpl(TreeContext context, Tree rootSpoonLeft, Tree rootSpoonRight, DiffConfiguration configuration) {
+		this.matcher = configuration.getMatcher();
 		computeDiff(context, rootSpoonLeft, rootSpoonRight);
 	}
 
@@ -80,8 +87,6 @@ public class DiffImpl implements Diff {
 		}
 		final MappingStore mappingsComp = new MappingStore(rootSpoonLeft, rootSpoonRight);
 		this.context = context;
-
-		final Matcher matcher = new CompositeMatchers.ClassicGumtree();
 
 		if (properties != null)
 			matcher.configure(properties);

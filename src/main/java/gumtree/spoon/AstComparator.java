@@ -7,6 +7,7 @@ import com.github.gumtreediff.matchers.GumtreeProperties;
 
 import gumtree.spoon.builder.SpoonGumTreeBuilder;
 import gumtree.spoon.diff.Diff;
+import gumtree.spoon.diff.DiffConfiguration;
 import gumtree.spoon.diff.DiffImpl;
 import spoon.SpoonModelBuilder;
 import spoon.compiler.SpoonResource;
@@ -146,6 +147,12 @@ public class AstComparator {
 	public Diff compare(CtElement left, CtElement right, GumtreeProperties properties) {
 		final SpoonGumTreeBuilder scanner = new SpoonGumTreeBuilder();
 		return new DiffImpl(scanner.getTreeContext(), scanner.getTree(left), scanner.getTree(right), properties);
+	}
+
+	public Diff compare(File f1, File f2, DiffConfiguration configuration) throws Exception {
+		final SpoonGumTreeBuilder scanner = new SpoonGumTreeBuilder();
+		return new DiffImpl(
+				scanner.getTreeContext(), scanner.getTree(getCtType(f1)), scanner.getTree(getCtType(f2)), configuration);
 	}
 
 	public CtType getCtType(File file) throws Exception {
