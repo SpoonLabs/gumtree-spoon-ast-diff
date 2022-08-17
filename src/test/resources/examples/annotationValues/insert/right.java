@@ -1,6 +1,9 @@
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
 
+@Column(id = 1, type = "int", description = "blah", value = "41")
+public class AnnotationValue { }
+
 @Target({ElementType.TYPE})
 @interface Column {
     int id();
@@ -8,6 +11,3 @@ import java.lang.annotation.Target;
     String type() default "String";
     String value() default "42"
 }
-
-@Column(id = 1, type = "int", description = "blah", value = "41")
-public class AnnotationValue { }
