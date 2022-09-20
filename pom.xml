@@ -36,7 +36,7 @@
     <dependency>
       <groupId>fr.inria.gforge.spoon</groupId>
       <artifactId>spoon-core</artifactId>
-      <version>10.2.0-beta-15</version>
+      <version>10.2.0-beta-20</version>
     </dependency>
     <dependency>
       <groupId>com.github.gumtreediff</groupId>
