@@ -327,7 +327,7 @@
                   "children": [
                     {
                       "label": "position",
-                      "type": "VariableRead",
+                      "type": "Target(VariableRead)",
                       "children": []
                     },
                     {
@@ -353,7 +353,7 @@
                       "children": [
                         {
                           "label": "jEdit",
-                          "type": "FieldRead",
+                          "type": "Target(FieldRead)",
                           "children": []
                         }
                       ]
@@ -396,7 +396,7 @@
                           "children": [
                             {
                               "label": "jEdit",
-                              "type": "FieldRead",
+                              "type": "Target(FieldRead)",
                               "children": []
                             },
                             {
@@ -471,7 +471,7 @@
                                   "children": [
                                     {
                                       "label": "filename",
-                                      "type": "FieldRead",
+                                      "type": "Target(FieldRead)",
                                       "children": [
                                         {
                                           "label": "this",
@@ -540,7 +540,7 @@
                                               "children": [
                                                 {
                                                   "label": "jEdit",
-                                                  "type": "FieldRead",
+                                                  "type": "Target(FieldRead)",
                                                   "children": []
                                                 }
                                               ]
@@ -575,7 +575,7 @@
                               "children": [
                                 {
                                   "label": "jEdit",
-                                  "type": "FieldRead",
+                                  "type": "Target(FieldRead)",
                                   "children": []
                                 },
                                 {
@@ -771,7 +771,7 @@
                       "children": [
                         {
                           "label": "this",
-                          "type": "ThisAccess",
+                          "type": "Target(ThisAccess)",
                           "children": [
                             {
                               "label": "QuickNotepad",
@@ -830,7 +830,7 @@
               "children": [
                 {
                   "label": "textArea",
-                  "type": "FieldRead",
+                  "type": "Target(FieldRead)",
                   "children": [
                     {
                       "label": "QuickNotepad",
@@ -845,7 +845,7 @@
                   "children": [
                     {
                       "label": "QuickNotepadOptionPane",
-                      "type": "TypeAccess",
+                      "type": "Target(TypeAccess)",
                       "children": []
                     }
                   ]
@@ -871,7 +871,7 @@
                       "children": [
                         {
                           "label": "out",
-                          "type": "FieldRead",
+                          "type": "Target(FieldRead)",
                           "children": [
                             {
                               "label": "java.lang.System",
@@ -985,7 +985,7 @@
               "children": [
                 {
                   "label": "textArea",
-                  "type": "FieldRead",
+                  "type": "Target(FieldRead)",
                   "children": [
                     {
                       "label": "QuickNotepad",
@@ -1144,7 +1144,7 @@
                   "children": [
                     {
                       "label": "jEdit",
-                      "type": "FieldRead",
+                      "type": "Target(FieldRead)",
                       "children": []
                     },
                     {
@@ -1187,7 +1187,7 @@
                       "children": [
                         {
                           "label": "org.gjt.sp.jedit.MiscUtilities",
-                          "type": "TypeAccess",
+                          "type": "Target(TypeAccess)",
                           "children": []
                         },
                         {
@@ -1231,7 +1231,7 @@
                       "children": [
                         {
                           "label": "toolPanel",
-                          "type": "FieldRead",
+                          "type": "Target(FieldRead)",
                           "children": [
                             {
                               "label": "QuickNotepad",
@@ -1322,7 +1322,7 @@
                   "children": [
                     {
                       "label": "QuickNotepadOptionPane",
-                      "type": "TypeAccess",
+                      "type": "Target(TypeAccess)",
                       "children": []
                     }
                   ]
@@ -1343,7 +1343,7 @@
                       "children": [
                         {
                           "label": "newFont",
-                          "type": "VariableRead",
+                          "type": "Target(VariableRead)",
                           "children": []
                         },
                         {
@@ -1352,7 +1352,7 @@
                           "children": [
                             {
                               "label": "textArea",
-                              "type": "FieldRead",
+                              "type": "Target(FieldRead)",
                               "children": [
                                 {
                                   "label": "QuickNotepad",
@@ -1377,7 +1377,7 @@
                       "children": [
                         {
                           "label": "textArea",
-                          "type": "FieldRead",
+                          "type": "Target(FieldRead)",
                           "children": [
                             {
                               "label": "QuickNotepad",
@@ -1425,7 +1425,7 @@
               "children": [
                 {
                   "label": "super",
-                  "type": "SuperAccess",
+                  "type": "Target(SuperAccess)",
                   "children": []
                 }
               ]
@@ -1436,7 +1436,7 @@
               "children": [
                 {
                   "label": "org.gjt.sp.jedit.EditBus",
-                  "type": "TypeAccess",
+                  "type": "Target(TypeAccess)",
                   "children": []
                 },
                 {
@@ -1491,7 +1491,7 @@
               "children": [
                 {
                   "label": "super",
-                  "type": "SuperAccess",
+                  "type": "Target(SuperAccess)",
                   "children": []
                 }
               ]
@@ -1502,7 +1502,7 @@
               "children": [
                 {
                   "label": "org.gjt.sp.jedit.EditBus",
-                  "type": "TypeAccess",
+                  "type": "Target(TypeAccess)",
                   "children": []
                 },
                 {
@@ -1580,7 +1580,7 @@
                           "children": [
                             {
                               "label": "filename",
-                              "type": "FieldRead",
+                              "type": "Target(FieldRead)",
                               "children": [
                                 {
                                   "label": "QuickNotepad",
@@ -1651,7 +1651,7 @@
                   "children": [
                     {
                       "label": "out",
-                      "type": "VariableRead",
+                      "type": "Target(VariableRead)",
                       "children": []
                     },
                     {
@@ -1660,7 +1660,7 @@
                       "children": [
                         {
                           "label": "textArea",
-                          "type": "FieldRead",
+                          "type": "Target(FieldRead)",
                           "children": [
                             {
                               "label": "QuickNotepad",
@@ -1679,7 +1679,7 @@
                   "children": [
                     {
                       "label": "out",
-                      "type": "VariableRead",
+                      "type": "Target(VariableRead)",
                       "children": []
                     }
                   ]
@@ -1705,7 +1705,7 @@
                       "children": [
                         {
                           "label": "org.gjt.sp.util.Log",
-                          "type": "TypeAccess",
+                          "type": "Target(TypeAccess)",
                           "children": []
                         },
                         {
@@ -1789,7 +1789,7 @@
                   "children": [
                     {
                       "label": "org.gjt.sp.jedit.GUIUtilities",
-                      "type": "TypeAccess",
+                      "type": "Target(TypeAccess)",
                       "children": []
                     },
                     {
@@ -1862,7 +1862,7 @@
                           "children": [
                             {
                               "label": "",
-                              "type": "ArrayRead",
+                              "type": "Target(ArrayRead)",
                               "children": [
                                 {
                                   "label": "paths",
@@ -1947,7 +1947,7 @@
                       "children": [
                         {
                           "label": "toolPanel",
-                          "type": "FieldRead",
+                          "type": "Target(FieldRead)",
                           "children": [
                             {
                               "label": "QuickNotepad",
@@ -2001,7 +2001,7 @@
               "children": [
                 {
                   "label": "jEdit",
-                  "type": "FieldRead",
+                  "type": "Target(FieldRead)",
                   "children": []
                 },
                 {
@@ -2023,15 +2023,15 @@
               "children": [
                 {
                   "label": "getTextArea",
-                  "type": "Invocation",
+                  "type": "Target(Invocation)",
                   "children": [
                     {
                       "label": "getEditPane",
-                      "type": "Invocation",
+                      "type": "Target(Invocation)",
                       "children": [
                         {
                           "label": "view",
-                          "type": "FieldRead",
+                          "type": "Target(FieldRead)",
                           "children": [
                             {
                               "label": "QuickNotepad",
@@ -2050,7 +2050,7 @@
                   "children": [
                     {
                       "label": "textArea",
-                      "type": "FieldRead",
+                      "type": "Target(FieldRead)",
                       "children": [
                         {
                           "label": "QuickNotepad",
@@ -2125,7 +2125,7 @@
                           "children": [
                             {
                               "label": "filename",
-                              "type": "FieldRead",
+                              "type": "Target(FieldRead)",
                               "children": [
                                 {
                                   "label": "QuickNotepad",
@@ -2268,7 +2268,7 @@
                               "children": [
                                 {
                                   "label": "bf",
-                                  "type": "VariableRead",
+                                  "type": "Target(VariableRead)",
                                   "children": []
                                 }
                               ]
@@ -2288,11 +2288,11 @@
                       "children": [
                         {
                           "label": "append",
-                          "type": "Invocation",
+                          "type": "Target(Invocation)",
                           "children": [
                             {
                               "label": "sb",
-                              "type": "VariableRead",
+                              "type": "Target(VariableRead)",
                               "children": []
                             },
                             {
@@ -2317,7 +2317,7 @@
                   "children": [
                     {
                       "label": "bf",
-                      "type": "VariableRead",
+                      "type": "Target(VariableRead)",
                       "children": []
                     }
                   ]
@@ -2328,7 +2328,7 @@
                   "children": [
                     {
                       "label": "textArea",
-                      "type": "FieldRead",
+                      "type": "Target(FieldRead)",
                       "children": [
                         {
                           "label": "QuickNotepad",
@@ -2343,7 +2343,7 @@
                       "children": [
                         {
                           "label": "sb",
-                          "type": "VariableRead",
+                          "type": "Target(VariableRead)",
                           "children": []
                         }
                       ]
@@ -2371,7 +2371,7 @@
                       "children": [
                         {
                           "label": "org.gjt.sp.util.Log",
-                          "type": "TypeAccess",
+                          "type": "Target(TypeAccess)",
                           "children": []
                         },
                         {
@@ -2448,7 +2448,7 @@
                       "children": [
                         {
                           "label": "org.gjt.sp.util.Log",
-                          "type": "TypeAccess",
+                          "type": "Target(TypeAccess)",
                           "children": []
                         },
                         {

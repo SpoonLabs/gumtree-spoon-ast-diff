@@ -1,8 +1,21 @@
-package gumtree.spoon;
+/* *****************************************************************************
+ * Copyright 2016 Matias Martinez
+ * Copyright (c) 2022, Oracle and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * *****************************************************************************/
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+package gumtree.spoon;
 
 import java.io.File;
 import java.util.List;
@@ -41,6 +54,11 @@ import spoon.reflect.declaration.CtType;
 import spoon.reflect.factory.Factory;
 import spoon.reflect.path.CtPath;
 import spoon.reflect.visitor.CtScanner;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 public class TreeTest {
 
@@ -600,5 +618,20 @@ public class TreeTest {
 		Tree returnType = method.getChild(0);
 		assertEquals(1, returnType.getDescendants().size());
 		assertEquals("java.lang.Integer", returnType.getChild(0).getLabel());
+	}
+
+	@Test
+	public void test_AccessModifierShouldHaveSourcePosition() {
+		//Check CtWrapper results
+		String left = "class A { static void a() {} }";
+		String right = "class A { private static synchronized void a() {} }";
+		Diff diff = new AstComparator().compare(left, right);
+		diff.getRootOperations().forEach(e -> assertFalse(e.getSrcNode().getPosition() instanceof NoSourcePosition));
+
+		//Check VirtualElement results
+		left = "class A { void a() {} }";
+		right = "class A { private static void a() {} }";
+		diff = new AstComparator().compare(left, right);
+		diff.getRootOperations().forEach(e -> assertFalse(e.getSrcNode().getPosition() instanceof NoSourcePosition));
 	}
 }

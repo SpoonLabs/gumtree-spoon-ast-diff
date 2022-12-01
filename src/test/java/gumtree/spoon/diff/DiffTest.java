@@ -1,3 +1,20 @@
+/* *****************************************************************************
+ * Copyright 2016 Matias Martinez
+ * Copyright (c) 2022, Oracle and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * *****************************************************************************/
+
 package gumtree.spoon.diff;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -15,6 +32,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.github.gumtreediff.matchers.CompositeMatchers;
+import gumtree.spoon.builder.CtTargetWrapper;
+import gumtree.spoon.diff.operations.DeleteOperation;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -419,5 +438,25 @@ public class DiffTest {
 		assertThat(diff.getRootOperations().size(), equalTo(1));
 		assertTrue(diff.containsOperations(OperationKind.Update, "CtFieldRead", "DEFAULT_MAXITERATIONS", "DEFAULT_CHECKFEASABLECOUNT"));
 
+	}
+
+	@Test
+	public void test_TreatInvocationParametersAndTargetsDifferently() {
+		// Ensure b.c(d) and c(b, d) are treated differently
+		String left = "class A { \n " +
+				"class B { int c(int i) { return 1; } } \n" +
+				"class C { } \n " +
+				"B b = new B(); \n C c = new C(); \n int d = 5; \n " +
+				"int a = b.c(d); }";
+		String right = "class A { \n " +
+				"class B { } \n" +
+				"class C { } \n " +
+				"B b = new B(); \n C c = new C(); \n int d = 5; \n " +
+				"int c(B b, int i) { return 1; } \n" +
+				"int a = c(b, d); }";
+		Diff diff = new AstComparator().compare(left, right);
+		assertTrue(diff.getRootOperations().stream().anyMatch(
+				e -> e instanceof DeleteOperation &&
+						e.getSrcNode() instanceof CtTargetWrapper));
 	}
 }

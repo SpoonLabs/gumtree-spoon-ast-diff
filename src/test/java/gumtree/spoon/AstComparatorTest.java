@@ -1,3 +1,21 @@
+/*
+/* *****************************************************************************
+ * Copyright 2016 Matias Martinez
+ * Copyright (c) 2022, Oracle and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * *****************************************************************************/
+
 package gumtree.spoon;
 
 import static org.junit.Assert.assertEquals;
@@ -11,6 +29,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import gumtree.spoon.builder.CtTargetWrapper;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -38,7 +57,6 @@ import spoon.reflect.code.CtConstructorCall;
 import spoon.reflect.code.CtIf;
 import spoon.reflect.code.CtInvocation;
 import spoon.reflect.code.CtLocalVariable;
-import spoon.reflect.code.CtNewClass;
 import spoon.reflect.code.CtReturn;
 import spoon.reflect.code.CtThrow;
 import spoon.reflect.declaration.CtClass;
@@ -1026,9 +1044,9 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(result.containsOperation(OperationKind.Update, "NewClass"));
+		assertTrue(result.containsOperation(OperationKind.Update, "Target(NewClass)"));
 		// the change is in a constructor call
-		assertTrue(result.changedNode() instanceof CtNewClass);
+		assertTrue(result.changedNode() instanceof CtTargetWrapper);
 	}
 
 	@Test
@@ -1892,8 +1910,8 @@ public class AstComparatorTest {
 		result.debugInformation();
 		List<Operation> actions = result.getAllOperations();
 		assertEquals(2, actions.size());
-		assertTrue(result.containsOperation(OperationKind.Delete, "FieldRead", "cAvailableLocaleSet"));
-		assertTrue(result.containsOperation(OperationKind.Insert, "Invocation", "availableLocaleList"));
+		assertTrue(result.containsOperation(OperationKind.Delete, "Target(FieldRead)", "cAvailableLocaleSet"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "Target(Invocation)", "availableLocaleList"));
 
 	}
 
@@ -1909,7 +1927,7 @@ public class AstComparatorTest {
 
 		Diff result = diff.compare(fl, fr, properties);
 		List<Operation> actions = result.getAllOperations();
-		assertEquals(5, actions.size());
+		assertEquals(3, actions.size());
 
 	}
 
