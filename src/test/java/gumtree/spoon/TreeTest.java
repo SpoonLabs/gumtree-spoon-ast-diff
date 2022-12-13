@@ -637,9 +637,9 @@ public class TreeTest {
 			Diff diff = new AstComparator().compare(fl, fr);
 			for (CtElement element : diff.getRootOperations().stream().map(e -> e.getSrcNode()).collect(Collectors.toList())) {
 				if (element.toString().equals("private")) {
-					assertPosition(element.getPosition(), 2, 14, 20);
+					assertPosition(element.getPosition(), 18, 789, 795);
 				} else {
-					assertPosition(element.getPosition(), 2, 29, 40);
+					assertPosition(element.getPosition(), 18, 804, 815);
 				}
 			}
 		} catch (Exception e) {
@@ -663,7 +663,7 @@ public class TreeTest {
 		try {
 			diff = new AstComparator().compare(fl, fr);
 			for (CtElement element : diff.getRootOperations().stream().map(e -> e.getSrcNode()).collect(Collectors.toList())) {
-				assertPosition(element.getPosition(), 2, 14, 27);
+				assertPosition(element.getPosition(), 18, 789, 802);
 			}
 		} catch (Exception e) {
 			fail();
