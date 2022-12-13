@@ -1,20 +1,3 @@
-/* *****************************************************************************
- * Copyright 2016 Matias Martinez
- * Copyright (c) 2022, Oracle and/or its affiliates.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * *****************************************************************************/
-
 package gumtree.spoon.builder;
 
 import static com.github.gumtreediff.tree.TypeSet.type;
@@ -29,7 +12,6 @@ import spoon.reflect.code.CtBlock;
 import spoon.reflect.code.CtCase;
 import spoon.reflect.code.CtLiteral;
 import spoon.reflect.code.CtStatementList;
-import spoon.reflect.code.CtInvocation;
 import spoon.reflect.declaration.CtAnnotation;
 import spoon.reflect.declaration.CtElement;
 import spoon.reflect.path.CtRole;
@@ -65,20 +47,7 @@ public class TreeScanner extends CtScanner {
 			lf.scan(element);
 			label = lf.label;
 		}
-
-		if (element.getParent() != null && element.getParent() instanceof CtInvocation &&
-				((CtInvocation<?>)element.getParent()).getTarget() != null &&
-				((CtInvocation<?>)element.getParent()).getTarget().equals(element)) {
-				//Wrap invocation targets
-			Tree node = createNode("Target" + "(" + nodeTypeName + ")", element, label);
-
-			CtTargetWrapper targetWrapper = new CtTargetWrapper(element, element.getParent());
-			targetWrapper.setPosition(element.getPosition());
-			node.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, targetWrapper);
-			pushNodeToTree(node);
-		} else {
-			pushNodeToTree(createNode(nodeTypeName, element, label));
-		}
+		pushNodeToTree(createNode(nodeTypeName, element, label));
 
 		int depthBefore = nodes.size();
 

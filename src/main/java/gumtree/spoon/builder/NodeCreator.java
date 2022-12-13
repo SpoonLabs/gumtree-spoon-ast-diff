@@ -66,7 +66,7 @@ public class NodeCreator extends CtInheritanceScanner {
 		modifiers1.addAll(m.getExtendedModifiers());
 
 		// We create a virtual node
-		var virtualElement = new CtVirtualElement(type, m, m.getModifiers(), CtRole.MODIFIER);
+		CtVirtualElement virtualElement = new CtVirtualElement(type, m, m.getModifiers(), CtRole.MODIFIER);
 		modifiers.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, virtualElement);
 
 		List<SourcePosition> positions = new ArrayList<>();
@@ -75,7 +75,7 @@ public class NodeCreator extends CtInheritanceScanner {
 			Tree modifier = builder.createNode("Modifier", mod.getKind().toString());
 			modifiers.addChild(modifier);
 			// We wrap the modifier's kind (which is not a CtElement)
-			var wrapper = new CtWrapper<>(mod.getKind(), m, CtRole.MODIFIER);
+			CtWrapper<?> wrapper = new CtWrapper<>(mod.getKind(), m, CtRole.MODIFIER);
 			wrapper.setPosition(mod.getPosition());
 			positions.add(mod.getPosition());
 			modifier.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, wrapper);
@@ -85,7 +85,7 @@ public class NodeCreator extends CtInheritanceScanner {
 		CompilationUnit cu = null;
 		Integer sourceStart = null;
 		int sourceEnd = 0;
-		for (var position : positions) {
+		for (SourcePosition position : positions) {
 			if (position instanceof NoSourcePosition) { continue; }
 			if (sourceStart == null || position.getSourceStart() < sourceStart) {
 				sourceStart = position.getSourceStart();
@@ -214,7 +214,7 @@ public class NodeCreator extends CtInheritanceScanner {
 		for (Map.Entry<String, CtExpression> entry: annotation.getValues().entrySet()) {
 			Tree annotationValueNode = builder.createNode("ANNOTATION_VALUE", entry.toString());
 			annotationNode.addChild(annotationValueNode);
-			var wrapper = new CtWrapper(entry, annotation, CtRole.VALUE);
+			CtWrapper wrapper = new CtWrapper(entry, annotation, CtRole.VALUE);
 			wrapper.setPosition(entry.getValue().getPosition());
 			annotationValueNode.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, wrapper);
 		}

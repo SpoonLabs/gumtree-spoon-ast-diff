@@ -58,7 +58,7 @@ import spoon.reflect.visitor.CtScanner;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
 
 public class TreeTest {
 
@@ -620,18 +620,59 @@ public class TreeTest {
 		assertEquals("java.lang.Integer", returnType.getChild(0).getLabel());
 	}
 
+	private void assertPosition(SourcePosition position, int line, int start, int end) {
+		assertNotNull(position);
+		assertEquals(line, position.getLine());
+		assertEquals(start, position.getSourceStart());
+		assertEquals(end, position.getSourceEnd());
+	}
+
 	@Test
 	public void test_AccessModifierShouldHaveSourcePosition() {
 		//Check CtWrapper results
+		File fl = new File("src/test/resources/examples/position/WrapperLeft.java");
+		File fr = new File("src/test/resources/examples/position/WrapperRight.java");
+		try {
+			//File
+			Diff diff = new AstComparator().compare(fl, fr);
+			for (CtElement element : diff.getRootOperations().stream().map(e -> e.getSrcNode()).collect(Collectors.toList())) {
+				if (element.toString().equals("private")) {
+					assertPosition(element.getPosition(), 2, 14, 20);
+				} else {
+					assertPosition(element.getPosition(), 2, 29, 40);
+				}
+			}
+		} catch (Exception e) {
+			fail();
+		}
+		//Strings
 		String left = "class A { static void a() {} }";
 		String right = "class A { private static synchronized void a() {} }";
 		Diff diff = new AstComparator().compare(left, right);
-		diff.getRootOperations().forEach(e -> assertFalse(e.getSrcNode().getPosition() instanceof NoSourcePosition));
+		for (CtElement element : diff.getRootOperations().stream().map(e -> e.getSrcNode()).collect(Collectors.toList())) {
+			if (element.toString().equals("private")) {
+				assertPosition(element.getPosition(), 1, 10, 16);
+			} else {
+				assertPosition(element.getPosition(), 1, 25, 36);
+			}
+		}
 
 		//Check VirtualElement results
+		fl = new File("src/test/resources/examples/position/VirtualElementLeft.java");
+		fr = new File("src/test/resources/examples/position/VirtualElementRight.java");
+		try {
+			diff = new AstComparator().compare(fl, fr);
+			for (CtElement element : diff.getRootOperations().stream().map(e -> e.getSrcNode()).collect(Collectors.toList())) {
+				assertPosition(element.getPosition(), 2, 14, 27);
+			}
+		} catch (Exception e) {
+			fail();
+		}
 		left = "class A { void a() {} }";
 		right = "class A { private static void a() {} }";
 		diff = new AstComparator().compare(left, right);
-		diff.getRootOperations().forEach(e -> assertFalse(e.getSrcNode().getPosition() instanceof NoSourcePosition));
+		for (CtElement element : diff.getRootOperations().stream().map(e -> e.getSrcNode()).collect(Collectors.toList())) {
+			assertPosition(element.getPosition(), 1, 10, 23);
+		}
 	}
 }
