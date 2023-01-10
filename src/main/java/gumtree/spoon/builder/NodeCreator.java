@@ -75,7 +75,7 @@ public class NodeCreator extends CtInheritanceScanner {
 		CtVirtualElement virtualElement = new CtVirtualElement(type, m, m.getModifiers(), CtRole.MODIFIER);
 		modifiers.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, virtualElement);
 
-		List<SourcePosition> positions = new ArrayList<>();
+		List<SourcePosition> modifierPositions = new ArrayList<>();
 
 		for (CtExtendedModifier mod : modifiers1) {
 			Tree modifier = builder.createNode("Modifier", mod.getKind().toString());
@@ -83,30 +83,29 @@ public class NodeCreator extends CtInheritanceScanner {
 			// We wrap the modifier's kind (which is not a CtElement)
 			CtWrapper wrapper = new CtWrapper<>(mod.getKind(), m, CtRole.MODIFIER);
 			wrapper.setPosition(mod.getPosition());
-			positions.add(mod.getPosition());
+			modifierPositions.add(mod.getPosition());
 			modifier.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, wrapper);
 		}
 
-		//Try to merge source positions of contained elements
+		virtualElement.setPosition(computeSourcePositionOfVirtualElement(modifierPositions));
+		builder.addSiblingNode(modifiers);
+	}
+
+	private static SourcePosition computeSourcePositionOfVirtualElement(List<SourcePosition> modifierPositions) {
 		CompilationUnit cu = null;
 		Integer sourceStart = null;
-		int sourceEnd = 0;
-		for (SourcePosition position : positions) {
-			if (position instanceof NoSourcePosition) { continue; }
+		Integer sourceEnd = null;
+		for (SourcePosition position : modifierPositions) {
+			if (position instanceof NoSourcePosition) { return SourcePosition.NOPOSITION; }
 			if (sourceStart == null || position.getSourceStart() < sourceStart) {
 				sourceStart = position.getSourceStart();
 			}
-			if (position.getSourceEnd() > sourceEnd) {
+			if (sourceEnd == null || position.getSourceEnd() > sourceEnd) {
 				sourceEnd = position.getSourceEnd();
 			}
 			if (cu == null) { cu = position.getCompilationUnit(); }
 		}
-		if (sourceStart != null) {
-			SourcePosition virtualPosition = new SourcePositionImpl(cu, sourceStart, sourceEnd, cu.getLineSeparatorPositions());
-			virtualElement.setPosition(virtualPosition);
-		}
-		builder.addSiblingNode(modifiers);
-
+		return new SourcePositionImpl(cu, sourceStart, sourceEnd, cu.getLineSeparatorPositions());
 	}
 
 	private String getClassName(String simpleName) {

@@ -628,51 +628,64 @@ public class TreeTest {
 	}
 
 	@Test
-	public void test_AccessModifierShouldHaveSourcePosition() {
-		//Check CtWrapper results
+	public void test_accessModifierWrapperInFile_shouldHaveSourcePosition() throws Exception {
+		// arrange
 		File fl = new File("src/test/resources/examples/position/WrapperLeft.java");
 		File fr = new File("src/test/resources/examples/position/WrapperRight.java");
-		try {
-			//File
-			Diff diff = new AstComparator().compare(fl, fr);
-			for (CtElement element : diff.getRootOperations().stream().map(e -> e.getSrcNode()).collect(Collectors.toList())) {
-				if (element.toString().equals("private")) {
-					assertPosition(element.getPosition(), 18, 789, 795);
-				} else {
-					assertPosition(element.getPosition(), 18, 804, 815);
-				}
-			}
-		} catch (Exception e) {
-			fail();
-		}
-		//Strings
+
+		// act
+		Diff diff = new AstComparator().compare(fl, fr);
+
+		// assert
+		CtElement privateModifier = diff.getRootOperations().get(0).getSrcNode();
+		assertPosition(privateModifier.getPosition(), 18, 789, 795);
+
+		CtElement synchronizedModifier = diff.getRootOperations().get(1).getSrcNode();
+		assertPosition(synchronizedModifier.getPosition(), 18, 804, 815);
+	}
+
+	@Test
+	public void test_accessModifierWrapperInCodeString_shouldHaveSourcePosition() {
+		// arrange
 		String left = "class A { static void a() {} }";
 		String right = "class A { private static synchronized void a() {} }";
-		Diff diff = new AstComparator().compare(left, right);
-		for (CtElement element : diff.getRootOperations().stream().map(e -> e.getSrcNode()).collect(Collectors.toList())) {
-			if (element.toString().equals("private")) {
-				assertPosition(element.getPosition(), 1, 10, 16);
-			} else {
-				assertPosition(element.getPosition(), 1, 25, 36);
-			}
-		}
 
-		//Check VirtualElement results
-		fl = new File("src/test/resources/examples/position/VirtualElementLeft.java");
-		fr = new File("src/test/resources/examples/position/VirtualElementRight.java");
-		try {
-			diff = new AstComparator().compare(fl, fr);
-			for (CtElement element : diff.getRootOperations().stream().map(e -> e.getSrcNode()).collect(Collectors.toList())) {
-				assertPosition(element.getPosition(), 18, 789, 802);
-			}
-		} catch (Exception e) {
-			fail();
-		}
-		left = "class A { void a() {} }";
-		right = "class A { private static void a() {} }";
-		diff = new AstComparator().compare(left, right);
-		for (CtElement element : diff.getRootOperations().stream().map(e -> e.getSrcNode()).collect(Collectors.toList())) {
-			assertPosition(element.getPosition(), 1, 10, 23);
-		}
+		// act
+		Diff diff = new AstComparator().compare(left, right);
+
+		// assert
+		CtElement privateModifier = diff.getRootOperations().get(0).getSrcNode();
+		assertPosition(privateModifier.getPosition(), 1, 10, 16);
+
+		CtElement synchronizedModifier = diff.getRootOperations().get(1).getSrcNode();
+		assertPosition(synchronizedModifier.getPosition(), 1, 25, 36);
+	}
+
+	@Test
+	public void test_accessModifierVirtualElementInFile_shouldHaveSourcePosition() throws Exception {
+		// arrange
+		File fl = new File("src/test/resources/examples/position/VirtualElementLeft.java");
+		File fr = new File("src/test/resources/examples/position/VirtualElementRight.java");
+
+		// act
+		Diff diff = new AstComparator().compare(fl, fr);
+
+		// assert
+		CtElement accessModifiers = diff.getRootOperations().get(0).getSrcNode();
+		assertPosition(accessModifiers.getPosition(), 18, 789, 802);
+	}
+
+	@Test
+	public void test_accessModifierVirtualElementInCodeString_shouldHaveSourcePosition() {
+		// arrange
+		String left = "class A { void a() {} }";
+		String right = "class A { private static void a() {} }";
+
+		// act
+		Diff diff = new AstComparator().compare(left, right);
+
+		// assert
+		CtElement accessModifiers = diff.getRootOperations().get(0).getSrcNode();
+		assertPosition(accessModifiers.getPosition(), 1, 10, 23);
 	}
 }
