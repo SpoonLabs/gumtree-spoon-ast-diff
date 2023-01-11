@@ -1,8 +1,26 @@
+/* *****************************************************************************
+ * Copyright 2016 Matias Martinez
+ * Copyright (c) 2022, Oracle and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * *****************************************************************************/
+
 package gumtree.spoon;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.util.List;
@@ -600,5 +618,74 @@ public class TreeTest {
 		Tree returnType = method.getChild(0);
 		assertEquals(1, returnType.getDescendants().size());
 		assertEquals("java.lang.Integer", returnType.getChild(0).getLabel());
+	}
+
+	private void assertPosition(SourcePosition position, int line, int start, int end) {
+		assertNotNull(position);
+		assertEquals(line, position.getLine());
+		assertEquals(start, position.getSourceStart());
+		assertEquals(end, position.getSourceEnd());
+	}
+
+	@Test
+	public void test_accessModifierWrapperInFile_shouldHaveSourcePosition() throws Exception {
+		// arrange
+		File fl = new File("src/test/resources/examples/position/WrapperLeft.java");
+		File fr = new File("src/test/resources/examples/position/WrapperRight.java");
+
+		// act
+		Diff diff = new AstComparator().compare(fl, fr);
+
+		// assert
+		CtElement privateModifier = diff.getRootOperations().get(0).getSrcNode();
+		assertPosition(privateModifier.getPosition(), 18, 789, 795);
+
+		CtElement synchronizedModifier = diff.getRootOperations().get(1).getSrcNode();
+		assertPosition(synchronizedModifier.getPosition(), 18, 804, 815);
+	}
+
+	@Test
+	public void test_accessModifierWrapperInCodeString_shouldHaveSourcePosition() {
+		// arrange
+		String left = "class A { static void a() {} }";
+		String right = "class A { private static synchronized void a() {} }";
+
+		// act
+		Diff diff = new AstComparator().compare(left, right);
+
+		// assert
+		CtElement privateModifier = diff.getRootOperations().get(0).getSrcNode();
+		assertPosition(privateModifier.getPosition(), 1, 10, 16);
+
+		CtElement synchronizedModifier = diff.getRootOperations().get(1).getSrcNode();
+		assertPosition(synchronizedModifier.getPosition(), 1, 25, 36);
+	}
+
+	@Test
+	public void test_accessModifierVirtualElementInFile_shouldHaveSourcePosition() throws Exception {
+		// arrange
+		File fl = new File("src/test/resources/examples/position/VirtualElementLeft.java");
+		File fr = new File("src/test/resources/examples/position/VirtualElementRight.java");
+
+		// act
+		Diff diff = new AstComparator().compare(fl, fr);
+
+		// assert
+		CtElement accessModifiers = diff.getRootOperations().get(0).getSrcNode();
+		assertPosition(accessModifiers.getPosition(), 18, 789, 802);
+	}
+
+	@Test
+	public void test_accessModifierVirtualElementInCodeString_shouldHaveSourcePosition() {
+		// arrange
+		String left = "class A { void a() {} }";
+		String right = "class A { private static void a() {} }";
+
+		// act
+		Diff diff = new AstComparator().compare(left, right);
+
+		// assert
+		CtElement accessModifiers = diff.getRootOperations().get(0).getSrcNode();
+		assertPosition(accessModifiers.getPosition(), 1, 10, 23);
 	}
 }

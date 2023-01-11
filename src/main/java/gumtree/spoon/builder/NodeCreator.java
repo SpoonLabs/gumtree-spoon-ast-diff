@@ -1,7 +1,26 @@
+/* *****************************************************************************
+ * Copyright 2016 Matias Martinez
+ * Copyright (c) 2022, Oracle and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * *****************************************************************************/
+
 package gumtree.spoon.builder;
 
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -9,11 +28,22 @@ import java.util.TreeSet;
 import com.github.gumtreediff.tree.Tree;
 
 import spoon.reflect.code.CtExpression;
-import spoon.reflect.declaration.*;
+import spoon.reflect.cu.CompilationUnit;
+import spoon.reflect.cu.SourcePosition;
+import spoon.reflect.cu.position.NoSourcePosition;
+import spoon.reflect.declaration.CtAnnotation;
+import spoon.reflect.declaration.CtElement;
+import spoon.reflect.declaration.CtMethod;
+import spoon.reflect.declaration.CtModifiable;
+import spoon.reflect.declaration.CtTypeInformation;
+import spoon.reflect.declaration.CtTypedElement;
+import spoon.reflect.declaration.CtVariable;
 import spoon.reflect.path.CtRole;
 import spoon.reflect.reference.CtActualTypeContainer;
 import spoon.reflect.reference.CtTypeReference;
 import spoon.reflect.visitor.CtInheritanceScanner;
+import spoon.support.reflect.CtExtendedModifier;
+import spoon.support.reflect.cu.position.SourcePositionImpl;
 
 /**
  * responsible to add additional nodes only overrides scan* to add new nodes
@@ -36,28 +66,46 @@ public class NodeCreator extends CtInheritanceScanner {
 		String type = MODIFIERS + getClassName(m.getClass().getSimpleName());
 		Tree modifiers = builder.createNode(type, "");
 
-		// We create a virtual node
-		modifiers.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT,
-				new CtVirtualElement(type, m, m.getModifiers(), CtRole.MODIFIER));
-
 		// ensuring an order (instead of hashset)
 		// otherwise some flaky tests in CI
-		Set<ModifierKind> modifiers1 = new TreeSet<>(new Comparator<ModifierKind>() {
-			@Override
-			public int compare(ModifierKind o1, ModifierKind o2) {
-				return o1.name().compareTo(o2.name());
-			}
-		});
-		modifiers1.addAll(m.getModifiers());
+		Set<CtExtendedModifier> modifiers1 = new TreeSet<>(Comparator.comparing(o -> o.getKind().name()));
+		modifiers1.addAll(m.getExtendedModifiers());
 
-		for (ModifierKind kind : modifiers1) {
-			Tree modifier = builder.createNode("Modifier", kind.toString());
+		// We create a virtual node
+		CtVirtualElement virtualElement = new CtVirtualElement(type, m, m.getModifiers(), CtRole.MODIFIER);
+		modifiers.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, virtualElement);
+
+		List<SourcePosition> modifierPositions = new ArrayList<>();
+
+		for (CtExtendedModifier mod : modifiers1) {
+			Tree modifier = builder.createNode("Modifier", mod.getKind().toString());
 			modifiers.addChild(modifier);
-			// We wrap the modifier (which is not a ctelement)
-			modifier.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, new CtWrapper(kind, m, CtRole.MODIFIER));
+			// We wrap the modifier's kind (which is not a CtElement)
+			CtWrapper wrapper = new CtWrapper<>(mod.getKind(), m, CtRole.MODIFIER);
+			wrapper.setPosition(mod.getPosition());
+			modifierPositions.add(mod.getPosition());
+			modifier.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, wrapper);
 		}
-		builder.addSiblingNode(modifiers);
 
+		virtualElement.setPosition(computeSourcePositionOfVirtualElement(modifierPositions));
+		builder.addSiblingNode(modifiers);
+	}
+
+	private static SourcePosition computeSourcePositionOfVirtualElement(List<SourcePosition> modifierPositions) {
+		CompilationUnit cu = null;
+		Integer sourceStart = null;
+		Integer sourceEnd = null;
+		for (SourcePosition position : modifierPositions) {
+			if (position instanceof NoSourcePosition) { return SourcePosition.NOPOSITION; }
+			if (sourceStart == null || position.getSourceStart() < sourceStart) {
+				sourceStart = position.getSourceStart();
+			}
+			if (sourceEnd == null || position.getSourceEnd() > sourceEnd) {
+				sourceEnd = position.getSourceEnd();
+			}
+			if (cu == null) { cu = position.getCompilationUnit(); }
+		}
+		return new SourcePositionImpl(cu, sourceStart, sourceEnd, cu.getLineSeparatorPositions());
 	}
 
 	private String getClassName(String simpleName) {
@@ -171,7 +219,9 @@ public class NodeCreator extends CtInheritanceScanner {
 		for (Map.Entry<String, CtExpression> entry: annotation.getValues().entrySet()) {
 			Tree annotationValueNode = builder.createNode("ANNOTATION_VALUE", entry.toString());
 			annotationNode.addChild(annotationValueNode);
-			annotationValueNode.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, new CtWrapper(entry, annotation, CtRole.VALUE));
+			CtWrapper wrapper = new CtWrapper(entry, annotation, CtRole.VALUE);
+			wrapper.setPosition(entry.getValue().getPosition());
+			annotationValueNode.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, wrapper);
 		}
 		builder.addSiblingNode(annotationNode);
 	}
