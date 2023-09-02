@@ -331,9 +331,15 @@
                       "children": []
                     },
                     {
-                      "label": "DockableWindowManager.FLOATING",
-                      "type": "TypeAccess",
-                      "children": []
+                      "label": "FLOATING",
+                      "type": "FieldRead",
+                      "children": [
+                        {
+                          "label": "org.gjt.sp.jedit.gui.DockableWindowManager",
+                          "type": "TypeAccess",
+                          "children": []
+                        }
+                      ]
                     }
                   ]
                 }
@@ -1709,9 +1715,15 @@
                           "children": []
                         },
                         {
-                          "label": "Log.ERROR",
-                          "type": "TypeAccess",
-                          "children": []
+                          "label": "ERROR",
+                          "type": "FieldRead",
+                          "children": [
+                            {
+                              "label": "org.gjt.sp.util.Log",
+                              "type": "TypeAccess",
+                              "children": []
+                            }
+                          ]
                         },
                         {
                           "label": "class",
@@ -2375,9 +2387,15 @@
                           "children": []
                         },
                         {
-                          "label": "Log.ERROR",
-                          "type": "TypeAccess",
-                          "children": []
+                          "label": "ERROR",
+                          "type": "FieldRead",
+                          "children": [
+                            {
+                              "label": "org.gjt.sp.util.Log",
+                              "type": "TypeAccess",
+                              "children": []
+                            }
+                          ]
                         },
                         {
                           "label": "class",
@@ -2452,9 +2470,15 @@
                           "children": []
                         },
                         {
-                          "label": "Log.ERROR",
-                          "type": "TypeAccess",
-                          "children": []
+                          "label": "ERROR",
+                          "type": "FieldRead",
+                          "children": [
+                            {
+                              "label": "org.gjt.sp.util.Log",
+                              "type": "TypeAccess",
+                              "children": []
+                            }
+                          ]
                         },
                         {
                           "label": "class",
