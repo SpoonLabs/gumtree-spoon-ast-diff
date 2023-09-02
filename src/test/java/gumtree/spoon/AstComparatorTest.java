@@ -1264,7 +1264,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(result.containsOperation(OperationKind.Update, "TypeAccess", "DBImport.STATE_DB_INSERTION"));
+		assertTrue(result.containsOperation(OperationKind.Update, "TypeAccess", "DBImport"));
 	}
 
 	@Test
