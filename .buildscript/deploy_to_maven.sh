@@ -13,9 +13,11 @@ gpg --quiet --batch --yes --decrypt --passphrase="$SPOONBOT_PARAPHRASE" --output
 gpg --fast-import spoonbot.gpg
 
 # getting the previous version on Maven Central
+# does not work: PREVIOUS_MAVEN_CENTRAL_VERSION=`curl "http://search.maven.org/solrsearch/select?q=a:gumtree-spoon-ast-diff+g:fr.inria.gforge.spoon.labs&rows=20&wt=json" -L | jq -r ".response.docs[0].latestVersion" | egrep -o "[0-9]+$"`
 # for some reasons, some versions don't get index by search.maven.org/solrsearch/, and it break the build
-# so we have to roll our own: https://gist.github.com/monperrus/9ee373e2500e40b634f8daf707f6ad2a
-PREVIOUS_MAVEN_CENTRAL_VERSION=`curl "http://search.maven.org/solrsearch/select?q=a:gumtree-spoon-ast-diff+g:fr.inria.gforge.spoon.labs&rows=20&wt=json" -L | jq -r ".response.docs[0].latestVersion" | egrep -o "[0-9]+$"`
+# so we have to host our own
+PREVIOUS_MAVEN_CENTRAL_VERSION=`curl "https://www.monperrus.net/martin/last-version-maven.py?groupId=fr.inria.gforge.spoon.labs&artifactId=gumtree-spoon-ast-diff"`
+
 
 # and incrementing it
 mvn versions:set -DnewVersion=1.$((PREVIOUS_MAVEN_CENTRAL_VERSION+1))
