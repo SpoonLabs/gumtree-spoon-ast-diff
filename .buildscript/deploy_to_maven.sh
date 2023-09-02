@@ -16,7 +16,7 @@ gpg --fast-import spoonbot.gpg
 # does not work: PREVIOUS_MAVEN_CENTRAL_VERSION=`curl "http://search.maven.org/solrsearch/select?q=a:gumtree-spoon-ast-diff+g:fr.inria.gforge.spoon.labs&rows=20&wt=json" -L | jq -r ".response.docs[0].latestVersion" | egrep -o "[0-9]+$"`
 # for some reasons, some versions don't get index by search.maven.org/solrsearch/, and it break the build
 # so we have to host our own
-PREVIOUS_MAVEN_CENTRAL_VERSION=`curl "https://www.monperrus.net/martin/last-version-maven.py?groupId=fr.inria.gforge.spoon.labs&artifactId=gumtree-spoon-ast-diff"`
+PREVIOUS_MAVEN_CENTRAL_VERSION=`curl "https://www.monperrus.net/martin/last-version-maven.py?groupId=fr.inria.gforge.spoon.labs&artifactId=gumtree-spoon-ast-diff"  | egrep -o "[0-9]+$"`
 
 
 # and incrementing it
