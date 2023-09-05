@@ -42,9 +42,68 @@ gumtree.spoon.AstComparator <file_1> <file_2>
 
 As API:
 
+- Diff of two Spoon AST 
+
 ```java
 new AstComparator().compare((CtElement) el1, (CtElement) el2);
 ```
+
+- Diff of two Files (It parses each file for creating a Spoon AST, then it compares both ASTs)
+
+```java
+new AstComparator().compare((File) f, (File) f2);
+```
+
+- Diff of two Snippets (It parses each Snippet for creating a Spoon AST, then it compares both ASTs)
+ 
+```java
+new AstComparator().compare((String) s1, (String) s2);
+```
+
+By default, the current version of Gumtree Spoon AST Diff uses the novel AST matcher called `SimpleGumTree`. However, the API provides the possibility to change it:  The mentioned `compare` methods can also receive the configuration of the AST diff algorithm.
+
+```java
+		AstComparator comp = new AstComparator();
+		
+		//We define a DiffConfiguration
+		DiffConfiguration diffConfiguration = new DiffConfiguration();
+		//Set the matcher to be used
+		diffConfiguration.setMatcher(new CompositeMatchers.ClassicGumtree());
+		//Set values for hyperparameters
+		GumtreeProperties properties = new GumtreeProperties();
+		properties.tryConfigure(ConfigurationOptions.bu_minsim, 0.2);
+		properties.tryConfigure(ConfigurationOptions.bu_minsize, 600);
+		properties.tryConfigure(ConfigurationOptions.st_minprio, 1);
+		properties.tryConfigure(ConfigurationOptions.st_priocalc, size);
+		diffConfiguration.setGumtreeProperties(properties);
+		
+		//Now, compute the diff with the configuration diffConfiguration
+		Diff resultClassicMatcher = comp.compare(fl, fr, diffConfiguration);
+
+```
+
+In the previous snippet, we call the diff algorithm with a particular setup: ClassicGumtree matcher and a set of hyperparameters which minimize the size of the edit-scripts.
+The values of these hyperparameters were found using [DAT (Diff Auto-Tuning)](https://github.com/martinezmatias/diff-auto-tuning).
+
+```
+@misc{dat,
+  author = {Martinez, Matias and Falleri, Jean-Rémy and Monperrus, Martin},
+  
+  title = {Hyperparameter Optimization for AST Differencing},
+  
+  publisher = {arXiv},
+  
+  year = {2020},
+  
+  doi = {10.48550/ARXIV.2011.10268},
+  
+  url = {https://arxiv.org/abs/2011.10268},
+   
+  keywords = {Software Engineering (cs.SE), FOS: Computer and information sciences, FOS: Computer and information sciences},
+}
+```
+
+
 
 
 Testing AST differencing
