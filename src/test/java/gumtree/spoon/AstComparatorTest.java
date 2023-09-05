@@ -2,6 +2,7 @@ package gumtree.spoon;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -408,38 +409,32 @@ public class AstComparatorTest {
 		// src/test/resources/examples/t_211903/right_MemberFilePersister_1.5.java
 		File fl = new File("src/test/resources/examples/t_211903/left_MemberFilePersister_1.4.java");
 		File fr = new File("src/test/resources/examples/t_211903/right_MemberFilePersister_1.5.java");
-		Diff result = diff.compare(fl, fr);
-		
-		System.out.println(result.getAllOperations().size());
-		
-		System.out.println(result.getAllOperations());
-		
-		DiffConfiguration dc = new DiffConfiguration();
-		dc.setMatcher(new CompositeMatchers.ClassicGumtree());
-		
-		result = diff.compare(fl, fr,dc);
+		Diff resultDefault = diff.compare(fl, fr);
 		
 		
-		System.out.println(result.getAllOperations().size());
+		DiffConfiguration diffConfiguration = new DiffConfiguration();
+		diffConfiguration.setMatcher(new CompositeMatchers.ClassicGumtree());
 		
+		Diff resultClassicMatcher = diff.compare(fl, fr, diffConfiguration);
 		
-		System.out.println(result.getAllOperations());
+		// We check that the property has an effect on the edit script
+		assertNotEquals(resultClassicMatcher.getAllOperations().size(), resultDefault.getAllOperations().size());
 		
 		// result.debugInformation();
 
-		CtElement ancestor = result.commonAncestor();
+		CtElement ancestor = resultClassicMatcher.commonAncestor();
 		assertTrue(ancestor instanceof CtConstructorCall);
 		assertEquals(88, ancestor.getPosition().getLine());
 
-		List<Operation> actions = result.getRootOperations();
+		List<Operation> actions = resultClassicMatcher.getRootOperations();
 		// result.debugInformation();
 		assertTrue(
-				result.containsOperation(OperationKind.Update, "ConstructorCall", "java.io.FileReader(java.io.File)"));
-		assertTrue(result.containsOperation(OperationKind.Insert, "ConstructorCall",
+				resultClassicMatcher.containsOperation(OperationKind.Update, "ConstructorCall", "java.io.FileReader(java.io.File)"));
+		assertTrue(resultClassicMatcher.containsOperation(OperationKind.Insert, "ConstructorCall",
 				"java.io.InputStreamReader(java.io.InputStream,java.lang.String)"));
 
 		// additional checks on low-level actions
-		assertTrue(result.containsOperations(result.getAllOperations(), OperationKind.Insert, "Literal", "\"UTF-8\""));
+		assertTrue(resultClassicMatcher.containsOperations(resultClassicMatcher.getAllOperations(), OperationKind.Insert, "Literal", "\"UTF-8\""));
 
 		// the change is in the local variable declaration
 		CtElement elem = actions.get(0).getNode();

@@ -59,6 +59,15 @@ public class AstComparator {
 	public Diff compare(File f1, File f2) throws Exception {
 		return this.compare(getCtType(f1), getCtType(f2));
 	}
+	
+	/**
+	 * compares two AST nodes from two files according with a given configuration
+	 */
+	public Diff compare(File f1, File f2, DiffConfiguration configuration) throws Exception {
+		final SpoonGumTreeBuilder scanner = new SpoonGumTreeBuilder();
+		return new DiffImpl(
+				scanner.getTreeContext(), scanner.getTree(getCtType(f1)), scanner.getTree(getCtType(f2)), configuration);
+	}
 
 	/**
 	 * compares two snippets
@@ -67,7 +76,15 @@ public class AstComparator {
 		return compare(getCtType(left), getCtType(right));
 	}
 
+	/**
+	 * compares two snippets
+	 */
+	public Diff compare(String left, String right, DiffConfiguration configuration) {
+		return compare(getCtType(left), getCtType(right),configuration);
+	}
 
+	
+	
 	/**
 	 * compares two snippets that come from the files given as argument
 	 */
@@ -83,12 +100,16 @@ public class AstComparator {
 		return new DiffImpl(scanner.getTreeContext(), scanner.getTree(left), scanner.getTree(right));
 	}
 
-
-	public Diff compare(File f1, File f2, DiffConfiguration configuration) throws Exception {
+	
+	/**
+	 * compares two AST nodes according with a given configuration
+	 */
+	public Diff compare(CtElement left, CtElement right, DiffConfiguration configuration) {
 		final SpoonGumTreeBuilder scanner = new SpoonGumTreeBuilder();
-		return new DiffImpl(
-				scanner.getTreeContext(), scanner.getTree(getCtType(f1)), scanner.getTree(getCtType(f2)), configuration);
+		return new DiffImpl(scanner.getTreeContext(), scanner.getTree(left), scanner.getTree(right),configuration);
 	}
+	
+
 
 	public CtType getCtType(File file) throws Exception {
 
