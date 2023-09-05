@@ -16,13 +16,13 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.github.gumtreediff.actions.model.Move;
-import com.github.gumtreediff.matchers.ConfigurationOptions;
-import com.github.gumtreediff.matchers.GumtreeProperties;
+import com.github.gumtreediff.matchers.CompositeMatchers;
 import com.github.gumtreediff.matchers.Mapping;
 
 import gumtree.spoon.builder.SpoonGumTreeBuilder;
 import gumtree.spoon.diff.ActionClassifier;
 import gumtree.spoon.diff.Diff;
+import gumtree.spoon.diff.DiffConfiguration;
 import gumtree.spoon.diff.DiffImpl;
 import gumtree.spoon.diff.operations.DeleteOperation;
 import gumtree.spoon.diff.operations.InsertOperation;
@@ -409,7 +409,22 @@ public class AstComparatorTest {
 		File fl = new File("src/test/resources/examples/t_211903/left_MemberFilePersister_1.4.java");
 		File fr = new File("src/test/resources/examples/t_211903/right_MemberFilePersister_1.5.java");
 		Diff result = diff.compare(fl, fr);
-
+		
+		System.out.println(result.getAllOperations().size());
+		
+		System.out.println(result.getAllOperations());
+		
+		DiffConfiguration dc = new DiffConfiguration();
+		dc.setMatcher(new CompositeMatchers.ClassicGumtree());
+		
+		result = diff.compare(fl, fr,dc);
+		
+		
+		System.out.println(result.getAllOperations().size());
+		
+		
+		System.out.println(result.getAllOperations());
+		
 		// result.debugInformation();
 
 		CtElement ancestor = result.commonAncestor();
@@ -562,13 +577,8 @@ public class AstComparatorTest {
 		File fl = new File("src/test/resources/examples/t_221343/left_Server_1.186.java");
 		File fr = new File("src/test/resources/examples/t_221343/right_Server_1.187.java");
 
-		GumtreeProperties properties = new GumtreeProperties();
+		Diff result = diff.compare(fl, fr);
 
-		properties = new GumtreeProperties();
-		// Using min = 1, the imports and package declaration are mapped.
-		properties.tryConfigure(ConfigurationOptions.st_minprio, 0);
-
-		Diff result = diff.compare(fl, fr, properties);
 
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
@@ -586,14 +596,9 @@ public class AstComparatorTest {
 		File fl = new File("src/test/resources/examples/t_221345/left_Server_1.187.java");
 		File fr = new File("src/test/resources/examples/t_221345/right_Server_1.188.java");
 
-		GumtreeProperties properties = new GumtreeProperties();
+		Diff result = diff.compare(fl, fr);
 
-		properties = new GumtreeProperties();
-		// Using min = 1, the imports and package declaration are mapped.
-		properties.tryConfigure(ConfigurationOptions.st_minprio, 0);
-
-		Diff result = diff.compare(fl, fr, properties);
-
+		
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(actions.size(), 1);
@@ -742,13 +747,8 @@ public class AstComparatorTest {
 		File fl = new File("src/test/resources/examples/t_223056/left_Server_1.646.java");
 		File fr = new File("src/test/resources/examples/t_223056/right_Server_1.647.java");
 
-		GumtreeProperties properties = new GumtreeProperties();
+		Diff result = diff.compare(fl, fr);
 
-		properties = new GumtreeProperties();
-
-		properties.tryConfigure(ConfigurationOptions.st_minprio, 0);
-
-		Diff result = diff.compare(fl, fr, properties);
 
 		CtElement ancestor = result.commonAncestor();
 		assertTrue(ancestor instanceof CtClass);
@@ -768,12 +768,8 @@ public class AstComparatorTest {
 		File fl = new File("src/test/resources/examples/t_223118/left_TestBot_1.48.java");
 		File fr = new File("src/test/resources/examples/t_223118/right_TestBot_1.49.java");
 
-		GumtreeProperties properties = new GumtreeProperties();
-		properties = new GumtreeProperties();
+		Diff result = diff.compare(fl, fr);
 
-		properties.tryConfigure(ConfigurationOptions.st_minprio, 0);
-
-		Diff result = diff.compare(fl, fr, properties);
 
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
@@ -840,12 +836,8 @@ public class AstComparatorTest {
 		File fl = new File("src/test/resources/examples/t_224542/left_TestBot_1.75.java");
 		File fr = new File("src/test/resources/examples/t_224542/right_TestBot_1.76.java");
 
-		GumtreeProperties properties = new GumtreeProperties();
-		properties = new GumtreeProperties();
+		Diff result = diff.compare(fl, fr);
 
-		properties.tryConfigure(ConfigurationOptions.st_minprio, 0);
-
-		Diff result = diff.compare(fl, fr, properties);
 
 		result.debugInformation();
 
@@ -1139,12 +1131,9 @@ public class AstComparatorTest {
 		File fl = new File("src/test/resources/examples/t_225391/left_IndexHTML_1.4.java");
 		File fr = new File("src/test/resources/examples/t_225391/right_IndexHTML_1.5.java");
 
-		GumtreeProperties properties = new GumtreeProperties();
-		properties = new GumtreeProperties();
+		
 
-		properties.tryConfigure(ConfigurationOptions.st_minprio, 1);
-
-		Diff result = diff.compare(fl, fr, properties);
+		Diff result = diff.compare(fl, fr);
 
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
@@ -1239,12 +1228,9 @@ public class AstComparatorTest {
 		// src/test/resources/examples/t_226145/right_ScarabRequestTool_1.91.java
 		File fl = new File("src/test/resources/examples/t_226145/left_ScarabRequestTool_1.90.java");
 		File fr = new File("src/test/resources/examples/t_226145/right_ScarabRequestTool_1.91.java");
-		GumtreeProperties properties = new GumtreeProperties();
-		properties = new GumtreeProperties();
 
-		properties.tryConfigure(ConfigurationOptions.st_minprio, 0);
+		Diff result = diff.compare(fl, fr);
 
-		Diff result = diff.compare(fl, fr, properties);
 
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
@@ -1274,12 +1260,9 @@ public class AstComparatorTest {
 		// src/test/resources/examples/t_226480/right_ScarabRequestTool_1.114.java
 		File fl = new File("src/test/resources/examples/t_226480/left_ScarabRequestTool_1.113.java");
 		File fr = new File("src/test/resources/examples/t_226480/right_ScarabRequestTool_1.114.java");
-		GumtreeProperties properties = new GumtreeProperties();
-		properties = new GumtreeProperties();
 
-		properties.tryConfigure(ConfigurationOptions.st_minprio, 0);
+		Diff result = diff.compare(fl, fr);
 
-		Diff result = diff.compare(fl, fr, properties);
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
@@ -1361,12 +1344,9 @@ public class AstComparatorTest {
 		// src/test/resources/examples/t_226963/right_Issue_1.141.java
 		File fl = new File("src/test/resources/examples/t_226963/left_Issue_1.140.java");
 		File fr = new File("src/test/resources/examples/t_226963/right_Issue_1.141.java");
-		GumtreeProperties properties = new GumtreeProperties();
-		properties = new GumtreeProperties();
 
-		properties.tryConfigure(ConfigurationOptions.st_minprio, 0);
+		Diff result = diff.compare(fl, fr);
 
-		Diff result = diff.compare(fl, fr, properties);
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
@@ -1380,12 +1360,9 @@ public class AstComparatorTest {
 		// src/test/resources/examples/t_227005/right_AttributeValue_1.57.java
 		File fl = new File("src/test/resources/examples/t_227005/left_AttributeValue_1.56.java");
 		File fr = new File("src/test/resources/examples/t_227005/right_AttributeValue_1.57.java");
-		GumtreeProperties properties = new GumtreeProperties();
-		properties = new GumtreeProperties();
 
-		properties.tryConfigure(ConfigurationOptions.st_minprio, 0);
+		Diff result = diff.compare(fl, fr);
 
-		Diff result = diff.compare(fl, fr, properties);
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(2, actions.size());
@@ -1415,12 +1392,9 @@ public class AstComparatorTest {
 		// src/test/resources/examples/t_227368/right_IssueTemplateInfo_1.13.java
 		File fl = new File("src/test/resources/examples/t_227368/left_IssueTemplateInfo_1.12.java");
 		File fr = new File("src/test/resources/examples/t_227368/right_IssueTemplateInfo_1.13.java");
-		GumtreeProperties properties = new GumtreeProperties();
-		properties = new GumtreeProperties();
 
-		properties.tryConfigure(ConfigurationOptions.st_minprio, 1);
+		Diff result = diff.compare(fl, fr);
 
-		Diff result = diff.compare(fl, fr, properties);
 		List<Operation> actions = result.getAllOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
@@ -1454,12 +1428,9 @@ public class AstComparatorTest {
 		// src/test/resources/examples/t_227985/right_IssueSearch_1.66.java
 		File fl = new File("src/test/resources/examples/t_227985/left_IssueSearch_1.65.java");
 		File fr = new File("src/test/resources/examples/t_227985/right_IssueSearch_1.66.java");
-		GumtreeProperties properties = new GumtreeProperties();
-		properties = new GumtreeProperties();
 
-		properties.tryConfigure(ConfigurationOptions.st_minprio, 0);
+		Diff result = diff.compare(fl, fr);
 
-		Diff result = diff.compare(fl, fr, properties);
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
@@ -1548,12 +1519,9 @@ public class AstComparatorTest {
 		// src/test/resources/examples/issue31/patched.java
 		File fl = new File("src/test/resources/examples/issue31/original.java");
 		File fr = new File("src/test/resources/examples/issue31/patched.java");
-		GumtreeProperties properties = new GumtreeProperties();
-		properties = new GumtreeProperties();
 
-		properties.tryConfigure(ConfigurationOptions.st_minprio, 0);
+		Diff result = diff.compare(fl, fr);
 
-		Diff result = diff.compare(fl, fr, properties);
 		List<Operation> rootActions = result.getRootOperations();
 		// result.debugInformation();
 		System.out.println("root: " + result.getRootOperations().size());
@@ -1659,12 +1627,9 @@ public class AstComparatorTest {
 		AstComparator diff = new AstComparator();
 		File fl = new File("src/test/resources/examples/vs/06b994/VerificationHost/VerificationHost_s.java");
 		File fr = new File("src/test/resources/examples/vs/06b994/VerificationHost/VerificationHost_t.java");
-		GumtreeProperties properties = new GumtreeProperties();
-		properties = new GumtreeProperties();
 
-		properties.tryConfigure(ConfigurationOptions.st_minprio, 0);
+		Diff result = diff.compare(fl, fr);
 
-		Diff result = diff.compare(fl, fr, properties);
 
 		List<Operation> actions = result.getRootOperations();
 		assertNotNull(actions);
@@ -1680,12 +1645,9 @@ public class AstComparatorTest {
 
 		File fl = new File("src/test/resources/examples/vs/06b994/TestUtilityService/TestUtilityService_s.java");
 		File fr = new File("src/test/resources/examples/vs/06b994/TestUtilityService/TestUtilityService_t.java");
-		GumtreeProperties properties = new GumtreeProperties();
-		properties = new GumtreeProperties();
 
-		properties.tryConfigure(ConfigurationOptions.st_minprio, 0);
+		Diff result = diff.compare(fl, fr);
 
-		Diff result = diff.compare(fl, fr, properties);
 		List<Operation> actions = result.getRootOperations();
 		assertNotNull(actions);
 		assertTrue(actions.size() > 0);
@@ -1902,12 +1864,9 @@ public class AstComparatorTest {
 		AstComparator diff = new AstComparator();
 		File fl = new File("src/test/resources/examples/d4j/Math_34/ListPopulation/Math_34_ListPopulation_s.java");
 		File fr = new File("src/test/resources/examples/d4j/Math_34/ListPopulation/Math_34_ListPopulation_t.java");
-		GumtreeProperties properties = new GumtreeProperties();
-		properties = new GumtreeProperties();
 
-		properties.tryConfigure(ConfigurationOptions.st_minprio, 0);
+		Diff result = diff.compare(fl, fr);
 
-		Diff result = diff.compare(fl, fr, properties);
 		List<Operation> actions = result.getAllOperations();
 		assertEquals(5, actions.size());
 
@@ -1992,12 +1951,9 @@ public class AstComparatorTest {
 				+ "};";
 
 		AstComparator diff = new AstComparator();
-		GumtreeProperties properties = new GumtreeProperties();
-		properties = new GumtreeProperties();
+	
 
-		properties.tryConfigure(ConfigurationOptions.st_minprio, 0);
-
-		Diff editScript = diff.compare(c1, c2, properties);
+		Diff editScript = diff.compare(c1, c2);
 
 		assertEquals(1, editScript.getRootOperations().size());
 

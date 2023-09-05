@@ -19,6 +19,7 @@ import com.github.gumtreediff.actions.model.TreeDelete;
 import com.github.gumtreediff.actions.model.TreeInsert;
 import com.github.gumtreediff.actions.model.Update;
 import com.github.gumtreediff.matchers.CompositeMatchers;
+import com.github.gumtreediff.matchers.ConfigurationOptions;
 import com.github.gumtreediff.matchers.GumtreeProperties;
 import com.github.gumtreediff.matchers.MappingStore;
 import com.github.gumtreediff.matchers.Matcher;
@@ -65,21 +66,25 @@ public class DiffImpl implements Diff {
 
 	private GumtreeProperties properties = null;
 
-	private Matcher matcher = new CompositeMatchers.ClassicGumtree();
+	private Matcher matcher = new CompositeMatchers.SimpleGumtree();
 
-	public DiffImpl(TreeContext context, Tree rootSpoonLeft, Tree rootSpoonRight, GumtreeProperties properties) {
-		this.properties = properties;
+	public DiffImpl(TreeContext context, Tree rootSpoonLeft, Tree rootSpoonRight) {
+		
+		matcher = new CompositeMatchers.SimpleGumtree();
+		properties = new GumtreeProperties();
+		properties.tryConfigure(ConfigurationOptions.st_minprio, 1);
+		properties.tryConfigure(ConfigurationOptions.st_priocalc, "size");
+		
 		computeDiff(context, rootSpoonLeft, rootSpoonRight);
 	}
 
 	public DiffImpl(TreeContext context, Tree rootSpoonLeft, Tree rootSpoonRight, DiffConfiguration configuration) {
 		this.matcher = configuration.getMatcher();
-		computeDiff(context, rootSpoonLeft, rootSpoonRight);
-	}
+		this.properties= configuration.getGumtreeProperties();
 
-	public DiffImpl(TreeContext context, Tree rootSpoonLeft, Tree rootSpoonRight) {
 		computeDiff(context, rootSpoonLeft, rootSpoonRight);
 	}
+	
 
 	public void computeDiff(TreeContext context, Tree rootSpoonLeft, Tree rootSpoonRight) {
 		if (context == null) {
@@ -88,8 +93,11 @@ public class DiffImpl implements Diff {
 		final MappingStore mappingsComp = new MappingStore(rootSpoonLeft, rootSpoonRight);
 		this.context = context;
 
-		if (properties != null)
+	
+		if (properties != null) {
 			matcher.configure(properties);
+		}
+	
 		MappingStore mappings = matcher.match(rootSpoonLeft, rootSpoonRight, mappingsComp);
 
 		// all actions
