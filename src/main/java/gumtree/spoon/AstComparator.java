@@ -2,9 +2,6 @@ package gumtree.spoon;
 
 import java.io.File;
 import java.util.Map;
-
-import com.github.gumtreediff.matchers.GumtreeProperties;
-
 import gumtree.spoon.builder.SpoonGumTreeBuilder;
 import gumtree.spoon.diff.Diff;
 import gumtree.spoon.diff.DiffConfiguration;
@@ -27,41 +24,7 @@ import spoon.support.compiler.jdt.JDTBasedSpoonCompiler;
  * @author Matias Martinez, matias.martinez@inria.fr
  */
 public class AstComparator {
-	// For the moment, let's create a factory each type we get a type.
-	// Sharing the factory produces a bug when asking the path of different types
-	// (>1)
-	// private final Factory factory;
 
-	static {
-		// default 0.3
-		// it seems that default value is really bad
-		// 0.1 one failing much more changes
-		// 0.2 one failing much more changes
-		// 0.3 one failing test_t_224542
-		// 0.4 fails for issue31
-		// 0.5 fails for issue31
-		// 0.6 OK
-		// 0.7 1 failing
-		// 0.8 2 failing
-		// 0.9 two failing tests with more changes
-		// see GreedyBottomUpMatcher.java in Gumtree
-		System.setProperty("gt.bum.smt", "0.6");
-
-		// default 2
-		// 0 is really bad for 211903 t_224542 225391 226622
-		// 1 is required for t_225262 and t_213712 to pass
-		System.setProperty("gt.stm.mh", "1");
-
-		// default 1000
-		// 0 fails
-		// 1 fails
-		// 10 fails
-		// 100 OK
-		// 1000 OK
-		// see AbstractBottomUpMatcher#SIZE_THRESHOD in Gumtree
-		// System.setProperty("gumtree.match.bu.size","10");
-		// System.setProperty("gt.bum.szt", "1000");
-	}
 	/**
 	 * By default, comments are ignored
 	 */
@@ -104,27 +67,6 @@ public class AstComparator {
 		return compare(getCtType(left), getCtType(right));
 	}
 
-	/**
-	 * compares two java files
-	 */
-	public Diff compare(File f1, File f2, GumtreeProperties properties) throws Exception {
-		return this.compare(getCtType(f1), getCtType(f2), properties);
-	}
-
-	/**
-	 * compares two snippets
-	 */
-	public Diff compare(String left, String right, GumtreeProperties properties) {
-		return compare(getCtType(left), getCtType(right), properties);
-	}
-
-	/**
-	 * compares two snippets that come from the files given as argument
-	 */
-	public Diff compare(String left, String right, String filenameLeft, String filenameRight,
-			GumtreeProperties properties) {
-		return compare(getCtType(left, filenameLeft), getCtType(right, filenameRight), properties);
-	}
 
 	/**
 	 * compares two snippets that come from the files given as argument
@@ -141,13 +83,6 @@ public class AstComparator {
 		return new DiffImpl(scanner.getTreeContext(), scanner.getTree(left), scanner.getTree(right));
 	}
 
-	/**
-	 * compares two AST nodes
-	 */
-	public Diff compare(CtElement left, CtElement right, GumtreeProperties properties) {
-		final SpoonGumTreeBuilder scanner = new SpoonGumTreeBuilder();
-		return new DiffImpl(scanner.getTreeContext(), scanner.getTree(left), scanner.getTree(right), properties);
-	}
 
 	public Diff compare(File f1, File f2, DiffConfiguration configuration) throws Exception {
 		final SpoonGumTreeBuilder scanner = new SpoonGumTreeBuilder();

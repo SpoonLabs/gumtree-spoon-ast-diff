@@ -268,8 +268,11 @@ public class DiffTest {
 		File left = new File("src/test/resources/examples/superInterfaces/class/left.java");
 		File right = new File("src/test/resources/examples/superInterfaces/class/right.java");
 
-		Diff diff = new AstComparator().compare(left, right);
-
+		DiffConfiguration configuration = new DiffConfiguration();
+		configuration.setMatcher(new CompositeMatchers.ClassicGumtree());
+		
+		Diff diff = new AstComparator().compare(left, right, configuration);
+		
 		assertTrue(diff.containsOperation(OperationKind.Insert, "INTERFACE", "A"));
 		assertTrue(diff.containsOperation(OperationKind.Insert, "INTERFACE", "D"));
 		assertTrue(diff.containsOperation(OperationKind.Insert, "TYPE_ARGUMENT", "T"));
@@ -285,7 +288,10 @@ public class DiffTest {
 		File left = new File("src/test/resources/examples/superInterfaces/interface/left.java");
 		File right = new File("src/test/resources/examples/superInterfaces/interface/right.java");
 
-		Diff diff = new AstComparator().compare(left, right);
+		DiffConfiguration configuration = new DiffConfiguration();
+		configuration.setMatcher(new CompositeMatchers.ClassicGumtree());
+		
+		Diff diff = new AstComparator().compare(left, right, configuration);
 
 		assertTrue(diff.containsOperation(OperationKind.Delete, "INTERFACE", "A"));
 		assertTrue(diff.containsOperation(OperationKind.Insert, "INTERFACE", "D"));
