@@ -22,7 +22,7 @@ If you use this, please cite:
 }
 ```
 
-Difference between plain gumtreediff and gumtree-spoon-ast-diff
+Differences between plain gumtreediff and gumtree-spoon-ast-diff
 ----------------------------------------------------------------
 
 What is the main difference between gumtree-spoon-ast-diff and [gumtreediff](https://github.com/GumTreeDiff/gumtree)?
@@ -30,7 +30,8 @@ What is the main difference between gumtree-spoon-ast-diff and [gumtreediff](htt
 * The tree of gumtree-spoon-ast-diff is carefully designed to provide better AST diffs for Java as opposed to vanilla gumtreediff. Simply compare the AST diffs on your own data.
 * The nodes involved in the diff can be pretty-printed through the pointer to the original Spoon nodes (see method `changedNode`, `commonAncestor`, `getSrcNode`)
 * The nodes involved in the diff can be further analyzed with [Spoon](https://github.com/INRIA/spoon/)'s API
-
+* The configuration parameters of AST differencing have beeen fine tuned with hyper-optimization, see [Hyperparameter Optimization for AST Differencing (IEEE TSE)](http://arxiv.org/pdf/2011.10268)
+ 
 Usage
 -----
 
