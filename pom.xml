@@ -132,7 +132,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.1.2</version>
+        <version>3.2.2</version>
         <configuration>
           <!-- the following is required to have the same execution semantics as eclipse (hence all tests passing) -->
           <!-- the reason is that it switches Spoon in noclasspath or not for this particular file -->
