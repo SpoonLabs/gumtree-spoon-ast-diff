@@ -57,7 +57,13 @@ public class AstComparator {
 	 * compares two java files
 	 */
 	public Diff compare(File f1, File f2) throws Exception {
-		return this.compare(getCtType(f1), getCtType(f2));
+		CtType<?> ctType1 = getCtType(f1);
+		CtType<?> ctType2 = getCtType(f2);
+		if (ctType1 == null || ctType2 == null) {
+			return null;
+		} else {
+			return compare(ctType1, ctType2);
+		}
 	}
 	
 	/**
