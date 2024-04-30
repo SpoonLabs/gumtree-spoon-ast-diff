@@ -10,6 +10,7 @@ import spoon.SpoonModelBuilder;
 import spoon.compiler.SpoonResource;
 import spoon.compiler.SpoonResourceHelper;
 import spoon.reflect.declaration.CtElement;
+import spoon.reflect.declaration.CtPackage;
 import spoon.reflect.declaration.CtType;
 import spoon.reflect.factory.Factory;
 import spoon.reflect.factory.FactoryImpl;
@@ -57,8 +58,8 @@ public class AstComparator {
 	 * compares two java files
 	 */
 	public Diff compare(File f1, File f2) throws Exception {
-		CtType<?> ctType1 = getCtType(f1);
-		CtType<?> ctType2 = getCtType(f2);
+		CtPackage ctType1 = getCtPackage(f1);
+		CtPackage ctType2 = getCtPackage(f2);
 		if (ctType1 == null || ctType2 == null) {
 			return null;
 		} else {
@@ -122,6 +123,10 @@ public class AstComparator {
 		SpoonResource resource = SpoonResourceHelper.createResource(file);
 		return getCtType(resource);
 	}
+	public CtPackage getCtPackage(File file) throws Exception {
+		SpoonResource resource = SpoonResourceHelper.createResource(file);
+		return getCtPackage(resource);
+	}
 
 	public CtType getCtType(SpoonResource resource) {
 		Factory factory = createFactory();
@@ -141,6 +146,16 @@ public class AstComparator {
 		// corresponding
 		// package)
 		return factory.Type().get(type.getQualifiedName());
+	}
+
+	public CtPackage getCtPackage(SpoonResource resource) {
+		Factory factory = createFactory();
+		factory.getModel().setBuildModelIsFinished(false);
+		SpoonModelBuilder compiler = new JDTBasedSpoonCompiler(factory);
+		compiler.getFactory().getEnvironment().setLevel("OFF");
+		compiler.addInputSource(resource);
+		compiler.build();
+		return factory.Package().getRootPackage();
 	}
 
 	public CtType<?> getCtType(String content) {
