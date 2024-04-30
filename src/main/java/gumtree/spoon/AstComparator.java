@@ -58,12 +58,12 @@ public class AstComparator {
 	 * compares two java files
 	 */
 	public Diff compare(File f1, File f2) throws Exception {
-		CtPackage ctType1 = getCtPackage(f1);
-		CtPackage ctType2 = getCtPackage(f2);
-		if (ctType1 == null || ctType2 == null) {
+		CtPackage ctPackage1 = getCtPackage(f1);
+		CtPackage ctPackage2 = getCtPackage(f2);
+		if (ctPackage1 == null || ctPackage2 == null) {
 			return null;
 		} else {
-			return compare(ctType1, ctType2);
+			return compare(ctPackage1, ctPackage2);
 		}
 	}
 	
@@ -73,21 +73,28 @@ public class AstComparator {
 	public Diff compare(File f1, File f2, DiffConfiguration configuration) throws Exception {
 		final SpoonGumTreeBuilder scanner = new SpoonGumTreeBuilder();
 		return new DiffImpl(
-				scanner.getTreeContext(), scanner.getTree(getCtType(f1)), scanner.getTree(getCtType(f2)), configuration);
+				scanner.getTreeContext(), scanner.getTree(getCtPackage(f1)), scanner.getTree(getCtPackage(f2)), configuration);
 	}
 
 	/**
 	 * compares two snippets
 	 */
 	public Diff compare(String left, String right) {
-		return compare(getCtType(left), getCtType(right));
+		return compare(getCtPackage(left, left.hashCode()+".java"), getCtPackage(right, right.hashCode()+".java"));
 	}
+
+
+	public CtPackage getCtPackage(String content, String filename) {
+		VirtualFile resource = new VirtualFile(content, filename);
+		return getCtPackage(resource);
+	}
+
 
 	/**
 	 * compares two snippets
 	 */
 	public Diff compare(String left, String right, DiffConfiguration configuration) {
-		return compare(getCtType(left), getCtType(right),configuration);
+		return compare(getCtPackage(left, left.hashCode()+".java"), getCtPackage(right, right.hashCode()+".java"),configuration);
 	}
 
 	
@@ -96,7 +103,7 @@ public class AstComparator {
 	 * compares two snippets that come from the files given as argument
 	 */
 	public Diff compare(String left, String right, String filenameLeft, String filenameRight) {
-		return compare(getCtType(left, filenameLeft), getCtType(right, filenameRight));
+		return compare(getCtPackage(left), getCtPackage(right));
 	}
 
 	/**
