@@ -1714,8 +1714,8 @@ public class AstComparatorTest {
 		Diff result = diff.compare(left, right);
 
 		assertEquals(1, result.getRootOperations().size());
-		// by default, name is "test"
-		assertEquals("test", result.getRootOperations().get(0).getSrcNode().getPosition().getFile().getName());
+		// by default, name is prefixed by "test"
+		assertEquals("test2092383990.java", result.getRootOperations().get(0).getSrcNode().getPosition().getFile().getName());
 
 		// let's put other names
 		result = diff.compare(left, right, "mleft.java", "mright.java");
@@ -2101,4 +2101,19 @@ public class AstComparatorTest {
 		// assert
 		assertTrue(diff.containsOperations(OperationKind.Update, "Invocation", "this", "super"));
 	}
+
+	@Test
+	public void test264() throws Exception {
+		File s = new File("src/test/resources/issue264/Util_before.java");
+		File t = new File("src/test/resources/issue264/Util_after.java");
+		boolean includeComments = true;
+		AstComparator r = new AstComparator(includeComments);
+
+		Diff diffOut = r.compare(s, t);
+		Assert.assertEquals(3, diffOut.getRootOperations().size());
+		Assert.assertEquals("Delete Literal at org.wso2.transport.http.netty.contractimpl.common.Util:147\n" +
+				"\tfalse\n", diffOut.getRootOperations().get(0).toString());
+
+	}
+
 }
