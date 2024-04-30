@@ -80,7 +80,11 @@ public class AstComparator {
 	 * compares two snippets
 	 */
 	public Diff compare(String left, String right) {
-		return compare(getCtPackage(left, left.hashCode()+".java"), getCtPackage(right, right.hashCode()+".java"));
+		return compare(getCtPackage(left, getFilename(left)), getCtPackage(right, getFilename(right)));
+	}
+
+	private static String getFilename(String leftcontent) {
+		return "test"+Math.abs(leftcontent.hashCode()) + ".java";
 	}
 
 
@@ -94,7 +98,7 @@ public class AstComparator {
 	 * compares two snippets
 	 */
 	public Diff compare(String left, String right, DiffConfiguration configuration) {
-		return compare(getCtPackage(left, left.hashCode()+".java"), getCtPackage(right, right.hashCode()+".java"),configuration);
+		return compare(getCtPackage(left, getFilename(left)), getCtPackage(right, getFilename(right)),configuration);
 	}
 
 	

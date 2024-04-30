@@ -1714,8 +1714,8 @@ public class AstComparatorTest {
 		Diff result = diff.compare(left, right);
 
 		assertEquals(1, result.getRootOperations().size());
-		// by default, name is "test"
-		assertEquals("test", result.getRootOperations().get(0).getSrcNode().getPosition().getFile().getName());
+		// by default, name is prefixed by "test"
+		assertEquals("test2092383990.java", result.getRootOperations().get(0).getSrcNode().getPosition().getFile().getName());
 
 		// let's put other names
 		result = diff.compare(left, right, "mleft.java", "mright.java");
