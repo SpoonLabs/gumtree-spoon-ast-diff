@@ -103,7 +103,7 @@ public class AstComparator {
 	 * compares two snippets that come from the files given as argument
 	 */
 	public Diff compare(String left, String right, String filenameLeft, String filenameRight) {
-		return compare(getCtPackage(left), getCtPackage(right));
+		return compare(getCtPackage(left, filenameLeft), getCtPackage(right, filenameRight));
 	}
 
 	/**
