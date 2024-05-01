@@ -7,10 +7,8 @@
 set -e
 
 echo "Deploying ..."
-# made with symmetric key encryption algorithm AES256
-# reference: https://docs.github.com/en/actions/security-guides/encrypted-secrets#limits-for-secrets
-gpg --quiet --batch --yes --decrypt --passphrase="$SPOONBOT_PARAPHRASE" --output spoonbot.gpg .buildscript/spoonbot.gpg.enc
-gpg --fast-import spoonbot.gpg
+# $GPG_SECRET_KEY is an env secret containing a gog secret key without passphrase
+echo "$GPG_SECRET_KEY" | gpg --fast-import 
 
 # getting the previous version on Maven Central
 # does not work: PREVIOUS_MAVEN_CENTRAL_VERSION=`curl "http://search.maven.org/solrsearch/select?q=a:gumtree-spoon-ast-diff+g:fr.inria.gforge.spoon.labs&rows=20&wt=json" -L | jq -r ".response.docs[0].latestVersion" | egrep -o "[0-9]+$"`
