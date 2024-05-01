@@ -30,4 +30,5 @@ jobs:
         CI_DEPLOY_USERNAME: ${{ secrets.CI_DEPLOY_USERNAME }}
         CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
         SPOONBOT_PARAPHRASE: ${{ secrets.SPOONBOT_PARAPHRASE }}
+        GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
       run: ./.buildscript/deploy_to_maven.sh
