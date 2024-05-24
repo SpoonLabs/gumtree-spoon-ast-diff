@@ -20,11 +20,11 @@ jobs:
         running-workflow-name: 'Publish package'
         repo-token: ${{ secrets.GITHUB_TOKEN }}
     - uses: actions/checkout@v4
-    - name: Set up JDK 11
+    - name: Set up JDK
       uses: actions/setup-java@v4
       with:
         distribution: 'adopt'
-        java-version: 11
+        java-version: 17
     - name: Start deployment
       env:
         CI_DEPLOY_USERNAME: ${{ secrets.CI_DEPLOY_USERNAME }}
