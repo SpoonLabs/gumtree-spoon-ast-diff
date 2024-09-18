@@ -65,6 +65,7 @@ public class NodeCreator extends CtInheritanceScanner {
 		// We add the type of modifiable element
 		String type = MODIFIERS + getClassName(m.getClass().getSimpleName());
 		Tree modifiers = builder.createNode(type, "");
+		SpoonGumTreeBuilder.setPosition(modifiers, m);
 
 		// ensuring an order (instead of hashset)
 		// otherwise some flaky tests in CI
@@ -74,6 +75,7 @@ public class NodeCreator extends CtInheritanceScanner {
 		// We create a virtual node
 		CtVirtualElement virtualElement = new CtVirtualElement(type, m, m.getModifiers(), CtRole.MODIFIER);
 		modifiers.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, virtualElement);
+		SpoonGumTreeBuilder.setPosition(modifiers, virtualElement);
 
 		List<SourcePosition> modifierPositions = new ArrayList<>();
 
@@ -85,6 +87,7 @@ public class NodeCreator extends CtInheritanceScanner {
 			wrapper.setPosition(mod.getPosition());
 			modifierPositions.add(mod.getPosition());
 			modifier.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, wrapper);
+			SpoonGumTreeBuilder.setPosition(modifier, wrapper);
 		}
 
 		virtualElement.setPosition(computeSourcePositionOfVirtualElement(modifierPositions));
@@ -122,6 +125,7 @@ public class NodeCreator extends CtInheritanceScanner {
 			variableType.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, type);
 			type.putMetadata(SpoonGumTreeBuilder.GUMTREE_NODE, variableType);
 			computeTreeOfTypeReferences(type, variableType);
+			SpoonGumTreeBuilder.setPosition(variableType, type);
 			builder.addSiblingNode(variableType);
 		}
 	}
@@ -133,6 +137,7 @@ public class NodeCreator extends CtInheritanceScanner {
 			typeArgument.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, ctTypeArgument);
 			ctTypeArgument.putMetadata(SpoonGumTreeBuilder.GUMTREE_NODE, typeArgument);
 			computeTreeOfTypeReferences(ctTypeArgument, typeArgument);
+			SpoonGumTreeBuilder.setPosition(typeArgument, ctTypeArgument);
 			builder.addSiblingNode(typeArgument);
 		}
 	}
@@ -147,17 +152,23 @@ public class NodeCreator extends CtInheritanceScanner {
 		// nodes of interfaces
 		Tree superInterfaceRoot = builder.createNode("SUPER_INTERFACES", "");
 		String virtualNodeDescription = "SuperInterfaces_" + typeReference.getQualifiedName();
-		superInterfaceRoot.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, new CtVirtualElement(virtualNodeDescription,
-				(CtElement) typeReference, typeReference.getSuperInterfaces(), CtRole.INTERFACE));
+		CtVirtualElement superInterfaceVirtualElement = new CtVirtualElement(virtualNodeDescription, (CtElement) typeReference,
+				typeReference.getSuperInterfaces(), CtRole.INTERFACE);
+		superInterfaceRoot.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, superInterfaceVirtualElement);
 
+		List<SourcePosition> superInterfacePositions = new ArrayList<>();
 		// attach each super interface to the root created above
 		for (CtTypeReference<?> superInterface : typeReference.getSuperInterfaces()) {
 			Tree superInterfaceNode = builder.createNode("INTERFACE", superInterface.getQualifiedName());
 			superInterfaceNode.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, superInterface);
 			superInterface.putMetadata(SpoonGumTreeBuilder.GUMTREE_NODE, superInterfaceNode);
+			SpoonGumTreeBuilder.setPosition(superInterfaceNode, superInterface);
 			superInterfaceRoot.addChild(superInterfaceNode);
+			superInterfacePositions.add(superInterface.getPosition());
 			computeTreeOfTypeReferences(superInterface, superInterfaceNode);
 		}
+		superInterfaceVirtualElement.setPosition(computeSourcePositionOfVirtualElement(superInterfacePositions));
+		SpoonGumTreeBuilder.setPosition(superInterfaceRoot, superInterfaceVirtualElement);
 		builder.addSiblingNode(superInterfaceRoot);
 	}
 
@@ -170,6 +181,7 @@ public class NodeCreator extends CtInheritanceScanner {
 			Tree typeArgument = builder.createNode("TYPE_ARGUMENT", ctTypeArgument.getQualifiedName());
 			typeArgument.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, ctTypeArgument);
 			ctTypeArgument.putMetadata(SpoonGumTreeBuilder.GUMTREE_NODE, typeArgument);
+			SpoonGumTreeBuilder.setPosition(typeArgument, ctTypeArgument);
 			parentType.addChild(typeArgument);
 			computeTreeOfTypeReferences(ctTypeArgument, typeArgument);
 		}
@@ -192,11 +204,13 @@ public class NodeCreator extends CtInheritanceScanner {
 			String virtualNodeDescription = "ThrownTypes_" + e.getSimpleName();
 			thrownTypeRoot.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT,
 					new CtVirtualElement(virtualNodeDescription, e, e.getThrownTypes(), CtRole.THROWN));
+			SpoonGumTreeBuilder.setPosition(thrownTypeRoot, e);
 
 			for (CtTypeReference<? extends Throwable> thrownType : e.getThrownTypes()) {
 				Tree thrownNode = builder.createNode("THROWN", thrownType.getQualifiedName());
 				thrownNode.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, thrownType);
 				thrownType.putMetadata(SpoonGumTreeBuilder.GUMTREE_NODE, thrownNode);
+				SpoonGumTreeBuilder.setPosition(thrownNode, thrownType);
 				thrownTypeRoot.addChild(thrownNode);
 			}
 			builder.addSiblingNode(thrownTypeRoot);
@@ -216,12 +230,15 @@ public class NodeCreator extends CtInheritanceScanner {
 		annotationNode.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT,
 				new CtVirtualElement(virtualNodeDescription, annotation, annotation.getValues().entrySet(), CtRole.VALUE));
 
+		SpoonGumTreeBuilder.setPosition(annotationNode, annotation);
+
 		for (Map.Entry<String, CtExpression> entry: annotation.getValues().entrySet()) {
 			Tree annotationValueNode = builder.createNode("ANNOTATION_VALUE", entry.toString());
 			annotationNode.addChild(annotationValueNode);
 			CtWrapper wrapper = new CtWrapper(entry, annotation, CtRole.VALUE);
 			wrapper.setPosition(entry.getValue().getPosition());
 			annotationValueNode.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, wrapper);
+			SpoonGumTreeBuilder.setPosition(annotationValueNode, entry.getValue());
 		}
 		builder.addSiblingNode(annotationNode);
 	}
@@ -236,6 +253,7 @@ public class NodeCreator extends CtInheritanceScanner {
 				typeCast.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, ctTypeCast);
 				ctTypeCast.putMetadata(SpoonGumTreeBuilder.GUMTREE_NODE, typeCast);
 				computeTreeOfTypeReferences(ctTypeCast, typeCast);
+				SpoonGumTreeBuilder.setPosition(typeCast, ctTypeCast);
 				builder.addSiblingNode(typeCast);
 			}
 		}

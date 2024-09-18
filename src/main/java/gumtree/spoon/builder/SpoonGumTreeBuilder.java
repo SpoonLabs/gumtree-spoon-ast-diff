@@ -23,6 +23,7 @@ import com.github.gumtreediff.tree.Tree;
 import com.github.gumtreediff.tree.TreeContext;
 import com.github.gumtreediff.tree.Type;
 
+import spoon.reflect.cu.position.NoSourcePosition;
 import spoon.reflect.declaration.CtElement;
 
 /**
@@ -40,11 +41,22 @@ public class SpoonGumTreeBuilder {
 	public Tree getTree(CtElement element) {
 		Type type = type("root");
 		final Tree root = treeContext.createTree(type, "");
+		setPosition(root, element);
 		new TreeScanner(treeContext, root).scan(element);
 		return root;
 	}
 
 	public TreeContext getTreeContext() {
 		return treeContext;
+	}
+
+	public static void setPosition(Tree node, CtElement element) {
+		if (element.getPosition() instanceof NoSourcePosition) {
+			return;
+		}
+		int startPosition = element.getPosition().getSourceStart();
+		int endPosition = element.getPosition().getSourceEnd();
+		node.setPos(startPosition);
+		node.setLength(endPosition - startPosition);
 	}
 }

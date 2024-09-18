@@ -135,6 +135,7 @@ public class TreeScanner extends CtScanner {
 		Tree newNode = createNode(nodeTypeName, label);
 		newNode.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, element);
 		element.putMetadata(SpoonGumTreeBuilder.GUMTREE_NODE, newNode);
+		SpoonGumTreeBuilder.setPosition(newNode, element);
 		return newNode;
 	}
 
