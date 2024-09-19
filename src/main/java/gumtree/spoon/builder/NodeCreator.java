@@ -74,6 +74,12 @@ public class NodeCreator extends CtInheritanceScanner {
 		Set<CtExtendedModifier> modifiers1 = new TreeSet<>(Comparator.comparing(o -> o.getKind().name()));
 		modifiers1.addAll(m.getExtendedModifiers());
 
+		// we skip creating virtual nodes if all modifiers are implicit
+		// this will not impact diff results as the diff is on source level and implicit modifiers are not in the source
+		if (modifiers1.stream().map(em -> em.getPosition() instanceof NoSourcePosition).allMatch(Boolean.TRUE::equals)) {
+			return;
+		}
+
 		// We create a virtual node
 		CtVirtualElement virtualElement = new CtVirtualElement(type, m, m.getModifiers(), CtRole.MODIFIER);
 		modifiers.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, virtualElement);
@@ -82,6 +88,9 @@ public class NodeCreator extends CtInheritanceScanner {
 		List<SourcePosition> modifierPositions = new ArrayList<>();
 
 		for (CtExtendedModifier mod : modifiers1) {
+			if (mod.isImplicit()) {
+				continue;
+			}
 			modifierStart = Math.min(modifierStart, mod.getPosition().getSourceStart());
 			modifierEnd = Math.max(modifierEnd, mod.getPosition().getSourceEnd());
 			Tree modifier = builder.createNode("Modifier", mod.getKind().toString());
