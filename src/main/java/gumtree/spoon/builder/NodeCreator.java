@@ -67,6 +67,8 @@ public class NodeCreator extends CtInheritanceScanner {
 		Tree modifiers = builder.createNode(type, "");
 		SpoonGumTreeBuilder.setPosition(modifiers, m);
 
+		int modifierStart = Integer.MAX_VALUE;
+		int modifierEnd = Integer.MIN_VALUE;
 		// ensuring an order (instead of hashset)
 		// otherwise some flaky tests in CI
 		Set<CtExtendedModifier> modifiers1 = new TreeSet<>(Comparator.comparing(o -> o.getKind().name()));
@@ -80,6 +82,8 @@ public class NodeCreator extends CtInheritanceScanner {
 		List<SourcePosition> modifierPositions = new ArrayList<>();
 
 		for (CtExtendedModifier mod : modifiers1) {
+			modifierStart = Math.min(modifierStart, mod.getPosition().getSourceStart());
+			modifierEnd = Math.max(modifierEnd, mod.getPosition().getSourceEnd());
 			Tree modifier = builder.createNode("Modifier", mod.getKind().toString());
 			modifiers.addChild(modifier);
 			// We wrap the modifier's kind (which is not a CtElement)
@@ -89,7 +93,8 @@ public class NodeCreator extends CtInheritanceScanner {
 			modifier.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, wrapper);
 			SpoonGumTreeBuilder.setPosition(modifier, wrapper);
 		}
-
+		modifiers.setPos(modifierStart);
+		modifiers.setLength(modifierEnd - modifierStart);
 		virtualElement.setPosition(computeSourcePositionOfVirtualElement(modifierPositions));
 		builder.addSiblingNode(modifiers);
 	}
@@ -196,6 +201,7 @@ public class NodeCreator extends CtInheritanceScanner {
 			returnType.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, type);
 			type.putMetadata(SpoonGumTreeBuilder.GUMTREE_NODE, returnType);
 			computeTreeOfTypeReferences(type, returnType);
+			SpoonGumTreeBuilder.setPosition(returnType, type);
 			builder.addSiblingNode(returnType);
 		}
 
@@ -227,12 +233,15 @@ public class NodeCreator extends CtInheritanceScanner {
 		final String virtualNodeDescription = "AnnotationValues_" + getClassName(annotation.getClass().getSimpleName());
 		Tree annotationNode = builder.createNode(virtualNodeDescription, "");
 
+		int annotationValueStart = Integer.MAX_VALUE;
+		int annotationValueEnd = Integer.MIN_VALUE;
+
 		annotationNode.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT,
 				new CtVirtualElement(virtualNodeDescription, annotation, annotation.getValues().entrySet(), CtRole.VALUE));
 
-		SpoonGumTreeBuilder.setPosition(annotationNode, annotation);
-
 		for (Map.Entry<String, CtExpression> entry: annotation.getValues().entrySet()) {
+			annotationValueStart = Math.min(annotationValueStart, entry.getValue().getPosition().getSourceStart());
+			annotationValueEnd = Math.max(annotationValueEnd, entry.getValue().getPosition().getSourceEnd());
 			Tree annotationValueNode = builder.createNode("ANNOTATION_VALUE", entry.toString());
 			annotationNode.addChild(annotationValueNode);
 			CtWrapper wrapper = new CtWrapper(entry, annotation, CtRole.VALUE);
@@ -240,6 +249,9 @@ public class NodeCreator extends CtInheritanceScanner {
 			annotationValueNode.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, wrapper);
 			SpoonGumTreeBuilder.setPosition(annotationValueNode, entry.getValue());
 		}
+		annotationNode.setPos(annotationValueStart);
+		annotationNode.setLength(annotationValueEnd - annotationValueStart);
+
 		builder.addSiblingNode(annotationNode);
 	}
 
