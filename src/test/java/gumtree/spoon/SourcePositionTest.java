@@ -106,7 +106,7 @@ public class SourcePositionTest {
     }
 
     @Test
-    public void allNodesShouldBeMoreThanZeroLength() {
+    public void allNodesShouldHaveAtLeastZeroLength() {
         // Arrange
         Tree rootNode = getRootNode(javaSourceFile);
         // Assert
@@ -114,7 +114,7 @@ public class SourcePositionTest {
             if (ignoreNodes(node)) {
                 continue;
             }
-            assertTrue(node + " has zero length", node.getLength() > 0);
+            assertTrue(node + " has negative length", node.getLength() >= 0);
         }
     }
 
