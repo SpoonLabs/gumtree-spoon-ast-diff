@@ -249,24 +249,22 @@ public class NodeCreator extends CtInheritanceScanner {
         final String virtualNodeDescription = "AnnotationValues_" + getClassName(annotation.getClass().getSimpleName());
         Tree annotationNode = builder.createNode(virtualNodeDescription, "");
 
-        int annotationValueStart = Integer.MAX_VALUE;
-        int annotationValueEnd = Integer.MIN_VALUE;
-
+        CtVirtualElement annotationVirtualElement = new CtVirtualElement(virtualNodeDescription, annotation, annotation.getValues().entrySet(), CtRole.VALUE);
         annotationNode.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT,
-                new CtVirtualElement(virtualNodeDescription, annotation, annotation.getValues().entrySet(), CtRole.VALUE));
+                annotationVirtualElement);
 
+        List<SourcePosition> annotationPositions = new ArrayList<>();
         for (Map.Entry<String, CtExpression> entry : annotation.getValues().entrySet()) {
-            annotationValueStart = Math.min(annotationValueStart, entry.getValue().getPosition().getSourceStart());
-            annotationValueEnd = Math.max(annotationValueEnd, entry.getValue().getPosition().getSourceEnd());
             Tree annotationValueNode = builder.createNode("ANNOTATION_VALUE", entry.toString());
             annotationNode.addChild(annotationValueNode);
             CtWrapper wrapper = new CtWrapper(entry, annotation, CtRole.VALUE);
             wrapper.setPosition(entry.getValue().getPosition());
             annotationValueNode.setMetadata(SpoonGumTreeBuilder.SPOON_OBJECT, wrapper);
             SpoonGumTreeBuilder.setPosition(annotationValueNode, entry.getValue());
+            annotationPositions.add(entry.getValue().getPosition());
         }
-        annotationNode.setPos(annotationValueStart);
-        annotationNode.setLength(annotationValueEnd - annotationValueStart);
+        annotationVirtualElement.setPosition(computeSourcePositionOfVirtualElement(annotationPositions));
+        SpoonGumTreeBuilder.setPosition(annotationNode, annotationVirtualElement);
 
         builder.addSiblingNode(annotationNode);
     }
