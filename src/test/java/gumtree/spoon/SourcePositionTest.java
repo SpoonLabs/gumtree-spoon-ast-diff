@@ -48,7 +48,7 @@ public class SourcePositionTest {
     }
 
     private static boolean ignoreNodes(Tree node) {
-        // we currently ignore packages
+        // they don't have a position in the Spoon model
         CtElement element = (CtElement) node.getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT);
         if (element instanceof CtPackage) {
             return true;
