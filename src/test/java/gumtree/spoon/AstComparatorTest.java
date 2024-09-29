@@ -17,6 +17,7 @@ import gumtree.spoon.diff.operations.UpdateOperation;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import spoon.Launcher;
+import spoon.MavenLauncher;
 import spoon.SpoonModelBuilder;
 import spoon.reflect.code.CtBinaryOperator;
 import spoon.reflect.code.CtComment;
@@ -29,6 +30,7 @@ import spoon.reflect.code.CtReturn;
 import spoon.reflect.code.CtThrow;
 import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtElement;
+import spoon.reflect.declaration.CtPackage;
 import spoon.reflect.declaration.CtType;
 import spoon.reflect.factory.Factory;
 import spoon.support.compiler.VirtualFile;
@@ -897,16 +899,22 @@ public class AstComparatorTest {
     @Test
     public void test_t_224834() throws Exception {
         // wonderful example where the text diff is impossible to comprehend
-        AstComparator diff = new AstComparator();
+        AstComparator diff = new AstComparator() {
+            @Override
+            public CtPackage getCtPackage(File file) throws Exception {
+                MavenLauncher launcher = new MavenLauncher(file.getAbsolutePath(), MavenLauncher.SOURCE_TYPE.ALL_SOURCE, true);
+                return launcher.buildModel().getRootPackage();
+            }
+        };
         // meld src/test/resources/examples/t_224834/left_TestPriorityQueue_1.2.java
         // src/test/resources/examples/t_224834/right_TestPriorityQueue_1.3.java
-        File fl = new File("src/test/resources/examples/t_224834/left_TestPriorityQueue_1.2.java");
-        File fr = new File("src/test/resources/examples/t_224834/right_TestPriorityQueue_1.3.java");
+        File fl = new File("src/test/resources/examples/classpath-collision/left");
+        File fr = new File("src/test/resources/examples/classpath-collision/right");
         Diff result = diff.compare(fl, fr);
 
         List<Operation> actions = result.getRootOperations();
         result.debugInformation();
-        assertEquals(3, actions.size());
+        assertEquals(1, actions.size());
         assertTrue(result.containsOperation(OperationKind.Insert, "Method", "testClear"));
     }
 

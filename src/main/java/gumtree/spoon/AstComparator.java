@@ -1,7 +1,5 @@
 package gumtree.spoon;
 
-import java.io.File;
-import java.util.Map;
 import gumtree.spoon.builder.SpoonGumTreeBuilder;
 import gumtree.spoon.diff.Diff;
 import gumtree.spoon.diff.DiffConfiguration;
@@ -19,6 +17,9 @@ import spoon.support.StandardEnvironment;
 import spoon.support.compiler.VirtualFile;
 import spoon.support.compiler.jdt.JDTBasedSpoonCompiler;
 
+import java.io.File;
+import java.util.Map;
+
 /**
  * Computes the differences between two CtElements.
  *
@@ -26,165 +27,159 @@ import spoon.support.compiler.jdt.JDTBasedSpoonCompiler;
  */
 public class AstComparator {
 
-	/**
-	 * By default, comments are ignored
-	 */
-	private boolean includeComments = false;
+    /**
+     * By default, comments are ignored
+     */
+    private boolean includeComments = false;
 
-	public AstComparator() {
-		super();
-	}
+    public AstComparator() {
+        super();
+    }
 
-	public AstComparator(boolean includeComments) {
-		super();
-		this.includeComments = includeComments;
-	}
+    public AstComparator(boolean includeComments) {
+        super();
+        this.includeComments = includeComments;
+    }
 
-	public AstComparator(Map<String, String> configuration) {
-		super();
-		for (String k : configuration.keySet()) {
-			System.setProperty(k, configuration.get(k));
-		}
-	}
+    public AstComparator(Map<String, String> configuration) {
+        super();
+        for (String k : configuration.keySet()) {
+            System.setProperty(k, configuration.get(k));
+        }
+    }
 
-	protected Factory createFactory() {
-		Factory factory = new FactoryImpl(new DefaultCoreFactory(), new StandardEnvironment());
-		factory.getEnvironment().setNoClasspath(true);
-		factory.getEnvironment().setCommentEnabled(includeComments);
-		return factory;
-	}
+    private static String getFilename(String leftcontent) {
+        return "test" + Math.abs(leftcontent.hashCode()) + ".java";
+    }
 
-	/**
-	 * compares two java files
-	 */
-	public Diff compare(File f1, File f2) throws Exception {
-		CtPackage ctPackage1 = getCtPackage(f1);
-		CtPackage ctPackage2 = getCtPackage(f2);
-		if (ctPackage1 == null || ctPackage2 == null) {
-			return null;
-		} else {
-			return compare(ctPackage1, ctPackage2);
-		}
-	}
-	
-	/**
-	 * compares two AST nodes from two files according with a given configuration
-	 */
-	public Diff compare(File f1, File f2, DiffConfiguration configuration) throws Exception {
-		final SpoonGumTreeBuilder scanner = new SpoonGumTreeBuilder();
-		return new DiffImpl(
-				scanner.getTreeContext(), scanner.getTree(getCtPackage(f1)), scanner.getTree(getCtPackage(f2)), configuration);
-	}
+    public static void main(String[] args) throws Exception {
+        if (args.length != 2) {
+            System.out.println("Usage: DiffSpoon <file_1>  <file_2>");
+            return;
+        }
 
-	/**
-	 * compares two snippets
-	 */
-	public Diff compare(String left, String right) {
-		return compare(getCtPackage(left, getFilename(left)), getCtPackage(right, getFilename(right)));
-	}
+        final Diff result = new AstComparator().compare(new File(args[0]), new File(args[1]));
+        System.out.println(result.toString());
+    }
 
-	private static String getFilename(String leftcontent) {
-		return "test"+Math.abs(leftcontent.hashCode()) + ".java";
-	}
+    protected Factory createFactory() {
+        Factory factory = new FactoryImpl(new DefaultCoreFactory(), new StandardEnvironment());
+        factory.getEnvironment().setNoClasspath(true);
+        factory.getEnvironment().setCommentEnabled(includeComments);
+        return factory;
+    }
 
+    /**
+     * compares two java files
+     */
+    public Diff compare(File f1, File f2) throws Exception {
+        CtPackage ctPackage1 = getCtPackage(f1);
+        CtPackage ctPackage2 = getCtPackage(f2);
+        if (ctPackage1 == null || ctPackage2 == null) {
+            return null;
+        } else {
+            return compare(ctPackage1, ctPackage2);
+        }
+    }
 
-	public CtPackage getCtPackage(String content, String filename) {
-		VirtualFile resource = new VirtualFile(content, filename);
-		return getCtPackage(resource);
-	}
+    /**
+     * compares two AST nodes from two files according with a given configuration
+     */
+    public Diff compare(File f1, File f2, DiffConfiguration configuration) throws Exception {
+        final SpoonGumTreeBuilder scanner = new SpoonGumTreeBuilder();
+        return new DiffImpl(
+                scanner.getTreeContext(), scanner.getTree(getCtPackage(f1)), scanner.getTree(getCtPackage(f2)), configuration);
+    }
 
+    /**
+     * compares two snippets
+     */
+    public Diff compare(String left, String right) {
+        return compare(getCtPackage(left, getFilename(left)), getCtPackage(right, getFilename(right)));
+    }
 
-	/**
-	 * compares two snippets
-	 */
-	public Diff compare(String left, String right, DiffConfiguration configuration) {
-		return compare(getCtPackage(left, getFilename(left)), getCtPackage(right, getFilename(right)),configuration);
-	}
+    public CtPackage getCtPackage(String content, String filename) {
+        VirtualFile resource = new VirtualFile(content, filename);
+        return getCtPackage(resource);
+    }
 
-	
-	
-	/**
-	 * compares two snippets that come from the files given as argument
-	 */
-	public Diff compare(String left, String right, String filenameLeft, String filenameRight) {
-		return compare(getCtPackage(left, filenameLeft), getCtPackage(right, filenameRight));
-	}
+    /**
+     * compares two snippets
+     */
+    public Diff compare(String left, String right, DiffConfiguration configuration) {
+        return compare(getCtPackage(left, getFilename(left)), getCtPackage(right, getFilename(right)), configuration);
+    }
 
-	/**
-	 * compares two AST nodes
-	 */
-	public Diff compare(CtElement left, CtElement right) {
-		final SpoonGumTreeBuilder scanner = new SpoonGumTreeBuilder();
-		return new DiffImpl(scanner.getTreeContext(), scanner.getTree(left), scanner.getTree(right));
-	}
+    /**
+     * compares two snippets that come from the files given as argument
+     */
+    public Diff compare(String left, String right, String filenameLeft, String filenameRight) {
+        return compare(getCtPackage(left, filenameLeft), getCtPackage(right, filenameRight));
+    }
 
-	
-	/**
-	 * compares two AST nodes according with a given configuration
-	 */
-	public Diff compare(CtElement left, CtElement right, DiffConfiguration configuration) {
-		final SpoonGumTreeBuilder scanner = new SpoonGumTreeBuilder();
-		return new DiffImpl(scanner.getTreeContext(), scanner.getTree(left), scanner.getTree(right),configuration);
-	}
-	
+    /**
+     * compares two AST nodes
+     */
+    public Diff compare(CtElement left, CtElement right) {
+        final SpoonGumTreeBuilder scanner = new SpoonGumTreeBuilder();
+        return new DiffImpl(scanner.getTreeContext(), scanner.getTree(left), scanner.getTree(right));
+    }
 
+    /**
+     * compares two AST nodes according with a given configuration
+     */
+    public Diff compare(CtElement left, CtElement right, DiffConfiguration configuration) {
+        final SpoonGumTreeBuilder scanner = new SpoonGumTreeBuilder();
+        return new DiffImpl(scanner.getTreeContext(), scanner.getTree(left), scanner.getTree(right), configuration);
+    }
 
-	public CtType getCtType(File file) throws Exception {
+    public CtType getCtType(File file) throws Exception {
 
-		SpoonResource resource = SpoonResourceHelper.createResource(file);
-		return getCtType(resource);
-	}
-	public CtPackage getCtPackage(File file) throws Exception {
-		SpoonResource resource = SpoonResourceHelper.createResource(file);
-		return getCtPackage(resource);
-	}
+        SpoonResource resource = SpoonResourceHelper.createResource(file);
+        return getCtType(resource);
+    }
 
-	public CtType getCtType(SpoonResource resource) {
-		Factory factory = createFactory();
-		factory.getModel().setBuildModelIsFinished(false);
-		SpoonModelBuilder compiler = new JDTBasedSpoonCompiler(factory);
-		compiler.getFactory().getEnvironment().setLevel("OFF");
-		compiler.addInputSource(resource);
-		compiler.build();
+    public CtPackage getCtPackage(File file) throws Exception {
+        SpoonResource resource = SpoonResourceHelper.createResource(file);
+        return getCtPackage(resource);
+    }
 
-		if (factory.Type().getAll().size() == 0) {
-			return null;
-		}
+    public CtType getCtType(SpoonResource resource) {
+        Factory factory = createFactory();
+        factory.getModel().setBuildModelIsFinished(false);
+        SpoonModelBuilder compiler = new JDTBasedSpoonCompiler(factory);
+        compiler.getFactory().getEnvironment().setLevel("OFF");
+        compiler.addInputSource(resource);
+        compiler.build();
 
-		// let's first take the first type.
-		CtType type = factory.Type().getAll().get(0);
-		// Now, let's ask to the factory the type (which it will set up the
-		// corresponding
-		// package)
-		return factory.Type().get(type.getQualifiedName());
-	}
+        if (factory.Type().getAll().size() == 0) {
+            return null;
+        }
 
-	public CtPackage getCtPackage(SpoonResource resource) {
-		Factory factory = createFactory();
-		factory.getModel().setBuildModelIsFinished(false);
-		SpoonModelBuilder compiler = new JDTBasedSpoonCompiler(factory);
-		compiler.getFactory().getEnvironment().setLevel("OFF");
-		compiler.addInputSource(resource);
-		compiler.build();
-		return factory.Package().getRootPackage();
-	}
+        // let's first take the first type.
+        CtType type = factory.Type().getAll().get(0);
+        // Now, let's ask to the factory the type (which it will set up the
+        // corresponding
+        // package)
+        return factory.Type().get(type.getQualifiedName());
+    }
 
-	public CtType<?> getCtType(String content) {
-		return getCtType(content, "/test");
-	}
+    public CtPackage getCtPackage(SpoonResource resource) {
+        Factory factory = createFactory();
+        factory.getModel().setBuildModelIsFinished(false);
+        SpoonModelBuilder compiler = new JDTBasedSpoonCompiler(factory);
+        compiler.getFactory().getEnvironment().setLevel("OFF");
+        compiler.addInputSource(resource);
+        compiler.build();
+        return factory.Package().getRootPackage();
+    }
 
-	public CtType<?> getCtType(String content, String filename) {
-		VirtualFile resource = new VirtualFile(content, filename);
-		return getCtType(resource);
-	}
+    public CtType<?> getCtType(String content) {
+        return getCtType(content, "/test");
+    }
 
-	public static void main(String[] args) throws Exception {
-		if (args.length != 2) {
-			System.out.println("Usage: DiffSpoon <file_1>  <file_2>");
-			return;
-		}
-
-		final Diff result = new AstComparator().compare(new File(args[0]), new File(args[1]));
-		System.out.println(result.toString());
-	}
+    public CtType<?> getCtType(String content, String filename) {
+        VirtualFile resource = new VirtualFile(content, filename);
+        return getCtType(resource);
+    }
 }
