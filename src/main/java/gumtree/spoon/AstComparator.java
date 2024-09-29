@@ -1,5 +1,7 @@
 package gumtree.spoon;
 
+import java.io.File;
+import java.util.Map;
 import gumtree.spoon.builder.SpoonGumTreeBuilder;
 import gumtree.spoon.diff.Diff;
 import gumtree.spoon.diff.DiffConfiguration;
@@ -16,9 +18,6 @@ import spoon.support.DefaultCoreFactory;
 import spoon.support.StandardEnvironment;
 import spoon.support.compiler.VirtualFile;
 import spoon.support.compiler.jdt.JDTBasedSpoonCompiler;
-
-import java.io.File;
-import java.util.Map;
 
 /**
  * Computes the differences between two CtElements.
@@ -46,20 +45,6 @@ public class AstComparator {
 		for (String k : configuration.keySet()) {
 			System.setProperty(k, configuration.get(k));
 		}
-	}
-
-	private static String getFilename(String leftcontent) {
-		return "test" + Math.abs(leftcontent.hashCode()) + ".java";
-	}
-
-	public static void main(String[] args) throws Exception {
-		if (args.length != 2) {
-			System.out.println("Usage: DiffSpoon <file_1>  <file_2>");
-			return;
-		}
-
-		final Diff result = new AstComparator().compare(new File(args[0]), new File(args[1]));
-		System.out.println(result.toString());
 	}
 
 	protected Factory createFactory() {
@@ -98,17 +83,25 @@ public class AstComparator {
 		return compare(getCtPackage(left, getFilename(left)), getCtPackage(right, getFilename(right)));
 	}
 
+	private static String getFilename(String leftcontent) {
+		return "test"+Math.abs(leftcontent.hashCode()) + ".java";
+	}
+
+
 	public CtPackage getCtPackage(String content, String filename) {
 		VirtualFile resource = new VirtualFile(content, filename);
 		return getCtPackage(resource);
 	}
 
+
 	/**
 	 * compares two snippets
 	 */
 	public Diff compare(String left, String right, DiffConfiguration configuration) {
-		return compare(getCtPackage(left, getFilename(left)), getCtPackage(right, getFilename(right)), configuration);
+		return compare(getCtPackage(left, getFilename(left)), getCtPackage(right, getFilename(right)),configuration);
 	}
+
+
 
 	/**
 	 * compares two snippets that come from the files given as argument
@@ -125,20 +118,22 @@ public class AstComparator {
 		return new DiffImpl(scanner.getTreeContext(), scanner.getTree(left), scanner.getTree(right));
 	}
 
+
 	/**
 	 * compares two AST nodes according with a given configuration
 	 */
 	public Diff compare(CtElement left, CtElement right, DiffConfiguration configuration) {
 		final SpoonGumTreeBuilder scanner = new SpoonGumTreeBuilder();
-		return new DiffImpl(scanner.getTreeContext(), scanner.getTree(left), scanner.getTree(right), configuration);
+		return new DiffImpl(scanner.getTreeContext(), scanner.getTree(left), scanner.getTree(right),configuration);
 	}
+
+
 
 	public CtType getCtType(File file) throws Exception {
 
 		SpoonResource resource = SpoonResourceHelper.createResource(file);
 		return getCtType(resource);
 	}
-
 	public CtPackage getCtPackage(File file) throws Exception {
 		SpoonResource resource = SpoonResourceHelper.createResource(file);
 		return getCtPackage(resource);
@@ -181,5 +176,15 @@ public class AstComparator {
 	public CtType<?> getCtType(String content, String filename) {
 		VirtualFile resource = new VirtualFile(content, filename);
 		return getCtType(resource);
+	}
+
+	public static void main(String[] args) throws Exception {
+		if (args.length != 2) {
+			System.out.println("Usage: DiffSpoon <file_1>  <file_2>");
+			return;
+		}
+
+		final Diff result = new AstComparator().compare(new File(args[0]), new File(args[1]));
+		System.out.println(result.toString());
 	}
 }
