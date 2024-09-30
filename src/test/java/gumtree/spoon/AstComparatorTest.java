@@ -1,10 +1,28 @@
 package gumtree.spoon;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import com.github.gumtreediff.actions.model.Move;
+import com.github.gumtreediff.matchers.CompositeMatchers;
+import com.github.gumtreediff.matchers.Mapping;
+import gumtree.spoon.builder.SpoonGumTreeBuilder;
+import gumtree.spoon.diff.ActionClassifier;
+import gumtree.spoon.diff.Diff;
+import gumtree.spoon.diff.DiffConfiguration;
+import gumtree.spoon.diff.DiffImpl;
+import gumtree.spoon.diff.operations.*;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import spoon.Launcher;
+import spoon.MavenLauncher;
+import spoon.SpoonModelBuilder;
+import spoon.reflect.code.*;
+import spoon.reflect.declaration.CtClass;
+import spoon.reflect.declaration.CtElement;
+import spoon.reflect.declaration.CtPackage;
+import spoon.reflect.declaration.CtType;
+import spoon.reflect.factory.Factory;
+import spoon.support.compiler.VirtualFile;
+import spoon.support.compiler.jdt.JDTBasedSpoonCompiler;
+import spoon.support.compiler.jdt.JDTSnippetCompiler;
 
 import java.io.File;
 import java.io.FileReader;
@@ -12,51 +30,55 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
-
-import com.github.gumtreediff.actions.model.Move;
-import com.github.gumtreediff.matchers.CompositeMatchers;
-import com.github.gumtreediff.matchers.Mapping;
-
-import gumtree.spoon.builder.SpoonGumTreeBuilder;
-import gumtree.spoon.diff.ActionClassifier;
-import gumtree.spoon.diff.Diff;
-import gumtree.spoon.diff.DiffConfiguration;
-import gumtree.spoon.diff.DiffImpl;
-import gumtree.spoon.diff.operations.DeleteOperation;
-import gumtree.spoon.diff.operations.InsertOperation;
-import gumtree.spoon.diff.operations.MoveOperation;
-import gumtree.spoon.diff.operations.Operation;
-import gumtree.spoon.diff.operations.OperationKind;
-import gumtree.spoon.diff.operations.UpdateOperation;
-import spoon.Launcher;
-import spoon.SpoonModelBuilder;
-import spoon.reflect.code.CtBinaryOperator;
-import spoon.reflect.code.CtComment;
-import spoon.reflect.code.CtConstructorCall;
-import spoon.reflect.code.CtIf;
-import spoon.reflect.code.CtInvocation;
-import spoon.reflect.code.CtLocalVariable;
-import spoon.reflect.code.CtNewClass;
-import spoon.reflect.code.CtReturn;
-import spoon.reflect.code.CtThrow;
-import spoon.reflect.declaration.CtClass;
-import spoon.reflect.declaration.CtElement;
-import spoon.reflect.declaration.CtType;
-import spoon.reflect.factory.Factory;
-import spoon.support.compiler.VirtualFile;
-import spoon.support.compiler.jdt.JDTBasedSpoonCompiler;
-import spoon.support.compiler.jdt.JDTSnippetCompiler;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test Spoon Diff
- * 
- * @author Matias Martinez, matias.martinez@inria.fr
  *
+ * @author Matias Martinez, matias.martinez@inria.fr
  */
 public class AstComparatorTest {
+
+	public static CtType<?> getCtType(Factory factory, String content) {
+		SpoonModelBuilder compiler = new JDTBasedSpoonCompiler(factory);
+		compiler.addInputSource(new VirtualFile(content, "/test"));
+		compiler.build();
+		return factory.Type().getAll().get(0);
+	}
+
+	private static CtType getSpoonType(Factory factory, String content) {
+		try {
+			canBuild(factory, content);
+		} catch (Exception e) {
+			// must fails
+		}
+		List<CtType<?>> types = factory.Type().getAll();
+		if (types.isEmpty()) {
+			throw new RuntimeException("No Type was created by spoon");
+		}
+		CtType spt = types.get(0);
+		spt.getPackage().getTypes().remove(spt);
+
+		return spt;
+	}
+
+	private static void canBuild(Factory factory, String content) {
+		SpoonModelBuilder builder = new JDTSnippetCompiler(factory, content);
+		try {
+			builder.build();
+		} catch (Exception e) {
+			throw new RuntimeException("snippet compilation error while compiling: " + content, e);
+		}
+	}
+
+	private static String readFile(File f) throws IOException {
+		FileReader reader = new FileReader(f);
+		char[] chars = new char[(int) f.length()];
+		reader.read(chars);
+		String content = new String(chars);
+		reader.close();
+		return content;
+	}
 
 	@Test
 	public void propertiesCorrectlySet() {
@@ -152,7 +174,7 @@ public class AstComparatorTest {
 	public void testMain() throws Exception {
 		File fl = new File("src/test/resources/examples/test4/CommandLine1.java");
 		File fr = new File("src/test/resources/examples/test4/CommandLine2.java");
-		AstComparator.main(new String[] { fl.getAbsolutePath(), fr.getAbsolutePath() });
+		AstComparator.main(new String[]{fl.getAbsolutePath(), fr.getAbsolutePath()});
 	}
 
 	@Test
@@ -160,47 +182,6 @@ public class AstComparatorTest {
 		final Factory factory = new Launcher().createFactory();
 		File fl = new File("src/test/resources/examples/test4/CommandLine1.java");
 		assertNotNull(getSpoonType(factory, readFile(fl)));
-	}
-
-	public static CtType<?> getCtType(Factory factory, String content) {
-		SpoonModelBuilder compiler = new JDTBasedSpoonCompiler(factory);
-		compiler.addInputSource(new VirtualFile(content, "/test"));
-		compiler.build();
-		return factory.Type().getAll().get(0);
-	}
-
-	private static CtType getSpoonType(Factory factory, String content) {
-		try {
-			canBuild(factory, content);
-		} catch (Exception e) {
-			// must fails
-		}
-		List<CtType<?>> types = factory.Type().getAll();
-		if (types.isEmpty()) {
-			throw new RuntimeException("No Type was created by spoon");
-		}
-		CtType spt = types.get(0);
-		spt.getPackage().getTypes().remove(spt);
-
-		return spt;
-	}
-
-	private static void canBuild(Factory factory, String content) {
-		SpoonModelBuilder builder = new JDTSnippetCompiler(factory, content);
-		try {
-			builder.build();
-		} catch (Exception e) {
-			throw new RuntimeException("snippet compilation error while compiling: " + content, e);
-		}
-	}
-
-	private static String readFile(File f) throws IOException {
-		FileReader reader = new FileReader(f);
-		char[] chars = new char[(int) f.length()];
-		reader.read(chars);
-		String content = new String(chars);
-		reader.close();
-		return content;
 	}
 
 	@Test
@@ -217,7 +198,7 @@ public class AstComparatorTest {
 		compiler.build();
 		CtClass<?> clazz1 = (CtClass<?>) factory.Type().getAll().get(0);
 
-		Assert.assertNotNull(clazz1);
+		assertNotNull(clazz1);
 	}
 
 	@Test
@@ -272,8 +253,7 @@ public class AstComparatorTest {
 
 		List<Operation> actions = result.getRootOperations();
 		assertEquals(1, actions.size());
-		assertTrue(actions.toString(),
-				result.containsOperation(OperationKind.Update, "VARIABLE_TYPE", "java.lang.Throwable"));
+		assertTrue(result.containsOperation(OperationKind.Update, "VARIABLE_TYPE", "java.lang.Throwable"), actions.toString());
 	}
 
 	@Test
@@ -287,7 +267,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		// result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(actions.toString(), result.containsOperation(OperationKind.Update, "VARIABLE_TYPE", "boolean"));
+		assertTrue(result.containsOperation(OperationKind.Update, "VARIABLE_TYPE", "boolean"), actions.toString());
 	}
 
 	@Test
@@ -410,16 +390,16 @@ public class AstComparatorTest {
 		File fl = new File("src/test/resources/examples/t_211903/left_MemberFilePersister_1.4.java");
 		File fr = new File("src/test/resources/examples/t_211903/right_MemberFilePersister_1.5.java");
 		Diff resultDefault = diff.compare(fl, fr);
-		
-		
+
+
 		DiffConfiguration diffConfiguration = new DiffConfiguration();
 		diffConfiguration.setMatcher(new CompositeMatchers.ClassicGumtree());
-		
+
 		Diff resultClassicMatcher = diff.compare(fl, fr, diffConfiguration);
-		
+
 		// We check that the property has an effect on the edit script
 		assertNotEquals(resultClassicMatcher.getAllOperations().size(), resultDefault.getAllOperations().size());
-		
+
 		// result.debugInformation();
 
 		CtElement ancestor = resultClassicMatcher.commonAncestor();
@@ -593,7 +573,7 @@ public class AstComparatorTest {
 
 		Diff result = diff.compare(fl, fr);
 
-		
+
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(actions.size(), 1);
@@ -902,16 +882,22 @@ public class AstComparatorTest {
 	@Test
 	public void test_t_224834() throws Exception {
 		// wonderful example where the text diff is impossible to comprehend
-		AstComparator diff = new AstComparator();
+		AstComparator diff = new AstComparator() {
+			@Override
+			public CtPackage getCtPackage(File file) throws Exception {
+				MavenLauncher launcher = new MavenLauncher(file.getAbsolutePath(), MavenLauncher.SOURCE_TYPE.ALL_SOURCE, true);
+				return launcher.buildModel().getRootPackage();
+			}
+		};
 		// meld src/test/resources/examples/t_224834/left_TestPriorityQueue_1.2.java
 		// src/test/resources/examples/t_224834/right_TestPriorityQueue_1.3.java
-		File fl = new File("src/test/resources/examples/t_224834/left_TestPriorityQueue_1.2.java");
-		File fr = new File("src/test/resources/examples/t_224834/right_TestPriorityQueue_1.3.java");
+		File fl = new File("src/test/resources/examples/classpath-collision/left");
+		File fr = new File("src/test/resources/examples/classpath-collision/right");
 		Diff result = diff.compare(fl, fr);
 
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
-		assertEquals(3, actions.size());
+		assertEquals(1, actions.size());
 		assertTrue(result.containsOperation(OperationKind.Insert, "Method", "testClear"));
 	}
 
@@ -975,11 +961,11 @@ public class AstComparatorTest {
 	 * reproducible when using a Java debugger even without any breakpoint - it
 	 * appears when changing the version of Spoon but without clear relation of what
 	 * changes
-	 *
+	 * <p>
 	 * Given those information we think that the bug might be related with some
 	 * optimization done in JVM or with the order of loading classes.
 	 */
-	@Ignore
+	@Disabled
 	@Test
 	public void test_t_225008() throws Exception {
 		AstComparator diff = new AstComparator();
@@ -997,7 +983,7 @@ public class AstComparatorTest {
 			stringBuilder.append("\n");
 		}
 
-		assertEquals("Actions: " + stringBuilder.toString(), 1, actions.size());
+		assertEquals(1, actions.size(), "Actions: " + stringBuilder);
 		assertTrue(result.containsOperation(OperationKind.Update, "Modifier", "protected"));
 	}
 
@@ -1118,7 +1104,7 @@ public class AstComparatorTest {
 	}
 
 	@Test
-	@Ignore("Edit script generated is too complex. Ignoring in order to upgrade to GT3")
+	@Disabled("Edit script generated is too complex. Ignoring in order to upgrade to GT3")
 	public void test_t_225391() throws Exception {
 		AstComparator diff = new AstComparator();
 		// meld src/test/resources/examples/t_225391/left_IndexHTML_1.4.java
@@ -1126,7 +1112,6 @@ public class AstComparatorTest {
 		File fl = new File("src/test/resources/examples/t_225391/left_IndexHTML_1.4.java");
 		File fr = new File("src/test/resources/examples/t_225391/right_IndexHTML_1.5.java");
 
-		
 
 		Diff result = diff.compare(fl, fr);
 
@@ -1875,9 +1860,9 @@ public class AstComparatorTest {
 		AstComparator r = new AstComparator(includeComments);
 		Diff diffOut = r.compare(s, t);
 		System.out.println("Output: " + diffOut);
-		Assert.assertEquals(1, diffOut.getRootOperations().size());
+		assertEquals(1, diffOut.getRootOperations().size());
 		Operation op = diffOut.getRootOperations().get(0);
-		Assert.assertTrue(op.getSrcNode().getComments().size() > 0);
+		assertTrue(op.getSrcNode().getComments().size() > 0);
 
 		List<Operation> allop = diffOut.getAllOperations();
 		boolean hasComment = false;
@@ -1897,7 +1882,7 @@ public class AstComparatorTest {
 
 		Diff diffOut = r.compare(s, t);
 		System.out.println("Output: " + diffOut);
-		Assert.assertEquals(1, diffOut.getRootOperations().size());
+		assertEquals(1, diffOut.getRootOperations().size());
 		Operation op = diffOut.getRootOperations().get(0);
 		// Assert.assertTrue(op.getSrcNode().getComments().size() > 0);
 
@@ -1919,9 +1904,9 @@ public class AstComparatorTest {
 
 		Diff diffOut = r.compare(s, t);
 		System.out.println("Output: " + diffOut);
-		Assert.assertEquals(1, diffOut.getRootOperations().size());
+		assertEquals(1, diffOut.getRootOperations().size());
 		Operation op = diffOut.getRootOperations().get(0);
-		Assert.assertTrue(op.getSrcNode().getComments().size() > 0);
+		assertTrue(op.getSrcNode().getComments().size() > 0);
 
 		assertFalse(op.getSrcNode() instanceof CtComment);
 
@@ -1946,7 +1931,7 @@ public class AstComparatorTest {
 				+ "};";
 
 		AstComparator diff = new AstComparator();
-	
+
 
 		Diff editScript = diff.compare(c1, c2);
 
@@ -2110,8 +2095,8 @@ public class AstComparatorTest {
 		AstComparator r = new AstComparator(includeComments);
 
 		Diff diffOut = r.compare(s, t);
-		Assert.assertEquals(3, diffOut.getRootOperations().size());
-		Assert.assertEquals("Delete Literal at org.wso2.transport.http.netty.contractimpl.common.Util:147\n" +
+		assertEquals(3, diffOut.getRootOperations().size());
+		assertEquals("Delete Literal at org.wso2.transport.http.netty.contractimpl.common.Util:147\n" +
 				"\tfalse\n", diffOut.getRootOperations().get(0).toString());
 
 	}

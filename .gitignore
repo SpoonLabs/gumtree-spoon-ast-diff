@@ -12,3 +12,4 @@ target
 # Spoon
 spooned
 .settings
+spoon.classpath.tmp

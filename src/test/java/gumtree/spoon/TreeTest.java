@@ -17,24 +17,11 @@
 
 package gumtree.spoon;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.apache.commons.io.FileUtils;
-import org.junit.Test;
-
 import com.github.gumtreediff.io.TreeIoUtils;
 import com.github.gumtreediff.io.TreeIoUtils.TreeSerializer;
 import com.github.gumtreediff.tree.Tree;
 import com.github.gumtreediff.tree.TreeContext;
 import com.google.gson.JsonObject;
-
 import gumtree.spoon.builder.CtWrapper;
 import gumtree.spoon.builder.Json4SpoonGenerator;
 import gumtree.spoon.builder.Json4SpoonGenerator.JSON_PROPERTIES;
@@ -44,6 +31,8 @@ import gumtree.spoon.diff.DiffImpl;
 import gumtree.spoon.diff.operations.InsertOperation;
 import gumtree.spoon.diff.operations.Operation;
 import gumtree.spoon.diff.operations.UpdateOperation;
+import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.Test;
 import spoon.Launcher;
 import spoon.compiler.SpoonResourceHelper;
 import spoon.reflect.code.CtStatement;
@@ -56,6 +45,13 @@ import spoon.reflect.declaration.CtType;
 import spoon.reflect.factory.Factory;
 import spoon.reflect.path.CtPath;
 import spoon.reflect.visitor.CtScanner;
+
+import java.io.File;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TreeTest {
 
@@ -145,7 +141,7 @@ public class TreeTest {
 		Launcher spoon = new Launcher();
 		Factory factory = spoon.createFactory();
 		spoon.createCompiler(factory,
-				SpoonResourceHelper.resources("src/test/resources/examples/roots/test8/left_QuickNotepad_1.13.java"))
+						SpoonResourceHelper.resources("src/test/resources/examples/roots/test8/left_QuickNotepad_1.13.java"))
 				.build();
 
 		CtType<?> astLeft = factory.Type().get("QuickNotepad");
@@ -162,7 +158,7 @@ public class TreeTest {
 		Launcher spoon = new Launcher();
 		Factory factory = spoon.createFactory();
 		spoon.createCompiler(factory,
-				SpoonResourceHelper.resources("src/test/resources/examples/roots/test8/right_QuickNotepad_1.14.java"))
+						SpoonResourceHelper.resources("src/test/resources/examples/roots/test8/right_QuickNotepad_1.14.java"))
 				.build();
 
 		CtType<?> astLeft = factory.Type().get("QuickNotepad");
@@ -179,7 +175,7 @@ public class TreeTest {
 		Launcher spoon = new Launcher();
 		Factory factory = spoon.createFactory();
 		spoon.createCompiler(factory,
-				SpoonResourceHelper.resources("src/test/resources/examples/roots/test8/right_QuickNotepad_1.14.java"))
+						SpoonResourceHelper.resources("src/test/resources/examples/roots/test8/right_QuickNotepad_1.14.java"))
 				.build();
 
 		CtType<?> astLeft = factory.Type().get("QuickNotepad");
@@ -199,7 +195,7 @@ public class TreeTest {
 		Launcher spoon = new Launcher();
 		Factory factory = spoon.createFactory();
 		spoon.createCompiler(factory,
-				SpoonResourceHelper.resources("src/test/resources/examples/roots/test8/right_QuickNotepad_1.14.java"))
+						SpoonResourceHelper.resources("src/test/resources/examples/roots/test8/right_QuickNotepad_1.14.java"))
 				.build();
 
 		CtType<?> aType = factory.Type().get("QuickNotepad");
@@ -216,7 +212,7 @@ public class TreeTest {
 		Factory factory = spoon.createFactory();
 		factory.getEnvironment().setCommentEnabled(false);
 		spoon.createCompiler(factory,
-				SpoonResourceHelper.resources("src/test/resources/examples/roots/test8/right_QuickNotepad_1.14.java"))
+						SpoonResourceHelper.resources("src/test/resources/examples/roots/test8/right_QuickNotepad_1.14.java"))
 				.build();
 
 		CtType<?> aType = factory.Type().get("QuickNotepad");
@@ -288,7 +284,7 @@ public class TreeTest {
 		Launcher spoon = new Launcher();
 		Factory factory = spoon.createFactory();
 		spoon.createCompiler(factory,
-				SpoonResourceHelper.resources("src/test/resources/examples/roots/test8/left_QuickNotepad_1.13.java"))
+						SpoonResourceHelper.resources("src/test/resources/examples/roots/test8/left_QuickNotepad_1.13.java"))
 				.build();
 
 		CtType<?> astLeft = factory.Type().get("QuickNotepad");
@@ -297,7 +293,7 @@ public class TreeTest {
 		// Reusing the same factory, the path fails.
 		factory = spoon.createFactory();
 		spoon.createCompiler(factory,
-				SpoonResourceHelper.resources("src/test/resources/examples/roots/test8/left_QuickNotepad_1.13.java"))
+						SpoonResourceHelper.resources("src/test/resources/examples/roots/test8/left_QuickNotepad_1.13.java"))
 				.build();
 
 		CtType<?> astRight = factory.Type().get("QuickNotepad");
@@ -339,19 +335,6 @@ public class TreeTest {
 				assertNotNull(path);
 			}
 
-		}
-	}
-
-	private final class PathScanner extends CtScanner {
-		@Override
-		public void scan(CtElement element) {
-			if (element != null) {
-				CtPath path = element.getPath();
-				assertNotNull(path);
-
-			}
-			// to avoid visiting all childs
-			super.scan(element);
 		}
 	}
 
@@ -430,7 +413,7 @@ public class TreeTest {
 
 		DiffImpl diffC = (DiffImpl) diff.compare(fl, fr);
 
-		
+
 		List<Operation> ops = diffC.getAllOperations();
 
 		// to change a method to static means to change the type accesses that invoke
@@ -463,7 +446,7 @@ public class TreeTest {
 
 		DiffImpl diffC = (DiffImpl) diff.compare(fl, fr);
 
-		
+
 		List<Operation> ops = diffC.getAllOperations();
 		assertEquals(1, ops.size());
 		System.out.println(ops);
@@ -576,10 +559,9 @@ public class TreeTest {
 		long listLabelsCount = childLabels.stream().filter(listLabel::equals).count();
 		long stringLabelsCount = childLabels.stream().filter(stringLabel::equals).count();
 
-		assertEquals("Not enough List containers", 4, listLabelsCount);
-		assertEquals("Not enough String type arguments", 1, stringLabelsCount);
-		assertEquals("There should only be list and string labels", childLabels.size(),
-				listLabelsCount + stringLabelsCount);
+		assertEquals(4, listLabelsCount, "Not enough List containers");
+		assertEquals(1, stringLabelsCount, "Not enough String type arguments");
+		assertEquals(childLabels.size(), listLabelsCount + stringLabelsCount, "There should only be list and string labels");
 	}
 
 	@Test
@@ -672,5 +654,18 @@ public class TreeTest {
 		// assert
 		CtElement accessModifiers = diff.getRootOperations().get(0).getSrcNode();
 		assertPosition(accessModifiers.getPosition(), 1, 10, 23);
+	}
+
+	private final class PathScanner extends CtScanner {
+		@Override
+		public void scan(CtElement element) {
+			if (element != null) {
+				CtPath path = element.getPath();
+				assertNotNull(path);
+
+			}
+			// to avoid visiting all childs
+			super.scan(element);
+		}
 	}
 }

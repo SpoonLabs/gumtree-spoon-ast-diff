@@ -2,9 +2,9 @@ package gumtree.spoon;
 
 import com.github.gumtreediff.tree.Tree;
 import gumtree.spoon.builder.SpoonGumTreeBuilder;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import spoon.Launcher;
 import spoon.reflect.code.CtTypeAccess;
 import spoon.reflect.declaration.CtElement;
@@ -13,30 +13,20 @@ import spoon.reflect.declaration.CtPackage;
 import java.io.File;
 import java.util.ArrayDeque;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Queue;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@RunWith(Parameterized.class)
 public class SourcePositionTest {
 
-    private File javaSourceFile;
-    private String fileName;
-
-    public SourcePositionTest(File javaSourceFile, String fileName) {
-        this.javaSourceFile = javaSourceFile;
-        this.fileName = fileName;
-    }
-
-    @Parameterized.Parameters(name = "{1}")
-    public static Collection<Object[]> data() {
+    public static Stream<Arguments> data() {
         File directory = new File("src/test/resources/source-positions");
-        return Arrays.stream(Objects.requireNonNull(directory.listFiles())).map(file -> new Object[]{file, file.getName()}).collect(Collectors.toUnmodifiableList());
+        return Arrays.stream(Objects.requireNonNull(directory.listFiles()))
+                .map(file -> Arguments.of(file, file.getName()));
     }
 
     private static Tree getRootNode(File javaSourceFile) {
@@ -48,12 +38,8 @@ public class SourcePositionTest {
     }
 
     private static boolean ignoreNodes(Tree node) {
-        // they don't have a position in the Spoon model
         CtElement element = (CtElement) node.getMetadata(SpoonGumTreeBuilder.SPOON_OBJECT);
-        if (element instanceof CtPackage) {
-            return true;
-        }
-        if (element instanceof CtTypeAccess) {
+        if (element instanceof CtPackage || element instanceof CtTypeAccess) {
             return true;
         }
         return false;
@@ -88,11 +74,10 @@ public class SourcePositionTest {
         return true;
     }
 
-    @Test
-    public void childNodeMustBeEnclosedInParentNode() {
-        // Arrange
+    @ParameterizedTest(name = "[{index}] {1}")
+    @MethodSource("data")
+    public void childNodeMustBeEnclosedInParentNode(File javaSourceFile, String name) {
         Tree rootNode = getRootNode(javaSourceFile);
-        // Assert
         for (Tree child : rootNode.getDescendants()) {
             Tree parent = child.getParent();
             if (ignoreNodes(child) || ignoreNodes(parent)) {
@@ -105,24 +90,22 @@ public class SourcePositionTest {
         }
     }
 
-    @Test
-    public void allNodesShouldHaveAtLeastZeroLength() {
-        // Arrange
+    @ParameterizedTest(name = "[{index}] {1}")
+    @MethodSource("data")
+    public void allNodesShouldHaveAtLeastZeroLength(File javaSourceFile, String name) {
         Tree rootNode = getRootNode(javaSourceFile);
-        // Assert
         for (Tree node : rootNode.getDescendants()) {
             if (ignoreNodes(node)) {
                 continue;
             }
-            assertTrue(node + " has negative length", node.getLength() >= 0);
+            assertTrue(node.getLength() >= 0, node + " has negative length");
         }
     }
 
-    @Test
-    public void siblingNodeShouldNotContainEachOther() {
-        // Arrange
+    @ParameterizedTest(name = "[{index}] {1}")
+    @MethodSource("data")
+    public void siblingNodeShouldNotContainEachOther(File javaSourceFile, String name) {
         Tree rootNode = getRootNode(javaSourceFile);
-        // Assert
         Queue<Tree> roots = new ArrayDeque<>();
         roots.add(rootNode);
         while (!roots.isEmpty()) {

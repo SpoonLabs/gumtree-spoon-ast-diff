@@ -1,36 +1,27 @@
 package gumtree.spoon.diff;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.github.gumtreediff.matchers.CompositeMatchers;
-import org.junit.Ignore;
-import org.junit.Test;
-
-import gumtree.spoon.builder.CtVirtualElement;
 import gumtree.spoon.AstComparator;
+import gumtree.spoon.builder.CtVirtualElement;
 import gumtree.spoon.diff.operations.Operation;
 import gumtree.spoon.diff.operations.OperationKind;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import spoon.Launcher;
 import spoon.reflect.code.CtLiteral;
 import spoon.reflect.declaration.CtClass;
 
+import java.io.File;
+import java.util.*;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * Test Spoon Diff
- * 
- * @author Matias Martinez, matias.martinez@inria.fr
  *
+ * @author Matias Martinez, matias.martinez@inria.fr
  */
 public class DiffTest {
 	private final String newline = System.getProperty("line.separator");
@@ -68,12 +59,12 @@ public class DiffTest {
 				+ newline
 				+ "\t    return values.isEmpty() ? null : values.toArray(new java.lang.String[values.size()]);"
 				+ newline + "\t}" + newline;
-		assertTrue(result.toString(), result.toString().endsWith(deleteStr));
+		assertTrue(result.toString().endsWith(deleteStr), result.toString());
 	}
 
 	/**
 	 * Add new element + child
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	@Test
@@ -90,7 +81,7 @@ public class DiffTest {
 
 	/**
 	 * changes an element and adds a new child to it
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	@Test
@@ -113,7 +104,7 @@ public class DiffTest {
 
 	/**
 	 * Remove element, keep its only child
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	@Test
@@ -132,7 +123,7 @@ public class DiffTest {
 
 	/**
 	 * Removes element with 2 children, keep one child, remove the other
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	@Test
@@ -151,7 +142,7 @@ public class DiffTest {
 
 	/**
 	 * Add element with 2 children, one new, other from a move
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	@Test
@@ -270,9 +261,9 @@ public class DiffTest {
 
 		DiffConfiguration configuration = new DiffConfiguration();
 		configuration.setMatcher(new CompositeMatchers.ClassicGumtree());
-		
+
 		Diff diff = new AstComparator().compare(left, right, configuration);
-		
+
 		assertTrue(diff.containsOperation(OperationKind.Insert, "INTERFACE", "A"));
 		assertTrue(diff.containsOperation(OperationKind.Insert, "INTERFACE", "D"));
 		assertTrue(diff.containsOperation(OperationKind.Insert, "TYPE_ARGUMENT", "T"));
@@ -290,7 +281,7 @@ public class DiffTest {
 
 		DiffConfiguration configuration = new DiffConfiguration();
 		configuration.setMatcher(new CompositeMatchers.ClassicGumtree());
-		
+
 		Diff diff = new AstComparator().compare(left, right, configuration);
 
 		assertTrue(diff.containsOperation(OperationKind.Delete, "INTERFACE", "A"));
@@ -332,7 +323,7 @@ public class DiffTest {
 		// verify children of the inserted root node
 		CtVirtualElement thrownTypeRoot = (CtVirtualElement) diff.getRootOperations().get(0).getSrcNode();
 		assertNotNull(thrownTypeRoot);
-		assertArrayEquals(new String[] {
+		assertArrayEquals(new String[]{
 				"java.lang.ClassNotFoundException",
 				"java.lang.ClassCastException"
 		}, thrownTypeRoot.getChildren().stream().map(Object::toString).toArray());
@@ -368,7 +359,7 @@ public class DiffTest {
 	}
 
 	// ToDo
-	@Ignore("Can be fixed after #154")
+	@Disabled("Can be fixed after #154")
 	@Test
 	public void test_diffOfAnnotationValues_updateMethod() throws Exception {
 		File left = new File("src/test/resources/examples/annotationValues/updateMethod/left.java");

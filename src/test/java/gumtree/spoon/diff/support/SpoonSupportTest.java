@@ -1,20 +1,6 @@
 package gumtree.spoon.diff.support;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.junit.Test;
-
 import com.github.gumtreediff.tree.Tree;
-
 import gumtree.spoon.AstComparator;
 import gumtree.spoon.builder.CtVirtualElement;
 import gumtree.spoon.builder.CtWrapper;
@@ -24,10 +10,19 @@ import gumtree.spoon.diff.operations.DeleteOperation;
 import gumtree.spoon.diff.operations.InsertOperation;
 import gumtree.spoon.diff.operations.Operation;
 import gumtree.spoon.diff.operations.UpdateOperation;
+import org.junit.jupiter.api.Test;
 import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.declaration.ModifierKind;
 import spoon.reflect.path.CtRole;
 import spoon.reflect.reference.CtTypeReference;
+
+import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SpoonSupportTest {
 

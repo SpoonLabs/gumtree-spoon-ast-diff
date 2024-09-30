@@ -66,7 +66,7 @@ public class AstComparator {
 			return compare(ctPackage1, ctPackage2);
 		}
 	}
-	
+
 	/**
 	 * compares two AST nodes from two files according with a given configuration
 	 */
@@ -101,8 +101,8 @@ public class AstComparator {
 		return compare(getCtPackage(left, getFilename(left)), getCtPackage(right, getFilename(right)),configuration);
 	}
 
-	
-	
+
+
 	/**
 	 * compares two snippets that come from the files given as argument
 	 */
@@ -118,7 +118,7 @@ public class AstComparator {
 		return new DiffImpl(scanner.getTreeContext(), scanner.getTree(left), scanner.getTree(right));
 	}
 
-	
+
 	/**
 	 * compares two AST nodes according with a given configuration
 	 */
@@ -126,7 +126,7 @@ public class AstComparator {
 		final SpoonGumTreeBuilder scanner = new SpoonGumTreeBuilder();
 		return new DiffImpl(scanner.getTreeContext(), scanner.getTree(left), scanner.getTree(right),configuration);
 	}
-	
+
 
 
 	public CtType getCtType(File file) throws Exception {
