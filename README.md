@@ -61,7 +61,7 @@ new AstComparator().compare((File) f, (File) f2);
 new AstComparator().compare((String) s1, (String) s2);
 ```
 
-By default, the current version of Gumtree Spoon AST Diff uses the novel AST matcher called `SimpleGumTree`. However, the API provides the possibility to change it:  The mentioned `compare` methods can also receive the configuration of the AST diff algorithm.
+Gumtree Spoon AST Diff uses the AST matcher called `SimpleGumtree` since Sep 2023. Ihe API `setMatcher` provides the possibility to change it:  The mentioned `compare` methods can be configured accordingly, as in the following example.
 
 ```java
 		AstComparator comp = new AstComparator();
