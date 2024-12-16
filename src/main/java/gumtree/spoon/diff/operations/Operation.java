@@ -106,8 +106,12 @@ public abstract class Operation<T extends Action> {
 			}
 		};
 
-		print.scan(element);
-		return print.getResult();
+		try {
+			// we run best-effort in a try-catch
+			print.scan(element);
+		} finally {
+			return print.getResult();
+		}
 	}
 
 	/** returns the changed (inserded/deleted/updated) element */
