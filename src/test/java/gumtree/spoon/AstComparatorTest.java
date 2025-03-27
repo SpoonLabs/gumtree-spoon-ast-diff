@@ -2125,7 +2125,7 @@ public class AstComparatorTest {
 	@Test
 	public void testAnonymousClassDifferentInsertion() throws Exception {
 		// GitHub Issue: https://github.com/SpoonLabs/gumtree-spoon-ast-diff/issues/347
-		// Inserts an anonymous class that is slightly different from an anonymous class that
+		// Inserts an anonymous class that has a different body from the anonymous class that
 		// is already present elsewhere in the code (the one that is already present is NOT empty)
 		AstComparator diff = new AstComparator();
 		File fl = new File("src/test/resources/examples/issue347/DifferentInsertionFirst.java");
