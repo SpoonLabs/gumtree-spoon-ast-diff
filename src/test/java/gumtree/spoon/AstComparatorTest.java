@@ -2101,4 +2101,44 @@ public class AstComparatorTest {
 
 	}
 
+	@Test
+	public void testAnonymousClassSameInsertion() throws Exception {
+		// GitHub Issue: https://github.com/SpoonLabs/gumtree-spoon-ast-diff/issues/347
+		// Inserts an anonymous class that is the *exact* same as the one that is present already
+		// in the file (they are both empty in this case)
+		AstComparator diff = new AstComparator();
+		File fl = new File("src/test/resources/examples/issue347/SameInsertionFirst.java");
+		File fr = new File("src/test/resources/examples/issue347/SameInsertionSecond.java");
+
+		System.setProperty("nolabel", "true");
+		Diff result = diff.compare(fl, fr);
+		// Setting this back to "false" so it does not interfere with other tests
+		System.setProperty("nolabel", "false");
+
+		assertEquals(1, result.getRootOperations().size());
+		// This call to "containsOperation" only seems to check rootOperations at the moment
+		// For context: "RootOperations" are also the ones that are seem to be printed in the toString()
+		// 				for the diff, NOT `allOperations`.
+		assertTrue(result.containsOperation(OperationKind.Insert, "Invocation", "Invocation"));
+	}
+
+	@Test
+	public void testAnonymousClassDifferentInsertion() throws Exception {
+		// GitHub Issue: https://github.com/SpoonLabs/gumtree-spoon-ast-diff/issues/347
+		// Inserts an anonymous class that is slightly different from an anonymous class that
+		// is already present elsewhere in the code (the one that is already present is NOT empty)
+		AstComparator diff = new AstComparator();
+		File fl = new File("src/test/resources/examples/issue347/DifferentInsertionFirst.java");
+		File fr = new File("src/test/resources/examples/issue347/DifferentInsertionSecond.java");
+
+		// Explicitly setting to "nolabel" mode gives the expected diff
+		System.setProperty("nolabel", "true");
+		Diff result = diff.compare(fl, fr);
+		// Setting this back to "false" so it does not interfere with other tests
+		System.setProperty("nolabel", "false");
+
+		assertEquals(1, result.getRootOperations().size());
+		assertTrue(result.containsOperation(OperationKind.Insert, "Invocation", "Invocation"));
+	}
+
 }
