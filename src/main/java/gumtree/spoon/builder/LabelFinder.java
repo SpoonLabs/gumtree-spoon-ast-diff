@@ -20,6 +20,7 @@ import spoon.reflect.code.CtUnaryOperator;
 import spoon.reflect.code.CtVariableAccess;
 import spoon.reflect.code.CtWhile;
 import spoon.reflect.declaration.CtAnnotation;
+import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtNamedElement;
 import spoon.reflect.declaration.CtType;
 import spoon.reflect.path.CtRole;
@@ -33,7 +34,11 @@ class LabelFinder extends CtInheritanceScanner {
 
 	@Override
 	public void scanCtNamedElement(CtNamedElement e) {
-		label = e.getSimpleName();
+		if (e instanceof CtClass && ((CtClass<?>) e).isAnonymous()) {
+			label = "";
+		} else {
+			label = e.getSimpleName();
+		}
 	}
 
 	@Override
