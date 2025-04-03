@@ -2110,16 +2110,13 @@ public class AstComparatorTest {
 		File fl = new File("src/test/resources/examples/issue347/SameInsertionFirst.java");
 		File fr = new File("src/test/resources/examples/issue347/SameInsertionSecond.java");
 
-		System.setProperty("nolabel", "true");
 		Diff result = diff.compare(fl, fr);
-		// Setting this back to "false" so it does not interfere with other tests
-		System.setProperty("nolabel", "false");
 
 		assertEquals(1, result.getRootOperations().size());
 		// This call to "containsOperation" only seems to check rootOperations at the moment
 		// For context: "RootOperations" are also the ones that are seem to be printed in the toString()
 		// 				for the diff, NOT `allOperations`.
-		assertTrue(result.containsOperation(OperationKind.Insert, "Invocation", "Invocation"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "Invocation", "startServer"));
 	}
 
 	@Test
@@ -2131,14 +2128,10 @@ public class AstComparatorTest {
 		File fl = new File("src/test/resources/examples/issue347/DifferentInsertionFirst.java");
 		File fr = new File("src/test/resources/examples/issue347/DifferentInsertionSecond.java");
 
-		// Explicitly setting to "nolabel" mode gives the expected diff
-		System.setProperty("nolabel", "true");
 		Diff result = diff.compare(fl, fr);
-		// Setting this back to "false" so it does not interfere with other tests
-		System.setProperty("nolabel", "false");
 
 		assertEquals(1, result.getRootOperations().size());
-		assertTrue(result.containsOperation(OperationKind.Insert, "Invocation", "Invocation"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "Invocation", "startServer"));
 	}
 
 }
