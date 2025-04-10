@@ -69,7 +69,7 @@ public class TreeScanner extends CtScanner {
 
 	/**
 	 * Ignore some element from the AST
-	 * 
+	 *
 	 * @param element
 	 * @return
 	 */
@@ -147,7 +147,7 @@ public class TreeScanner extends CtScanner {
 	public Tree createNode(String typeClass, String label) {
 
 		Type type = type(typeClass);
-
-		return treeContext.createTree(type, label);
+		return treeContext.createTree(type,
+				(label == null) ? label : label.replaceAll("\\$.*", ""));
 	}
 }
