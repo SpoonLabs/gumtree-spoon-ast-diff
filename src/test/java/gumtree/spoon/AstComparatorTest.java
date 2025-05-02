@@ -3,6 +3,7 @@ package gumtree.spoon;
 import com.github.gumtreediff.actions.model.Move;
 import com.github.gumtreediff.matchers.CompositeMatchers;
 import com.github.gumtreediff.matchers.Mapping;
+import com.github.gumtreediff.tree.Tree;
 import gumtree.spoon.builder.SpoonGumTreeBuilder;
 import gumtree.spoon.diff.ActionClassifier;
 import gumtree.spoon.diff.Diff;
@@ -2133,5 +2134,24 @@ public class AstComparatorTest {
 		assertEquals(1, result.getRootOperations().size());
 		assertTrue(result.containsOperation(OperationKind.Insert, "Invocation", "startServer"));
 	}
+
+    @Test
+    public void testSubtreeLabelsNoDollarSign() throws Exception {
+        File fl = new File("src/test/resources/examples/anonymous-noNumbering/left.java");
+        File fr = new File("src/test/resources/examples/anonymous-noNumbering/right.java");
+
+        AstComparator diff = new AstComparator();
+        DiffImpl result = (DiffImpl) diff.compare(fl, fr);
+        boolean hasDollarSign = false;
+        Tree problematicSubTree = null;
+        for (Tree tree : result.getMappingsComp().src.preOrder()) {
+            if (tree.getLabel().contains("$")) {
+                hasDollarSign = true;
+                problematicSubTree = tree;
+                break;
+            }
+        }
+        assertFalse(hasDollarSign, "Tree has some numbering " + problematicSubTree);
+    }
 
 }
