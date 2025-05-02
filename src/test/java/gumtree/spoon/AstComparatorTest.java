@@ -2144,6 +2144,7 @@ public class AstComparatorTest {
         DiffImpl result = (DiffImpl) diff.compare(fl, fr);
         boolean hasDollarSign = false;
         Tree problematicSubTree = null;
+        //We can do the same for dst but the result will be the same.
         for (Tree tree : result.getMappingsComp().src.preOrder()) {
             if (tree.getLabel().contains("$")) {
                 hasDollarSign = true;
