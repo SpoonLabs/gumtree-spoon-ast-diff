@@ -11,6 +11,7 @@ import spoon.reflect.code.CtContinue;
 import spoon.reflect.code.CtIf;
 import spoon.reflect.code.CtInvocation;
 import spoon.reflect.code.CtLiteral;
+import spoon.reflect.code.CtNewClass;
 import spoon.reflect.code.CtOperatorAssignment;
 import spoon.reflect.code.CtReturn;
 import spoon.reflect.code.CtSuperAccess;
@@ -33,9 +34,20 @@ class LabelFinder extends CtInheritanceScanner {
 	public String label = "";
 
 	@Override
+	public <T> void visitCtNewClass(CtNewClass<T> anon) {
+		super.visitCtNewClass(anon);
+		label = "";
+	}
+
+	@Override
 	public void scanCtNamedElement(CtNamedElement e) {
 		if (e instanceof CtClass && ((CtClass<?>) e).isAnonymous()) {
-			label = "";
+			CtClass<?> anon = (CtClass<?>) e;
+			if (anon.getSuperclass() != null) {
+				label = anon.getSuperclass().getQualifiedName();
+			} else {
+				label = "";
+			}
 		} else {
 			label = e.getSimpleName();
 		}
@@ -145,6 +157,13 @@ class LabelFinder extends CtInheritanceScanner {
 	public <T> void visitCtTypeAccess(CtTypeAccess<T> typeAccess) {
 		if (typeAccess.getAccessedType() != null) {
 			label = typeAccess.getAccessedType().getQualifiedName();
+			// fix #2 of https://github.com/SpoonLabs/gumtree-spoon-ast-diff/issues/347
+			// we don't want the accesses to anonymous classes change with new classes
+			if (typeAccess.getAccessedType().isAnonymous()) {
+				// we need to replace the last $<number> with $Anonymous
+				// such that the label does not depend on the order of the target anon class but on the actual target
+				label = label.replaceAll("\\$\\d+$", "\\$Anonymous");
+			}
 		}
 	}
 

@@ -999,7 +999,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(result.containsOperation(OperationKind.Update, "NewClass"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "FieldRead"));
 		// the change is in a constructor call
 		assertTrue(result.changedNode() instanceof CtNewClass);
 	}
@@ -2105,33 +2105,46 @@ public class AstComparatorTest {
 	public void testAnonymousClassSameInsertion() throws Exception {
 		// GitHub Issue: https://github.com/SpoonLabs/gumtree-spoon-ast-diff/issues/347
 		// Inserts an anonymous class that is the *exact* same as the one that is present already
-		// in the file (they are both empty in this case)
-		AstComparator diff = new AstComparator();
-		File fl = new File("src/test/resources/examples/issue347/SameInsertionFirst.java");
-		File fr = new File("src/test/resources/examples/issue347/SameInsertionSecond.java");
 
-		Diff result = diff.compare(fl, fr);
+		{
+			// in the file (they are both empty in this case)
+			AstComparator diff = new AstComparator();
+			File fl = new File("src/test/resources/examples/issue347/SameInsertionFirst.java");
+			File fr = new File("src/test/resources/examples/issue347/SameInsertionSecond.java");
 
-		assertEquals(1, result.getRootOperations().size());
-		// This call to "containsOperation" only seems to check rootOperations at the moment
-		// For context: "RootOperations" are also the ones that are seem to be printed in the toString()
-		// 				for the diff, NOT `allOperations`.
-		assertTrue(result.containsOperation(OperationKind.Insert, "Invocation", "startServer"));
-	}
+			Diff result = diff.compare(fl, fr);
 
-	@Test
-	public void testAnonymousClassDifferentInsertion() throws Exception {
-		// GitHub Issue: https://github.com/SpoonLabs/gumtree-spoon-ast-diff/issues/347
-		// Inserts an anonymous class that has a different body from the anonymous class that
-		// is already present elsewhere in the code (the one that is already present is NOT empty)
-		AstComparator diff = new AstComparator();
-		File fl = new File("src/test/resources/examples/issue347/DifferentInsertionFirst.java");
-		File fr = new File("src/test/resources/examples/issue347/DifferentInsertionSecond.java");
+			assertEquals(1, result.getRootOperations().size());
+			// This call to "containsOperation" only seems to check rootOperations at the moment
+			// For context: "RootOperations" are also the ones that are seem to be printed in the toString()
+			// 				for the diff, NOT `allOperations`.
+			assertTrue(result.containsOperation(OperationKind.Insert, "Invocation", "startServer"));
+		}
+		{
+			AstComparator diff = new AstComparator();
+			File fl = new File("src/test/resources/examples/issue347/DifferentInsertionFirst.java");
+			File fr = new File("src/test/resources/examples/issue347/DifferentInsertionSecond.java");
 
-		Diff result = diff.compare(fl, fr);
+			Diff result = diff.compare(fl, fr);
 
-		assertEquals(1, result.getRootOperations().size());
-		assertTrue(result.containsOperation(OperationKind.Insert, "Invocation", "startServer"));
+			result.debugInformation();
+			assertEquals(1, result.getRootOperations().size());
+			assertTrue(result.containsOperation(OperationKind.Insert, "Invocation","startServer"));
+		}
+
+		{
+			AstComparator diff = new AstComparator();
+			// making sure that the examples compile
+			File fl = new File("src/test/resources/examples/issue347b/DifferentInsertionFirst.java");
+			File fr = new File("src/test/resources/examples/issue347b/DifferentInsertionSecond.java");
+
+			Diff result = diff.compare(fl, fr);
+
+			result.debugInformation();
+			assertEquals(1, result.getRootOperations().size());
+			assertTrue(result.containsOperation(OperationKind.Insert, "NewClass",""));
+		}
+
 	}
 
 }
