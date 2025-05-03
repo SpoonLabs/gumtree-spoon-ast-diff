@@ -145,6 +145,11 @@ class LabelFinder extends CtInheritanceScanner {
 	public <T> void visitCtTypeAccess(CtTypeAccess<T> typeAccess) {
 		if (typeAccess.getAccessedType() != null) {
 			label = typeAccess.getAccessedType().getQualifiedName();
+			// fix #2 of https://github.com/SpoonLabs/gumtree-spoon-ast-diff/issues/347
+			// we don't want the accesses to anonymous classes change with new classes
+			if (typeAccess.getAccessedType().isAnonymous()) {
+				label = label.replaceAll("\\$\\d+", "\\$Anonymous");
+			}
 		}
 	}
 
