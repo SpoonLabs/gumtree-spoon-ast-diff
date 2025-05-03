@@ -148,6 +148,6 @@ public class TreeScanner extends CtScanner {
 
 		Type type = type(typeClass);
 		return treeContext.createTree(type,
-				(label == null) ? label : label.replaceAll("\\$.*", ""));
+				(label == null) ? label : label.replaceAll("\\$\\d+", ""));
 	}
 }
