@@ -999,7 +999,7 @@ public class AstComparatorTest {
 		List<Operation> actions = result.getRootOperations();
 		result.debugInformation();
 		assertEquals(1, actions.size());
-		assertTrue(result.containsOperation(OperationKind.Update, "NewClass"));
+		assertTrue(result.containsOperation(OperationKind.Insert, "FieldRead"));
 		// the change is in a constructor call
 		assertTrue(result.changedNode() instanceof CtNewClass);
 	}
