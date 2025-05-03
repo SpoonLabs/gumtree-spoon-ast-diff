@@ -303,6 +303,7 @@ public class DiffImpl implements Diff {
 			}
 
 			result += " (size: " + node.getDescendants().size() + ")" + node.toTreeString();
+			result += "\n";
 		}
 		return result;
 	}
