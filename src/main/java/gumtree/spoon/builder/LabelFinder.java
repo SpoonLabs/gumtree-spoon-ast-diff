@@ -42,12 +42,7 @@ class LabelFinder extends CtInheritanceScanner {
 	@Override
 	public void scanCtNamedElement(CtNamedElement e) {
 		if (e instanceof CtClass && ((CtClass<?>) e).isAnonymous()) {
-			CtClass<?> anon = (CtClass<?>) e;
-			if (anon.getSuperclass() != null) {
-				label = anon.getSuperclass().getQualifiedName();
-			} else {
-				label = "";
-			}
+			label = "";
 		} else {
 			label = e.getSimpleName();
 		}
