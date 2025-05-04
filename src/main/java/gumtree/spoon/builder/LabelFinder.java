@@ -155,9 +155,8 @@ class LabelFinder extends CtInheritanceScanner {
 			// fix #2 of https://github.com/SpoonLabs/gumtree-spoon-ast-diff/issues/347
 			// we don't want the accesses to anonymous classes change with new classes
 			if (typeAccess.getAccessedType().isAnonymous()) {
-				// we need to replace the last $<number> with $Anonymous
-				// such that the label does not depend on the order of the target anon class but on the actual target
-				label = label.replaceAll("\\$\\d+$", "\\$Anonymous");
+				// note that it can be an anonymous class inside another anonymous class
+				label = "";
 			}
 		}
 	}
