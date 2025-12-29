@@ -39,7 +39,7 @@
     <dependency>
       <groupId>com.github.gumtreediff</groupId>
       <artifactId>core</artifactId>
-      <version>4.0.0-beta5</version>
+      <version>4.0.0-beta6</version>
     </dependency>
     <dependency>
       <groupId>com.google.code.gson</groupId>
