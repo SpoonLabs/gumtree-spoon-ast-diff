@@ -17,6 +17,6 @@ jobs:
       uses: actions/setup-java@v5
       with:
         distribution: 'adopt'
-        java-version: 17
+        java-version: 17.0.20+101
     - name: Run test phase
       run: mvn test
